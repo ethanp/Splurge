@@ -23,6 +23,8 @@ extension ComparableIterable<T extends Comparable> on Iterable<T> {
 extension IterableT<T> on Iterable<T> {
   List<U> mapL<U>(U Function(T) f) => map(f).toList(growable: false);
 
+  T? get maybeLast => isEmpty ? null : last;
+
   double sumBy(double Function(T) fn) => map(fn).sum;
 
   U max<U extends Comparable>(U Function(T) fn) => fn(maxBy(fn));
@@ -59,11 +61,8 @@ extension ListT<T> on List<T> {
       sublist(math.max(length - atMost, 0));
 }
 
-extension Edouble on double {
-  DateTime get toDate => DateTime.fromMillisecondsSinceEpoch(toInt());
-}
-
 extension EDateTime on DateTime {
+  /// Eg. 'Sat Jul 30 2022'
   String get formatted {
     final dayOfWeek = DateFormat.E().format(this);
     final date = DateFormat.MMMd().format(this);
@@ -71,10 +70,20 @@ extension EDateTime on DateTime {
     return '$dayOfWeek $date $year';
   }
 
+  /// Eg. 'Jul 2022'
+  String get monthString {
+    final date = DateFormat.MMM().format(this);
+    final year = DateFormat.y().format(this);
+    return '$date $year';
+  }
+
   double get toDouble => millisecondsSinceEpoch.toDouble();
 }
 
-extension CompactCurrency on double {
+extension EDouble on double {
+  DateTime get toDate => DateTime.fromMillisecondsSinceEpoch(toInt());
+
+  /// Eg. 235768.2359 => '$235K'
   String asCompactDollars() {
     return NumberFormat.compactCurrency(
       locale: 'en_US',
@@ -83,16 +92,18 @@ extension CompactCurrency on double {
   }
 }
 
-/// Eg. 1 => '1st', 2 => '2nd', 3 => '3rd', 4 => '4th', etc.
-String ith({required int place}) {
-  String suffix;
-  if (place == 1 || place > 20 && place % 10 == 1)
-    suffix = 'st';
-  else if (place == 2 || place > 20 && place % 10 == 2)
-    suffix = 'nd';
-  else if (place == 3 || place > 20 && place % 10 == 3)
-    suffix = 'rd';
-  else
-    suffix = 'th';
-  return '$place$suffix';
+extension EInt on int {
+  /// Eg. 1 => '1st', 2 => '2nd', 3 => '3rd', 4 => '4th', etc.
+  String get ith {
+    String suffix;
+    if (this == 1 || this > 20 && this % 10 == 1)
+      suffix = 'st';
+    else if (this == 2 || this > 20 && this % 10 == 2)
+      suffix = 'nd';
+    else if (this == 3 || this > 20 && this % 10 == 3)
+      suffix = 'rd';
+    else
+      suffix = 'th';
+    return '${toString()}$suffix';
+  }
 }

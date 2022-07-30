@@ -1,10 +1,26 @@
+import 'package:splurge/util/extensions.dart';
+
 class Dataset {
   const Dataset(this.transactions);
 
   final List<Transaction> transactions;
 
-  Iterable<Transaction> get spendingTxns =>
-      transactions.where((t) => t.txnType == 'regular');
+  Dataset get spendingTxns =>
+      Dataset(transactions.where((t) => t.txnType == 'regular').toList());
+
+  List<Dataset> get txnsByMonth => transactions
+          .fold(List<Dataset>.empty(growable: true), (accumulator, txn) {
+        final month = txn.date.month;
+        final prevItemMonth =
+            accumulator.maybeLast?.transactions.maybeLast?.date.month;
+        if (month == prevItemMonth)
+          accumulator.last.transactions.add(txn);
+        else
+          accumulator.add(Dataset([txn]));
+        return accumulator;
+      });
+
+  double get totalAmount => transactions.sumBy((txn) => txn.amount);
 }
 
 class Transaction {
