@@ -43,33 +43,81 @@ class CopilotExportReader {
     return filetext
         .split('\n')
         .skip(1) // Skip header.
-        .map(
-          // TODO(major bug): We're splitting but ignoring the quotes. We should
-          //  not split inside the quotes. Many titles have commas in them so it
-          //  breaks everything.
-          (line) => line.split(',').mapL(removeSurroundingQuotes),
-        )
         .map(CopilotExportRow.new)
         .map(Transaction.new)
         .toList();
   }
-
-  static String removeSurroundingQuotes(String rawValue) =>
-      rawValue.length >= 2 && rawValue.startsWith('"') && rawValue.endsWith('"')
-          ? rawValue.substring(1, rawValue.length - 1)
-          : rawValue;
 }
 
 extension SIterator<T> on Iterable<T> {
   List<U> mapL<U>(U Function(T) mapper) => map(mapper).toList(growable: false);
 }
 
-class CopilotExportRow {
-  CopilotExportRow(this.rowValues) {
-    print('Creating a transaction from $rowValues');
+/// Pure-boilerplate :(
+class CopilotExportValueGenerator extends Iterable<String> {
+  CopilotExportValueGenerator(this.rawRow);
+  final String rawRow;
+
+  @override
+  Iterator<String> get iterator => CopilotExportValueSplitter(rawRow);
+}
+
+/// Isn't data fun.
+class CopilotExportValueSplitter extends Iterator<String> {
+  CopilotExportValueSplitter(this.rawRow);
+  final String rawRow;
+
+  int cursorPosition = 0;
+
+  String get curChar => rawRow[cursorPosition];
+
+  @override
+  bool moveNext() => cursorPosition < rawRow.length;
+
+  @override
+  String get current =>
+      curChar == '"' ? _extractFromQuotes() : _extractNoQuotes();
+
+  String _extractFromQuotes() {
+    int start = cursorPosition;
+    cursorPosition++;
+    while (curChar != '"' && moveNext()) {
+      cursorPosition++;
+    }
+    cursorPosition++; // Close quote
+
+    // Weird bug in the raw csv where there can be an extra pair of quotes!
+    var offset = 0;
+    if (moveNext() && curChar == '"') {
+      cursorPosition += 2; // skip the quotes
+      offset = 2;
+    }
+
+    cursorPosition++; // Comma
+    return rawRow.substring(start + 1, cursorPosition - 2 - offset);
   }
 
-  final List<String> rowValues;
+  String _extractNoQuotes() {
+    int start = cursorPosition;
+    while (curChar != ',' && moveNext()) {
+      cursorPosition++;
+    }
+    cursorPosition++;
+    return rawRow.substring(start, cursorPosition - 1);
+  }
+}
+
+class CopilotExportRow {
+  CopilotExportRow(String rawRow) {
+    rowValues = CopilotExportValueGenerator(rawRow).toList(growable: false);
+  }
+
+  static String removeSurroundingQuotes(String rawValue) =>
+      rawValue.length >= 2 && rawValue.startsWith('"') && rawValue.endsWith('"')
+          ? rawValue.substring(1, rawValue.length - 1)
+          : rawValue;
+
+  late final List<String> rowValues;
 
   DateTime get date => DateTime.parse(rowValues[0]);
 
@@ -91,9 +139,7 @@ class Transaction {
         title = row.title,
         amount = row.amount,
         category = row.category,
-        txnType = row.txnType {
-    print('Created a transaction');
-  }
+        txnType = row.txnType;
 
   final DateTime date;
   final String title;
