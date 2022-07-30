@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/data_model.dart';
-import 'package:splurge/util.dart';
+import 'package:splurge/util/extensions.dart';
+import 'package:splurge/util/widgets.dart';
 
 void main() => runApp(AppWidget());
 
@@ -30,6 +31,8 @@ class AppContents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(dataset.transactions.first.title);
+    final totalSpending = dataset.spendingTxns.sumBy((e) => e.amount);
+    // TODO(UI): Format the $amt nicely like in the financial simulator.
+    return Text('Total spending: $totalSpending');
   }
 }

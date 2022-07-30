@@ -20,11 +20,3 @@ class LoadThenShow<T> extends StatelessWidget {
     );
   }
 }
-
-extension MapL<T> on Iterable<T> {
-  List<U> mapL<U>(U Function(T) f) => map(f).toList(growable: false);
-}
-
-class FileReadError extends StateError {
-  FileReadError(String message) : super(message);
-}

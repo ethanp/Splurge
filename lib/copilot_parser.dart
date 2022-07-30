@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:splurge/data_model.dart';
-import 'package:splurge/util.dart';
+import 'package:splurge/util/errors.dart';
+import 'package:splurge/util/extensions.dart';
 
 class CopilotExportReader {
   static Future<Dataset> get loadData async {
@@ -102,7 +103,7 @@ class CopilotExportRow {
 
   String get category => rowValues[4];
 
-  String get txnType => rowValues[5];
+  String get txnType => rowValues[7];
 
   Transaction toTransaction() => Transaction(
         date: date,
