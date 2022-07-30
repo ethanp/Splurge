@@ -33,24 +33,67 @@ class AppContents extends StatelessWidget {
   Widget build(BuildContext context) {
     final totalSpending = dataset.spendingTxns.totalAmount;
 
-    String asMonthTable(Dataset month) =>
-        '${month.transactions.first.date.monthString}'
-        '   ${month.totalAmount.asCompactDollars()}';
-    String asQtrTable(Dataset month) =>
-        '${month.transactions.first.date.qtrString}'
-        '   ${month.totalAmount.asCompactDollars()}';
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Center(
+          child: Text(
+            'Total spending ever: ${totalSpending.asCompactDollars()}',
+            style: const TextStyle(fontSize: 24),
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            BarChart(
+              title: 'By month',
+              bars: dataset.spendingTxns.txnsByMonth.mapL(
+                (Dataset month) => Bar(
+                  title: month.transactions.first.date.monthString,
+                  value: month.totalAmount,
+                ),
+              ),
+            ),
+            BarChart(
+              title: 'By quarter',
+              bars: dataset.spendingTxns.txnsByQuarter.mapL(
+                (Dataset qtr) => Bar(
+                  title: qtr.transactions.first.date.qtrString,
+                  value: qtr.totalAmount,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
-    // TODO(UI): These should be bar charts, with clickable bars or something.
-    final spendingByMonth =
-        dataset.spendingTxns.txnsByMonth.map(asMonthTable).join('\n');
-    final spendingByQuarter =
-        dataset.spendingTxns.txnsByQuarter.map(asQtrTable).join('\n');
+class Bar {
+  const Bar({required this.title, required this.value});
 
+  final String title;
+  final double value;
+}
+
+class BarChart extends StatelessWidget {
+  const BarChart({required this.title, required this.bars});
+
+  final String title;
+  final List<Bar> bars;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Total spending: ${totalSpending.asCompactDollars()}'),
-        Text('By month:\n$spendingByMonth'),
-        Text('By quarter:\n$spendingByQuarter'),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 24),
+        ),
+        Text(bars
+            .map((bar) => '${bar.title} ${bar.value.asCompactDollars()}')
+            .join('\n')),
       ],
     );
   }
