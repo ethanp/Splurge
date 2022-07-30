@@ -32,7 +32,6 @@ class AppContents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final totalSpending = dataset.spendingTxns.sumBy((e) => e.amount);
-    // TODO(UI): Format the $amt nicely like in the financial simulator.
-    return Text('Total spending: $totalSpending');
+    return Text('Total spending: ${totalSpending.asCompactDollars()}');
   }
 }
