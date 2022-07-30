@@ -5,18 +5,31 @@ class Dataset {
 
   final List<Transaction> transactions;
 
+  Transaction? get maybeLast => transactions.maybeLast;
+  Transaction get last => transactions.last;
+
   Dataset get spendingTxns =>
       Dataset(transactions.where((t) => t.txnType == 'regular').toList());
 
-  List<Dataset> get txnsByMonth => transactions
-          .fold(List<Dataset>.empty(growable: true), (accumulator, txn) {
+  List<Dataset> get txnsByMonth =>
+      transactions.fold(List.empty(growable: true), (accumulator, txn) {
         final month = txn.date.month;
-        final prevItemMonth =
-            accumulator.maybeLast?.transactions.maybeLast?.date.month;
+        final prevItemMonth = accumulator.maybeLast?.maybeLast?.date.month;
         if (month == prevItemMonth)
           accumulator.last.transactions.add(txn);
         else
           accumulator.add(Dataset([txn]));
+        return accumulator;
+      });
+
+  List<Dataset> get txnsByQuarter =>
+      txnsByMonth.fold(List.empty(growable: true), (accumulator, txns) {
+        int quarter(Transaction? txn) => txn?.date.qtr ?? 0;
+
+        if (quarter(txns.last) == quarter(accumulator.maybeLast?.maybeLast))
+          accumulator.last.transactions.addAll(txns.transactions);
+        else
+          accumulator.add(txns);
         return accumulator;
       });
 

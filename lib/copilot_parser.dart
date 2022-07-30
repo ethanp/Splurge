@@ -20,7 +20,9 @@ class CopilotExportReader {
         .split('\n')
         .skip(1) // Skip header.
         .map(CopilotExportRow.new)
-        .mapL((row) => row.toTransaction()));
+        .mapL((row) => row.toTransaction())
+        .reversed // Sort into chronological order.
+        .toList());
   }
 }
 

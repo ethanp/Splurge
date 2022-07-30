@@ -77,6 +77,14 @@ extension EDateTime on DateTime {
     return '$date $year';
   }
 
+  int get qtr => (month ~/ 4) + 1;
+
+  /// Eg. 'Q1 2022'
+  String get qtrString {
+    final year = DateFormat.y().format(this);
+    return 'Q$qtr $year';
+  }
+
   double get toDouble => millisecondsSinceEpoch.toDouble();
 }
 

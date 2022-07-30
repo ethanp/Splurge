@@ -32,17 +32,25 @@ class AppContents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final totalSpending = dataset.spendingTxns.totalAmount;
-    String asTable(Dataset month) =>
+
+    String asMonthTable(Dataset month) =>
         '${month.transactions.first.date.monthString}'
         '   ${month.totalAmount.asCompactDollars()}';
+    String asQtrTable(Dataset month) =>
+        '${month.transactions.first.date.qtrString}'
+        '   ${month.totalAmount.asCompactDollars()}';
 
-    // TODO(UI): This should be a bar chart, with clickable bars.
+    // TODO(UI): These should be bar charts, with clickable bars or something.
     final spendingByMonth =
-        dataset.spendingTxns.txnsByMonth.map(asTable).join('\n');
+        dataset.spendingTxns.txnsByMonth.map(asMonthTable).join('\n');
+    final spendingByQuarter =
+        dataset.spendingTxns.txnsByQuarter.map(asQtrTable).join('\n');
+
     return Column(
       children: [
         Text('Total spending: ${totalSpending.asCompactDollars()}'),
         Text('By month:\n$spendingByMonth'),
+        Text('By quarter:\n$spendingByQuarter'),
       ],
     );
   }
