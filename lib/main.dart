@@ -2,25 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-void main() => runApp(EmptyApp());
+void main() => runApp(AppWidget());
 
-class EmptyApp extends StatelessWidget {
+class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Empty app')),
+        appBar: AppBar(title: const Text('Personal finances analyzer')),
         body: Center(
-          child: Column(
-            children: [
-              const Text('App booted successfully'),
-              FutureBuilder<List<Transaction>>(
-                future: CopilotExportReader.loadData,
-                builder: (ctx, snapshot) => snapshot.hasData
-                    ? Text(snapshot.data!.first.title)
-                    : const CircularProgressIndicator(),
-              ),
-            ],
+          child: LoadThenShow(
+            future: CopilotExportReader.loadData,
+            widgetBuilder: (Dataset dataset) =>
+                Text(dataset.transactions.first.title),
           ),
         ),
       ),
@@ -28,8 +22,28 @@ class EmptyApp extends StatelessWidget {
   }
 }
 
+class LoadThenShow<T> extends StatelessWidget {
+  const LoadThenShow({
+    required this.future,
+    required this.widgetBuilder,
+  });
+
+  final Future<T> future;
+  final Widget Function(T) widgetBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<T>(
+      future: future,
+      builder: (ctx, snapshot) => snapshot.hasData
+          ? widgetBuilder(snapshot.data as T)
+          : const CircularProgressIndicator(),
+    );
+  }
+}
+
 class CopilotExportReader {
-  static Future<List<Transaction>> get loadData async {
+  static Future<Dataset> get loadData async {
     try {
       final file = File('/Users/Ethan/Downloads/transactions.csv');
       return _parse(await file.readAsString());
@@ -38,19 +52,18 @@ class CopilotExportReader {
     }
   }
 
-  static List<Transaction> _parse(String filetext) {
+  static Dataset _parse(String filetext) {
     print('Parsing file');
-    return filetext
+    return Dataset(filetext
         .split('\n')
         .skip(1) // Skip header.
         .map(CopilotExportRow.new)
-        .map(Transaction.new)
-        .toList();
+        .mapL(Transaction.new));
   }
 }
 
 extension SIterator<T> on Iterable<T> {
-  List<U> mapL<U>(U Function(T) mapper) => map(mapper).toList(growable: false);
+  List<U> mapL<U>(U Function(T) f) => map(f).toList(growable: false);
 }
 
 /// Pure-boilerplate :(
@@ -131,6 +144,12 @@ class CopilotExportRow {
   String get category => rowValues[4];
 
   String get txnType => rowValues[5];
+}
+
+class Dataset {
+  Dataset(this.transactions);
+
+  final List<Transaction> transactions;
 }
 
 class Transaction {
