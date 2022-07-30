@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splurge/bar_chart_sample_5.dart';
 import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions.dart';
@@ -26,7 +27,6 @@ class AppWidget extends StatelessWidget {
 class AppContents extends StatelessWidget {
   const AppContents(this.dataset);
 
-  // TODO(refactor): This should be "provided", not passed-in.
   final Dataset dataset;
 
   @override
@@ -45,7 +45,7 @@ class AppContents extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            BarChart(
+            MyBarChart(
               title: 'By month',
               bars: dataset.spendingTxns.txnsByMonth.mapL(
                 (Dataset month) => Bar(
@@ -54,7 +54,7 @@ class AppContents extends StatelessWidget {
                 ),
               ),
             ),
-            BarChart(
+            MyBarChart(
               title: 'By quarter',
               bars: dataset.spendingTxns.txnsByQuarter.mapL(
                 (Dataset qtr) => Bar(
@@ -77,24 +77,27 @@ class Bar {
   final double value;
 }
 
-class BarChart extends StatelessWidget {
-  const BarChart({required this.title, required this.bars});
+class MyBarChart extends StatelessWidget {
+  const MyBarChart({required this.title, required this.bars});
 
   final String title;
   final List<Bar> bars;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 24),
-        ),
-        Text(bars
-            .map((bar) => '${bar.title} ${bar.value.asCompactDollars()}')
-            .join('\n')),
-      ],
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 24),
+          ),
+          Text(bars
+              .map((bar) => '${bar.title} ${bar.value.asCompactDollars()}')
+              .join('\n')),
+          const BarChartSample5(),
+        ],
+      ),
     );
   }
 }

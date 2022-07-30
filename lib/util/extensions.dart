@@ -100,6 +100,12 @@ extension EDouble on double {
   }
 }
 
+extension Trig on num {
+  double get degreesToRadians => this * math.pi / 180;
+
+  double get radianToDegree => this * 180 / math.pi;
+}
+
 extension EInt on int {
   /// Eg. 1 => '1st', 2 => '2nd', 3 => '3rd', 4 => '4th', etc.
   String get ith {
