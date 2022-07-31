@@ -12,8 +12,8 @@ class Line {
     required this.color,
     required this.rawSpots,
     this.smoothing = const SmoothingParams(
-      nDaySmoothing: 100,
-      nEventSmoothing: 100,
+      nDaySmoothing: 200,
+      nEventSmoothing: 200,
     ),
   }) : assert(rawSpots.isNotEmpty);
 
@@ -74,7 +74,13 @@ class _Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<LineChartBarData> flLines = lines.mapL(
-      (line) => LineChartBarData(spots: line.spots, color: line.color),
+      (line) => LineChartBarData(
+        spots: line.spots,
+        color: line.color,
+
+        // Hide datapoints. Default dot is too big.
+        dotData: FlDotData(show: false),
+      ),
     );
 
     // Margin between the end of the axis and the most-extreme points.
@@ -148,20 +154,17 @@ class _Smoothing {
   List<FlSpot> _nEventAvg(List<FlSpot> spots) {
     if (spots.isEmpty || params.nEventSmoothing < 2) return spots;
 
-    final ret = <FlSpot>[];
-    for (int i = 0; i < spots.length; i++) {
-      // Using a Queue instead of this might be more efficient, but maybe not
-      // (cache locality) and I haven't seen any performance problems from this
-      // algo, and don't expect any.
-      double sum = 0.0;
-      final int start = math.max(i - params.nEventSmoothing, 0);
-      final int len = i - start + 1;
-      for (int j = start; j <= i; j++) {
-        sum += spots[j].y;
-      }
-      ret.add(FlSpot(spots[i].x, sum / len));
-    }
-    return ret;
+    return spots.mapWithIdx(
+      (spot, lastIdx) => Spot(
+        x: spot.x,
+        y: spots
+            .sublist(
+              (lastIdx - params.nEventSmoothing).mustBeAtLeast(0),
+              lastIdx + 1, // ending is exclusive (I double-checked).
+            )
+            .avgBy((s) => s.y),
+      ),
+    );
   }
 
   /// Daily, output a point that represents the average of all sessions from

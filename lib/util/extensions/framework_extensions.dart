@@ -31,6 +31,8 @@ extension IterableT<T> on Iterable<T> {
 
   double sumBy(double Function(T) fn) => map(fn).sum;
 
+  double avgBy(double Function(T) fn) => map(fn).sum / length;
+
   U max<U extends Comparable>(U Function(T) fn) => fn(maxBy(fn));
   U min<U extends Comparable>(U Function(T) fn) => fn(minBy(fn));
 
@@ -104,7 +106,7 @@ extension EDouble on double {
   }
 }
 
-extension Trig on num {
+extension ENum on num {
   double get degreesToRadians => this * math.pi / 180;
 
   double get radianToDegree => this * 180 / math.pi;
@@ -124,6 +126,8 @@ extension EInt on int {
       suffix = 'th';
     return '${toString()}$suffix';
   }
+
+  int mustBeAtLeast(int n) => math.max(this, n);
 }
 
 extension SeparatorI<T> on Iterable<T> {
