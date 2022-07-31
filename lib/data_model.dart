@@ -1,4 +1,4 @@
-import 'package:splurge/util/extensions.dart';
+import 'package:splurge/util/extensions/framework_extensions.dart';
 
 class Dataset {
   const Dataset(this.transactions);
@@ -10,6 +10,9 @@ class Dataset {
 
   Dataset get spendingTxns =>
       Dataset(transactions.where((t) => t.txnType == 'regular').toList());
+
+  Dataset get incomeTxns =>
+      Dataset(transactions.where((t) => t.txnType == 'income').toList());
 
   List<Dataset> get txnsByMonth => transactions.fold([], (accumulator, txn) {
         final month = txn.date.month;

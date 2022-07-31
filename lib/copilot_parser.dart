@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/errors.dart';
-import 'package:splurge/util/extensions.dart';
+import 'package:splurge/util/extensions/framework_extensions.dart';
 
 class CopilotExportReader {
   static Future<Dataset> get loadData async {
