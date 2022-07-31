@@ -115,6 +115,7 @@ class AppContents extends StatelessWidget {
             spots: dataset.incomeTxns.transactions.mapL(
               (txn) => Spot(
                 x: txn.date.toDouble,
+                // Make earning easier to compare with spending by inverting.
                 y: -txn.amount,
               ),
             ),

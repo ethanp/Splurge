@@ -30,7 +30,7 @@ class MyLineChart extends StatelessWidget {
       '$title (text-based chart placeholder)',
       style: const TextStyle(fontSize: 24),
     );
-    final legend = lines.map<Widget>(
+    final legend = lines.map(
       (line) => Padding(
         padding: const EdgeInsets.all(8),
         child: Text(
@@ -47,18 +47,20 @@ class MyLineChart extends StatelessWidget {
         color: line.color,
       ),
     );
+    final verticalMargin = (barData.maxY - barData.minY) * .02;
+    final horizontalMargin = (barData.maxX - barData.minX) * .02;
     final lineChart = Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 1020),
-        child: LineChart(
-          LineChartData(
-            minX: barData.minX,
-            maxX: barData.maxX,
-            minY: barData.minY,
-            maxY: barData.maxY,
-            titlesData: FlTitlesData(show: false),
-            lineBarsData: barData,
+      child: LineChart(
+        LineChartData(
+          minX: barData.minX - horizontalMargin,
+          maxX: barData.maxX + horizontalMargin,
+          minY: barData.minY - verticalMargin,
+          maxY: barData.maxY + verticalMargin,
+          titlesData: FlTitlesData(
+            topTitles: AxisTitles(), // Hidden
+            rightTitles: AxisTitles(), // Hidden
           ),
+          lineBarsData: barData,
         ),
       ),
     );

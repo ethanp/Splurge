@@ -12,9 +12,9 @@ extension MBounds on Iterable<FlSpot> {
 }
 
 extension Bounds on LineChartBarData {
-  double get minX => spots.where((e) => e != FlSpot.nullSpot).minX * 0.999;
+  double get minX => spots.where((e) => e != FlSpot.nullSpot).minX;
 
-  double get maxX => spots.where((e) => e != FlSpot.nullSpot).maxX * 1.001;
+  double get maxX => spots.where((e) => e != FlSpot.nullSpot).maxX;
 
   double get minY => spots.where((e) => e != FlSpot.nullSpot).minY;
 
