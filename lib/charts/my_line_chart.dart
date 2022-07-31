@@ -12,8 +12,8 @@ class Line {
     required this.color,
     required this.rawSpots,
     this.smoothing = const SmoothingParams(
-      nDaySmoothing: 30,
-      nEventSmoothing: 30,
+      nDaySmoothing: 100,
+      nEventSmoothing: 100,
     ),
   }) : assert(rawSpots.isNotEmpty);
 
@@ -125,7 +125,7 @@ class _Legend extends StatelessWidget {
         (line) => Padding(
           padding: const EdgeInsets.all(8),
           child: Text(
-            '${line.title}: ${line.rawSpots.length} transactions included',
+            '${line.title}: ${line.rawSpots.length} txns',
             style: TextStyle(
               color: line.color,
             ),

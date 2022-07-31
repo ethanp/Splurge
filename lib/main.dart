@@ -58,22 +58,52 @@ class AppContents extends StatelessWidget {
   Widget _monthlyBarChart() {
     return MyBarChart(
       title: 'E v Spending by month',
-      bars: dataset.spendingTxns.txnsByMonth.mapL(
-        (Dataset month) => Bar(
+      barGroups: dataset.spendingTxns.txnsByMonth.mapL(
+        (Dataset month) => BarGroup(
           title: month.transactions.first.date.monthString,
-          value: month.totalAmount,
+          bars: [
+            Bar(
+              title: 'Spending',
+              value: month.totalAmount,
+              color: Colors.red,
+            )
+          ],
         ),
       ),
     );
   }
 
   Widget _quarterlyBarChart() {
+    final spending = dataset.spendingTxns.txnsByQuarter.map(
+      (value) => MapEntry(
+        value.transactions.first.date.qtrString,
+        value.totalAmount,
+      ),
+    );
+    final earning = dataset.incomeTxns.txnsByQuarter.asMap().map(
+          (idx, value) => MapEntry(
+            value.transactions.first.date.qtrString,
+            value.totalAmount,
+          ),
+        );
+
     return MyBarChart(
       title: 'Ern vs Spending by quarter',
-      bars: dataset.spendingTxns.txnsByQuarter.mapL(
-        (Dataset qtr) => Bar(
-          title: qtr.transactions.first.date.qtrString,
-          value: qtr.totalAmount,
+      barGroups: spending.mapL(
+        (entry) => BarGroup(
+          title: entry.key,
+          bars: [
+            Bar(
+              title: 'Earning',
+              value: -earning[entry.key]!,
+              color: Colors.green[800]!,
+            ),
+            Bar(
+              title: 'Spending',
+              value: entry.value,
+              color: Colors.red,
+            ),
+          ],
         ),
       ),
     );
