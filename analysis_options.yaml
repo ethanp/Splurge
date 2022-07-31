@@ -12,12 +12,13 @@ include: package:flutter_lints/flutter.yaml
 linter:
   rules:
     avoid_classes_with_only_static_members: false
-    prefer_single_quotes: true
-    sort_constructors_first: true
     avoid_print: false
     curly_braces_in_flow_control_structures: false
     no_runtimeType_toString: false
     only_throw_errors: true
     parameter_assignments: false
+    prefer_const_constructors: false
+    prefer_single_quotes: true
     require_trailing_commas: false
+    sort_constructors_first: true
     use_key_in_widget_constructors: false

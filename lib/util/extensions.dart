@@ -2,6 +2,10 @@ import 'dart:math' as math;
 
 import 'package:intl/intl.dart';
 
+/// The goal of this package is to provide methods that "satisfying" in the
+/// way using Ruby on Rails is "satisfying". In part, it's that feeling that
+/// there are people out there with good design sense.
+
 extension DoubleIterable on Iterable<double> {
   double get min =>
       isEmpty ? 0 : skip(1).fold(first, (acc, e) => math.min(acc, e));
@@ -120,4 +124,9 @@ extension EInt on int {
       suffix = 'th';
     return '${toString()}$suffix';
   }
+}
+
+extension SeparatorI<T> on Iterable<T> {
+  List<T> separatedBy(T separator) =>
+      expand((e) => [e, separator]).toList()..removeLast();
 }

@@ -13,7 +13,7 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Personal finances analyzer')),
+        appBar: AppBar(title: Text('Personal finances analyzer')),
         body: Center(
           child: LoadThenShow(
             future: CopilotExportReader.loadData,
@@ -37,51 +37,68 @@ class AppContents extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              'Total spending ever: ${totalSpending.asCompactDollars()}',
-              style: const TextStyle(fontSize: 24),
-            ),
-            const Expanded(
-              child: MyLineChart(
-                title: 'Spending vs Earning',
-                lines: [
-                  Line(
-                    title: 'Spending',
-                    spots: [
-                      FlSpot(0, 2),
-                      FlSpot(1, 2),
-                    ],
-                  ),
-                ],
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                'Total spending ever: ${totalSpending.asCompactDollars()}',
+                style: TextStyle(fontSize: 44),
               ),
-            ),
-          ],
+              Expanded(
+                child: MyLineChart(
+                  title: 'Spending vs Earning',
+                  lines: [
+                    Line(
+                      title: 'Spending',
+                      color: Colors.red,
+                      spots: [
+                        FlSpot(0, 2),
+                        FlSpot(1, 2),
+                      ],
+                    ),
+                    Line(
+                      title: 'Earning',
+                      color: Colors.green[800]!,
+                      spots: [
+                        FlSpot(0, 3),
+                        FlSpot(1, 1),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            MyBarChart(
-              title: 'Bars by month',
-              bars: dataset.spendingTxns.txnsByMonth.mapL(
-                (Dataset month) => Bar(
-                  title: month.transactions.first.date.monthString,
-                  value: month.totalAmount,
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: MyBarChart(
+                  title: 'Spending by month',
+                  bars: dataset.spendingTxns.txnsByMonth.mapL(
+                    (Dataset month) => Bar(
+                      title: month.transactions.first.date.monthString,
+                      value: month.totalAmount,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            MyBarChart(
-              title: 'Bars by quarter',
-              bars: dataset.spendingTxns.txnsByQuarter.mapL(
-                (Dataset qtr) => Bar(
-                  title: qtr.transactions.first.date.qtrString,
-                  value: qtr.totalAmount,
+              Expanded(
+                child: MyBarChart(
+                  title: 'Spending by quarter',
+                  bars: dataset.spendingTxns.txnsByQuarter.mapL(
+                    (Dataset qtr) => Bar(
+                      title: qtr.transactions.first.date.qtrString,
+                      value: qtr.totalAmount,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:splurge/util/extensions.dart';
 
 class Line {
-  const Line({
+  Line({
     required this.title,
+    required this.color,
     required this.spots,
-  });
+  }) : assert(spots.isNotEmpty);
 
   final String title;
+  final Color color;
   final List<FlSpot> spots;
 }
 
@@ -23,7 +25,41 @@ class MyLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '$title (text-based chart placeholder)',
+          style: const TextStyle(fontSize: 24),
+        ),
+        ...lines.map<Widget>(
+          (line) => Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              '${line.title}: ${line.spots.length} spots',
+              style: TextStyle(
+                color: line.color,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: LineChart(LineChartData(
+            minX: 0,
+            maxX: 10,
+            minY: 0,
+            maxY: 10,
+            titlesData: FlTitlesData(show: false),
+            lineBarsData: lines.mapL(
+              (line) => LineChartBarData(
+                spots: line.spots,
+                color: line.color,
+              ),
+            ),
+          )),
+        ),
+      ],
+    );
   }
 }
 
@@ -42,18 +78,18 @@ class MyBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 24),
-          ),
-          Text(bars
+    return Column(
+      children: [
+        Text(
+          '$title (text-based chart placeholder)',
+          style: const TextStyle(fontSize: 24),
+        ),
+        Text(
+          bars
               .map((bar) => '${bar.title} ${bar.value.asCompactDollars()}')
-              .join('\n')),
-        ],
-      ),
+              .join('\n'),
+        ),
+      ],
     );
   }
 }
