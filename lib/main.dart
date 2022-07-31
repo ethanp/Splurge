@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:splurge/charts.dart';
+import 'package:splurge/charts/my_bar_chart.dart';
+import 'package:splurge/charts/my_line_chart.dart';
 import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
@@ -56,7 +57,7 @@ class AppContents extends StatelessWidget {
 
   Widget _monthlyBarChart() {
     return MyBarChart(
-      title: 'Spending by month',
+      title: 'E v Spending by month',
       bars: dataset.spendingTxns.txnsByMonth.mapL(
         (Dataset month) => Bar(
           title: month.transactions.first.date.monthString,
@@ -68,7 +69,7 @@ class AppContents extends StatelessWidget {
 
   Widget _quarterlyBarChart() {
     return MyBarChart(
-      title: 'Spending by quarter',
+      title: 'Ern vs Spending by quarter',
       bars: dataset.spendingTxns.txnsByQuarter.mapL(
         (Dataset qtr) => Bar(
           title: qtr.transactions.first.date.qtrString,
@@ -112,7 +113,7 @@ class AppContents extends StatelessWidget {
           Line(
             title: 'Earning',
             color: Colors.green[800]!,
-            spots: dataset.incomeTxns.transactions.mapL(
+            rawSpots: dataset.incomeTxns.transactions.mapL(
               (txn) => Spot(
                 x: txn.date.toDouble,
                 // Make earning easier to compare with spending by inverting.
@@ -123,7 +124,7 @@ class AppContents extends StatelessWidget {
           Line(
             title: 'Spending',
             color: Colors.red,
-            spots: dataset.spendingTxns.transactions.mapL(
+            rawSpots: dataset.spendingTxns.transactions.mapL(
               (txn) => Spot(
                 x: txn.date.toDouble,
                 y: txn.amount,
