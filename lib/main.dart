@@ -57,7 +57,8 @@ class AppContents extends StatelessWidget {
 
   Widget _monthlyBarChart() {
     return MyBarChart(
-      title: 'E v Spending by month',
+      // TODO(feature): Add the earnings here too, like for quarters below.
+      title: 'Earning vs Spending by month',
       barGroups: dataset.spendingTxns.txnsByMonth.mapL(
         (Dataset month) => BarGroup(
           title: month.transactions.first.date.monthString,
@@ -74,33 +75,23 @@ class AppContents extends StatelessWidget {
   }
 
   Widget _quarterlyBarChart() {
-    final spending = dataset.spendingTxns.txnsByQuarter.map(
-      (value) => MapEntry(
-        value.transactions.first.date.qtrString,
-        value.totalAmount,
-      ),
-    );
-    final earning = dataset.incomeTxns.txnsByQuarter.asMap().map(
-          (idx, value) => MapEntry(
-            value.transactions.first.date.qtrString,
-            value.totalAmount,
-          ),
-        );
+    final earning =
+        dataset.incomeTxns.txnsByQuarter.asMap().map((_, value) => value);
 
     return MyBarChart(
-      title: 'Ern vs Spending by quarter',
-      barGroups: spending.mapL(
-        (entry) => BarGroup(
-          title: entry.key,
+      title: 'Earning vs Spending by quarter',
+      barGroups: dataset.spendingTxns.txnsByQuarter.mapL(
+        (spending) => BarGroup(
+          title: spending.key,
           bars: [
             Bar(
               title: 'Earning',
-              value: -earning[entry.key]!,
+              value: -earning[spending.key]!.totalAmount,
               color: Colors.green[800]!,
             ),
             Bar(
               title: 'Spending',
-              value: entry.value,
+              value: spending.value.totalAmount,
               color: Colors.red,
             ),
           ],

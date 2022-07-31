@@ -26,7 +26,8 @@ class Dataset {
         return accumulator;
       });
 
-  List<Dataset> get txnsByQuarter => txnsByMonth.fold([], (accumulator, txns) {
+  List<MapEntry<String, Dataset>> get txnsByQuarter =>
+      txnsByMonth.fold<List<Dataset>>([], (accumulator, txns) {
         int quarter(Transaction? txn) => txn?.date.qtr ?? 0;
 
         if (quarter(txns.last) == quarter(accumulator.maybeLast?.maybeLast))
@@ -35,7 +36,12 @@ class Dataset {
           accumulator.add(txns);
 
         return accumulator;
-      });
+      }).mapL(
+        (value) => MapEntry(
+          value.transactions.first.date.qtrString,
+          value,
+        ),
+      );
 
   double get totalAmount => transactions.sumBy((txn) => txn.amount);
 }
