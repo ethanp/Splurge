@@ -40,11 +40,11 @@ class MyLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      alignment: Alignment.topCenter,
       children: [
         _Title(title: title),
-        _Legend(lines: lines),
+        Positioned(top: 50, child: _Legend(lines: lines)),
         Expanded(child: _Chart(lines: lines)),
       ],
     );
