@@ -12,8 +12,8 @@ class Line {
     required this.color,
     required this.rawSpots,
     this.smoothing = const SmoothingParams(
-      nDaySmoothing: 200,
-      nEventSmoothing: 200,
+      nDaySmoothing: 50,
+      nEventSmoothing: 50,
     ),
   }) : assert(rawSpots.isNotEmpty);
 
@@ -45,7 +45,7 @@ class MyLineChart extends StatelessWidget {
       children: [
         _Title(title: title),
         Positioned(top: 50, child: _Legend(lines: lines)),
-        Expanded(child: _Chart(lines: lines)),
+        _Chart(lines: lines),
       ],
     );
   }
