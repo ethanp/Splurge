@@ -62,11 +62,10 @@ class Transaction {
   final String txnType;
 
   @override
-  String toString() => 'Transaction('
-      'date: $date, '
-      'title: $title, '
-      'amount: $amount, '
-      'category: $category, '
-      'txnType: $txnType'
-      ')';
+  String toString() => ''
+      '${date.formatted}, '
+      '$title, '
+      '$amount, '
+      '${category.isEmpty ? 'no category' : category}, '
+      '$txnType';
 }

@@ -12,8 +12,8 @@ class Line {
     required this.color,
     required this.rawSpots,
     this.smoothing = const SmoothingParams(
-      nDaySmoothing: 50,
-      nEventSmoothing: 50,
+      nDaySmoothing: 100,
+      nEventSmoothing: 100,
     ),
   }) : assert(rawSpots.isNotEmpty);
 
@@ -26,9 +26,8 @@ class Line {
 }
 
 /// Creates a flexible-height "line chart" widget, including a title and legend.
-/// This is meant to be a reusable wrapper around fl_chart that I could
-/// potentially bring into future projects. Therefore, it should be kept free of
-/// application-specific concepts or code-dependencies.
+/// It should be kept free of application-specific concepts or
+/// code-dependencies.
 class MyLineChart extends StatelessWidget {
   const MyLineChart({
     required this.title,
