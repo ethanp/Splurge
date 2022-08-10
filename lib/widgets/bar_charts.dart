@@ -11,8 +11,8 @@ class BarCharts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Expanded(child: _monthlyBarChart()),
-      Expanded(child: _quarterlyBarChart()),
+      Flexible(child: _monthlyBarChart()),
+      Flexible(child: _quarterlyBarChart()),
     ]);
   }
 
