@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/widgets.dart';
 
 class LargestTransactions extends StatelessWidget {
   const LargestTransactions({required this.dataset});
@@ -11,10 +12,7 @@ class LargestTransactions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          'Largest transactions review',
-          style: TextStyle(fontSize: 28),
-        ),
+        Text('Largest transactions review', style: titleStyle),
         Expanded(
           child: ListView(
             children: dataset.transactions

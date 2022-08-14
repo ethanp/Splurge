@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:splurge/charts/smoothing.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/widgets.dart';
 
 /// Part of the interface for creating a [MyLineChart].
 class Line {
@@ -121,8 +122,8 @@ class _Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '$title (text-based chart placeholder)',
-      style: const TextStyle(fontSize: 24),
+      title,
+      style: titleStyle,
     );
   }
 }

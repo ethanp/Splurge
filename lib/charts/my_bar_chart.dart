@@ -85,11 +85,7 @@ class MyBarChart extends StatelessWidget {
             angle: -45.degreesToRadians,
             child: Text(
               '${value.asCompactDollars()}',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 11,
-              ),
+              style: TextStyle(fontSize: 11),
             ),
           ),
         ),
@@ -105,11 +101,7 @@ class MyBarChart extends StatelessWidget {
             angle: 45.degreesToRadians,
             child: Text(
               '${value.asCompactDollars()}',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 11,
-              ),
+              style: TextStyle(fontSize: 11),
             ),
           ),
         ),
@@ -119,7 +111,7 @@ class MyBarChart extends StatelessWidget {
           showTitles: true,
           getTitlesWidget: (value, meta) => SideTitleWidget(
             axisSide: meta.axisSide,
-            angle: 20.degreesToRadians,
+            angle: 40.degreesToRadians,
             child: Text(
               'Q3 2022',
               style: TextStyle(fontSize: 10),
