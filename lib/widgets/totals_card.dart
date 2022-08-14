@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../util/extensions/framework_extensions.dart';
 
@@ -15,40 +16,68 @@ class TotalsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(50),
-      color: Colors.grey[200],
+      margin: const EdgeInsets.all(32),
+      color: Colors.black.withGreen(10).withRed(40).withBlue(30),
+      elevation: 6,
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: const EdgeInsets.all(22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AutoSizeText(
-              'Income: ${totalIncome.asCompactDollars()}',
-              style: TextStyle(fontSize: 44, color: Colors.green[700]),
+            Text(
+              'Income:   ${totalIncome.asCompactDollars()}',
+              style: defaultFont(
+                fontSize: 40,
+                color: Colors.green[400],
+              ),
               maxLines: 1,
             ),
-            AutoSizeText(
+            Text(
               'Spending: ${totalSpending.asCompactDollars()}',
-              style: TextStyle(fontSize: 44, color: Colors.red),
+              style: defaultFont(fontSize: 40, color: Colors.red),
               maxLines: 1,
             ),
             Padding(
               padding: EdgeInsets.only(top: 8, bottom: 2),
               child: Container(
-                width: double.infinity,
                 height: 2,
-                color: Colors.black,
+                width: double.infinity,
+                color: Colors.grey,
               ),
             ),
-            AutoSizeText(
-              'Savings: ${(totalIncome - totalSpending).asCompactDollars()}',
-              style: TextStyle(fontSize: 44),
+            Text(
+              'Savings:  ${(totalIncome - totalSpending).asCompactDollars()}',
+              style: defaultFont(fontSize: 40, color: Colors.blue[700]),
               maxLines: 1,
             ),
-            AutoSizeText('Since December 2020'),
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: SizedBox(
+                width: double.infinity,
+                child: AutoSizeText(
+                  'Since December 2020',
+                  textAlign: TextAlign.right,
+                  style: defaultFont(
+                    color: Colors.blueGrey[600],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
+  static TextStyle defaultFont({
+    Color? color,
+    double? fontSize,
+    FontStyle? fontStyle,
+  }) =>
+      GoogleFonts.ubuntuMono(
+        fontStyle: fontStyle,
+        color: color,
+        fontSize: fontSize,
+      );
 }

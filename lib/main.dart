@@ -16,8 +16,8 @@ class AppWidget extends StatelessWidget {
       theme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal[800],
           title: Text('Personal finances analyzer'),
+          backgroundColor: Colors.teal[800],
         ),
         body: Center(
           child: LoadThenShow(
