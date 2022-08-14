@@ -13,8 +13,6 @@ class TotalsCard extends StatelessWidget {
   final double totalIncome;
   final double totalSpending;
 
-  static const double fontSize = 34;
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -28,18 +26,12 @@ class TotalsCard extends StatelessWidget {
           children: [
             Text(
               '   Income:    ${totalIncome.asCompactDollars()}',
-              style: defaultFont(TextStyle(
-                fontSize: fontSize,
-                color: Colors.green[400],
-              )),
+              style: defaultFont.copyWith(color: Colors.green[400]),
               maxLines: 1,
             ),
             Text(
               '– Spending: ${totalSpending.asCompactDollars()}',
-              style: defaultFont(TextStyle(
-                fontSize: fontSize,
-                color: Colors.red,
-              )),
+              style: defaultFont.copyWith(color: Colors.red),
               maxLines: 1,
             ),
             Padding(
@@ -52,10 +44,7 @@ class TotalsCard extends StatelessWidget {
             ),
             Text(
               '   Savings:    ${(totalIncome - totalSpending).asCompactDollars()}',
-              style: defaultFont(TextStyle(
-                fontSize: fontSize,
-                color: Colors.blue[700],
-              )),
+              style: defaultFont.copyWith(color: Colors.blue[700]),
               maxLines: 1,
             ),
             Padding(
@@ -65,10 +54,11 @@ class TotalsCard extends StatelessWidget {
                 child: AutoSizeText(
                   'Since December 2020',
                   textAlign: TextAlign.right,
-                  style: defaultFont(TextStyle(
+                  style: defaultFont.copyWith(
+                    fontSize: 12,
                     color: Colors.blueGrey[600],
                     fontStyle: FontStyle.italic,
-                  )),
+                  ),
                 ),
               ),
             ),
@@ -78,6 +68,5 @@ class TotalsCard extends StatelessWidget {
     );
   }
 
-  static TextStyle defaultFont(TextStyle textStyle) =>
-      GoogleFonts.notoSerif(textStyle: textStyle);
+  static TextStyle get defaultFont => GoogleFonts.notoSerif(fontSize: 34);
 }
