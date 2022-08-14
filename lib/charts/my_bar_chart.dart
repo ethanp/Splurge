@@ -39,7 +39,7 @@ class MyBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       AutoSizeText(title, maxLines: 1, style: titleStyle),
-      // Expanded(child: _barChart()),
+      Expanded(child: _barChart()),
     ]);
   }
 
@@ -66,8 +66,6 @@ class MyBarChart extends StatelessWidget {
     );
   }
 
-  // TODO(bug): Somehow this isn't loading properly right now.
-  //  Seems to be freezing the app or something.
   FlTitlesData _axisLabels() {
     return FlTitlesData(
       topTitles: AxisTitles(
@@ -77,7 +75,7 @@ class MyBarChart extends StatelessWidget {
         sideTitles: SideTitles(
           showTitles: true,
           reservedSize: 28,
-          interval: 1,
+          interval: 100000,
           getTitlesWidget: (value, meta) => SideTitleWidget(
             axisSide: meta.axisSide,
             child: Text(
