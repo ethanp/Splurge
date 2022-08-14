@@ -20,18 +20,32 @@ class TotalsCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(28),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AutoSizeText(
-              'Total income ever: ${totalIncome.asCompactDollars()}',
-              maxLines: 2,
-              style: TextStyle(fontSize: 44),
+              'Income: ${totalIncome.asCompactDollars()}',
+              style: TextStyle(fontSize: 44, color: Colors.green[700]),
+              maxLines: 1,
             ),
-            const SizedBox(height: 20),
             AutoSizeText(
-              'Total spending ever: ${totalSpending.asCompactDollars()}',
-              maxLines: 2,
-              style: TextStyle(fontSize: 44),
+              'Spending: ${totalSpending.asCompactDollars()}',
+              style: TextStyle(fontSize: 44, color: Colors.red),
+              maxLines: 1,
             ),
+            Padding(
+              padding: EdgeInsets.only(top: 8, bottom: 2),
+              child: Container(
+                width: double.infinity,
+                height: 2,
+                color: Colors.black,
+              ),
+            ),
+            AutoSizeText(
+              'Savings: ${(totalIncome - totalSpending).asCompactDollars()}',
+              style: TextStyle(fontSize: 44),
+              maxLines: 1,
+            ),
+            AutoSizeText('Since December 2020'),
           ],
         ),
       ),

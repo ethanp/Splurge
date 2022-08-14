@@ -41,7 +41,8 @@ class MyBarChart extends StatelessWidget {
         maxLines: 1,
         style: const TextStyle(fontSize: 24),
       ),
-      // NB: Scrolling does work, you have to use the scroll-wheel, click and drag doesn't work on MacOS for ListView by default.
+      // NB: Scrolling *does* work, you have to use the scroll-wheel. Click-and-
+      // drag does *not* work on MacOS for ListView by default.
       Expanded(child: ListView(children: _bars())),
     ]);
   }

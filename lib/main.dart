@@ -13,8 +13,12 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(title: Text('Personal finances analyzer')),
+        appBar: AppBar(
+          backgroundColor: Colors.teal[800],
+          title: Text('Personal finances analyzer'),
+        ),
         body: Center(
           child: LoadThenShow(
             future: CopilotExportReader.loadData,

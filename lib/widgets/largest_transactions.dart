@@ -11,7 +11,7 @@ class LargestTransactions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Largest transactions', style: TextStyle(fontSize: 28)),
+        Text('Largest transactions review', style: TextStyle(fontSize: 28)),
         Expanded(
           child: ListView(
             children: dataset.transactions
