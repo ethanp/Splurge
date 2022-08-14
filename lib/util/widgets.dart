@@ -23,3 +23,5 @@ class LoadThenShow<T> extends StatelessWidget {
 }
 
 final appFont = GoogleFonts.merriweather();
+
+final titleStyle = appFont.copyWith(fontSize: 24);
