@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 
@@ -35,36 +36,37 @@ class MyBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      AutoSizeText(
-        '$title (Bar Chart)',
-        maxLines: 1,
-        style: const TextStyle(fontSize: 24),
-      ),
-      // NB: Scrolling *does* work, you have to use the scroll-wheel. Click-and-
-      // drag does *not* work on MacOS for ListView by default.
-      Expanded(child: ListView(children: _bars())),
-    ]);
+    return Column(
+      children: [
+        _title(),
+        Expanded(child: _barChart()),
+      ],
+    );
   }
 
-  List<Widget> _bars() {
-    return barGroups.mapL(
-      (barGroup) => Row(
-        children: <Widget>[
-          Text(
-            barGroup.title,
-            style: const TextStyle(color: Colors.black),
-          ),
-          ...barGroup.bars.mapL(
-            (bar) => Text(
-              bar.value.asCompactDollars(),
-              style: TextStyle(color: bar.color),
+  Widget _barChart() {
+    return BarChart(
+      BarChartData(
+        barGroups: barGroups.mapL(
+          (barGroup) => BarChartGroupData(
+            x: 0,
+            barRods: barGroup.bars.mapL(
+              (bar) => BarChartRodData(
+                toY: bar.value,
+                color: bar.color,
+              ),
             ),
           ),
-        ].separatedBy(
-          const SizedBox(width: 30),
         ),
       ),
+    );
+  }
+
+  Widget _title() {
+    return AutoSizeText(
+      title,
+      maxLines: 1,
+      style: const TextStyle(fontSize: 24),
     );
   }
 }
