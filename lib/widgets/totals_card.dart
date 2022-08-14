@@ -25,7 +25,7 @@ class TotalsCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '   Income:    ${totalIncome.asCompactDollars()}',
+              '     Income:    ${totalIncome.asCompactDollars()}',
               style: defaultFont.copyWith(color: Colors.green[400]),
               maxLines: 1,
             ),
@@ -35,20 +35,25 @@ class TotalsCard extends StatelessWidget {
               maxLines: 1,
             ),
             Padding(
-              padding: EdgeInsets.only(top: 8, bottom: 2),
+              padding: EdgeInsets.only(
+                top: 8,
+                bottom: 2,
+                left: 12,
+                right: 28,
+              ),
               child: Container(
-                height: 2,
+                height: 3,
                 width: double.infinity,
                 color: Colors.grey,
               ),
             ),
             Text(
-              '   Savings:    ${(totalIncome - totalSpending).asCompactDollars()}',
+              '     Savings:    ${(totalIncome - totalSpending).asCompactDollars()}',
               style: defaultFont.copyWith(color: Colors.blue[700]),
               maxLines: 1,
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 10),
               child: SizedBox(
                 width: double.infinity,
                 child: AutoSizeText(
@@ -68,5 +73,5 @@ class TotalsCard extends StatelessWidget {
     );
   }
 
-  static TextStyle get defaultFont => GoogleFonts.notoSerif(fontSize: 34);
+  static TextStyle get defaultFont => GoogleFonts.merriweather(fontSize: 30);
 }
