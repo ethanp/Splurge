@@ -13,6 +13,8 @@ class TotalsCard extends StatelessWidget {
   final double totalIncome;
   final double totalSpending;
 
+  static const double fontSize = 34;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -25,16 +27,19 @@ class TotalsCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Income:   ${totalIncome.asCompactDollars()}',
+              '   Income:    ${totalIncome.asCompactDollars()}',
               style: defaultFont(
-                fontSize: 40,
+                fontSize: fontSize,
                 color: Colors.green[400],
               ),
               maxLines: 1,
             ),
             Text(
-              'Spending: ${totalSpending.asCompactDollars()}',
-              style: defaultFont(fontSize: 40, color: Colors.red),
+              '– Spending: ${totalSpending.asCompactDollars()}',
+              style: defaultFont(
+                fontSize: fontSize,
+                color: Colors.red,
+              ),
               maxLines: 1,
             ),
             Padding(
@@ -46,8 +51,11 @@ class TotalsCard extends StatelessWidget {
               ),
             ),
             Text(
-              'Savings:  ${(totalIncome - totalSpending).asCompactDollars()}',
-              style: defaultFont(fontSize: 40, color: Colors.blue[700]),
+              '   Savings:    ${(totalIncome - totalSpending).asCompactDollars()}',
+              style: defaultFont(
+                fontSize: fontSize,
+                color: Colors.blue[700],
+              ),
               maxLines: 1,
             ),
             Padding(
@@ -75,7 +83,7 @@ class TotalsCard extends StatelessWidget {
     double? fontSize,
     FontStyle? fontStyle,
   }) =>
-      GoogleFonts.ubuntuMono(
+      GoogleFonts.notoSerif(
         fontStyle: fontStyle,
         color: color,
         fontSize: fontSize,
