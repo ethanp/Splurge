@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/widgets.dart';
 
+import 'axis_labels.dart';
+
 class Bar {
   const Bar({
     required this.title,
@@ -52,7 +54,7 @@ class MyBarChart extends StatelessWidget {
     return BarChart(
       BarChartData(
         barGroups: _formatData(),
-        titlesData: _axisLabels(),
+        titlesData: AxisLabels.create(xTitle),
       ),
     );
   }
@@ -65,59 +67,6 @@ class MyBarChart extends StatelessWidget {
           (bar) => BarChartRodData(
             toY: bar.value,
             color: bar.color,
-          ),
-        ),
-      ),
-    );
-  }
-
-  FlTitlesData _axisLabels() {
-    return FlTitlesData(
-      topTitles: AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
-      leftTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 58,
-          interval: 40000,
-          getTitlesWidget: (value, meta) => SideTitleWidget(
-            space: 0,
-            axisSide: meta.axisSide,
-            angle: -45.degreesToRadians,
-            child: Text(
-              '${value.asCompactDollars()}',
-              style: TextStyle(fontSize: 11),
-            ),
-          ),
-        ),
-      ),
-      rightTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 58,
-          interval: 40000,
-          getTitlesWidget: (value, meta) => SideTitleWidget(
-            space: 0,
-            axisSide: meta.axisSide,
-            angle: 45.degreesToRadians,
-            child: Text(
-              '${value.asCompactDollars()}',
-              style: TextStyle(fontSize: 11),
-            ),
-          ),
-        ),
-      ),
-      bottomTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          getTitlesWidget: (value, meta) => SideTitleWidget(
-            axisSide: meta.axisSide,
-            angle: 40.degreesToRadians,
-            child: Text(
-              xTitle(value),
-              style: TextStyle(fontSize: 10),
-            ),
           ),
         ),
       ),
