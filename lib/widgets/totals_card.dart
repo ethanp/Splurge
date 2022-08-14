@@ -28,18 +28,18 @@ class TotalsCard extends StatelessWidget {
           children: [
             Text(
               '   Income:    ${totalIncome.asCompactDollars()}',
-              style: defaultFont(
+              style: defaultFont(TextStyle(
                 fontSize: fontSize,
                 color: Colors.green[400],
-              ),
+              )),
               maxLines: 1,
             ),
             Text(
               '– Spending: ${totalSpending.asCompactDollars()}',
-              style: defaultFont(
+              style: defaultFont(TextStyle(
                 fontSize: fontSize,
                 color: Colors.red,
-              ),
+              )),
               maxLines: 1,
             ),
             Padding(
@@ -52,10 +52,10 @@ class TotalsCard extends StatelessWidget {
             ),
             Text(
               '   Savings:    ${(totalIncome - totalSpending).asCompactDollars()}',
-              style: defaultFont(
+              style: defaultFont(TextStyle(
                 fontSize: fontSize,
                 color: Colors.blue[700],
-              ),
+              )),
               maxLines: 1,
             ),
             Padding(
@@ -65,10 +65,10 @@ class TotalsCard extends StatelessWidget {
                 child: AutoSizeText(
                   'Since December 2020',
                   textAlign: TextAlign.right,
-                  style: defaultFont(
+                  style: defaultFont(TextStyle(
                     color: Colors.blueGrey[600],
                     fontStyle: FontStyle.italic,
-                  ),
+                  )),
                 ),
               ),
             ),
@@ -78,14 +78,6 @@ class TotalsCard extends StatelessWidget {
     );
   }
 
-  static TextStyle defaultFont({
-    Color? color,
-    double? fontSize,
-    FontStyle? fontStyle,
-  }) =>
-      GoogleFonts.notoSerif(
-        fontStyle: fontStyle,
-        color: color,
-        fontSize: fontSize,
-      );
+  static TextStyle defaultFont(TextStyle textStyle) =>
+      GoogleFonts.notoSerif(textStyle: textStyle);
 }

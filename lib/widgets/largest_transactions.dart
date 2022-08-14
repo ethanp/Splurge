@@ -11,12 +11,15 @@ class LargestTransactions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Largest transactions review', style: TextStyle(fontSize: 28)),
+        Text(
+          'Largest transactions review',
+          style: TextStyle(fontSize: 28),
+        ),
         Expanded(
           child: ListView(
             children: dataset.transactions
                 .sortOn((txn) => -txn.amount.abs())
-                .take(5)
+                .take(50)
                 .mapL(
                   (txn) => ListTile(
                     title: Text(
