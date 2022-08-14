@@ -18,11 +18,11 @@ class Bar {
 
 class BarGroup {
   const BarGroup({
-    required this.title,
+    required this.xValue,
     required this.bars,
   });
 
-  final String title;
+  final int xValue;
   final List<Bar> bars;
 }
 
@@ -58,7 +58,7 @@ class MyBarChart extends StatelessWidget {
   List<BarChartGroupData> _formatData() {
     return barGroups.mapL(
       (barGroup) => BarChartGroupData(
-        x: 0,
+        x: barGroup.xValue,
         barRods: barGroup.bars.mapL(
           (bar) => BarChartRodData(
             toY: bar.value,
@@ -113,7 +113,7 @@ class MyBarChart extends StatelessWidget {
             axisSide: meta.axisSide,
             angle: 40.degreesToRadians,
             child: Text(
-              'Q3 2022',
+              value.toDate.qtrString,
               style: TextStyle(fontSize: 10),
             ),
           ),

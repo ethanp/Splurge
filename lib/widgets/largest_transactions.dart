@@ -10,27 +10,25 @@ class LargestTransactions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('Largest transactions review', style: titleStyle),
-        Expanded(
-          child: ListView(
-            children: dataset.transactions
-                .sortOn((txn) => -txn.amount.abs())
-                .take(50)
-                .mapL(
-                  (txn) => ListTile(
-                    title: Text(
-                      '$txn',
-                      style: TextStyle(
-                        color: txn.amount < 0 ? Colors.green : Colors.red,
-                      ),
+    return Column(children: [
+      Text('Largest transactions review', style: titleStyle),
+      Expanded(
+        child: ListView(
+          children: dataset.transactions
+              .sortOn((txn) => -txn.amount.abs())
+              .take(50)
+              .mapL(
+                (txn) => ListTile(
+                  title: Text(
+                    '$txn',
+                    style: TextStyle(
+                      color: txn.amount < 0 ? Colors.green : Colors.red,
                     ),
                   ),
                 ),
-          ),
+              ),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 }

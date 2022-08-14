@@ -28,7 +28,7 @@ class BarCharts extends StatelessWidget {
       title: 'Earning vs Spending by month',
       barGroups: dataset.spendingTxns.txnsByMonth.mapL(
         (Dataset month) => BarGroup(
-          title: month.transactions.first.date.monthString,
+          xValue: month.transactions.first.date.toDouble.toInt(),
           bars: [
             Bar(
               title: 'Spending',
@@ -48,17 +48,17 @@ class BarCharts extends StatelessWidget {
     return MyBarChart(
       title: 'Earning vs Spending by quarter',
       barGroups: dataset.spendingTxns.txnsByQuarter.mapL(
-        (spending) => BarGroup(
-          title: spending.key,
+        (MapEntry<String, Dataset> spendingEntry) => BarGroup(
+          xValue: spendingEntry.value.transactions.first.date.toDouble.toInt(),
           bars: [
             Bar(
               title: 'Earning',
-              value: -earning[spending.key]!.totalAmount,
+              value: -earning[spendingEntry.key]!.totalAmount,
               color: Colors.green[800]!,
             ),
             Bar(
               title: 'Spending',
-              value: spending.value.totalAmount,
+              value: spendingEntry.value.totalAmount,
               color: Colors.red,
             ),
           ],
