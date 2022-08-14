@@ -26,6 +26,7 @@ class BarCharts extends StatelessWidget {
     return MyBarChart(
       // TODO(feature): Add the earnings here too, like for quarters below.
       title: 'Earning vs Spending by month',
+      xTitle: (xVal) => xVal.toDate.monthString,
       barGroups: dataset.spendingTxns.txnsByMonth.mapL(
         (Dataset month) => BarGroup(
           xValue: month.transactions.first.date.toDouble.toInt(),
@@ -47,6 +48,7 @@ class BarCharts extends StatelessWidget {
 
     return MyBarChart(
       title: 'Earning vs Spending by quarter',
+      xTitle: (xVal) => xVal.toDate.qtrString,
       barGroups: dataset.spendingTxns.txnsByQuarter.mapL(
         (MapEntry<String, Dataset> spendingEntry) => BarGroup(
           xValue: spendingEntry.value.transactions.first.date.toDouble.toInt(),

@@ -29,10 +29,12 @@ class BarGroup {
 class MyBarChart extends StatelessWidget {
   const MyBarChart({
     required this.title,
+    required this.xTitle,
     required this.barGroups,
   });
 
   final String title;
+  final String Function(double) xTitle;
   final List<BarGroup> barGroups;
 
   @override
@@ -113,7 +115,7 @@ class MyBarChart extends StatelessWidget {
             axisSide: meta.axisSide,
             angle: 40.degreesToRadians,
             child: Text(
-              value.toDate.qtrString,
+              xTitle(value),
               style: TextStyle(fontSize: 10),
             ),
           ),
