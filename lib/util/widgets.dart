@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Shows a spinner until the [future] loads, then renders [widgetBuilder].
 class LoadThenShow<T> extends StatelessWidget {
@@ -20,3 +21,5 @@ class LoadThenShow<T> extends StatelessWidget {
     );
   }
 }
+
+final appFont = GoogleFonts.merriweather();
