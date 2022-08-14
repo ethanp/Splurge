@@ -38,7 +38,10 @@ class MyBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      AutoSizeText(title, maxLines: 1, style: titleStyle),
+      Padding(
+        padding: const EdgeInsets.only(bottom: 8, top: 12),
+        child: AutoSizeText(title, maxLines: 1, style: titleStyle),
+      ),
       Expanded(child: _barChart()),
     ]);
   }
@@ -74,16 +77,38 @@ class MyBarChart extends StatelessWidget {
       leftTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
-          reservedSize: 28,
-          interval: 100000,
+          reservedSize: 58,
+          interval: 40000,
           getTitlesWidget: (value, meta) => SideTitleWidget(
+            space: 0,
             axisSide: meta.axisSide,
+            angle: -45.degreesToRadians,
             child: Text(
-              '$value',
+              '${value.asCompactDollars()}',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 14,
+                fontSize: 11,
+              ),
+            ),
+          ),
+        ),
+      ),
+      rightTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 58,
+          interval: 40000,
+          getTitlesWidget: (value, meta) => SideTitleWidget(
+            space: 0,
+            axisSide: meta.axisSide,
+            angle: 45.degreesToRadians,
+            child: Text(
+              '${value.asCompactDollars()}',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
               ),
             ),
           ),
@@ -93,8 +118,12 @@ class MyBarChart extends StatelessWidget {
         sideTitles: SideTitles(
           showTitles: true,
           getTitlesWidget: (value, meta) => SideTitleWidget(
-            child: Text('Q3 2022'),
             axisSide: meta.axisSide,
+            angle: 20.degreesToRadians,
+            child: Text(
+              'Q3 2022',
+              style: TextStyle(fontSize: 10),
+            ),
           ),
         ),
       ),
