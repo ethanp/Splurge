@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:splurge/charts/smoothing.dart';
+import 'package:splurge/charts/line/smoothing.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/widgets.dart';

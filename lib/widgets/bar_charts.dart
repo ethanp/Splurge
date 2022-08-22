@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splurge/charts/my_bar_chart.dart';
+import 'package:splurge/charts/bar/my_bar_chart.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 

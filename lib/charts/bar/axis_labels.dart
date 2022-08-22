@@ -5,14 +5,14 @@ import 'package:splurge/util/extensions/framework_extensions.dart';
 class AxisLabels {
   static FlTitlesData create(String Function(double) xTitle) {
     return FlTitlesData(
-      topTitles: _dontShow(),
+      topTitles: _none(),
       leftTitles: _sideTitles(),
       rightTitles: _sideTitles(reverse: true),
       bottomTitles: _bottomTitles(xTitle),
     );
   }
 
-  static AxisTitles _dontShow() =>
+  static AxisTitles _none() =>
       AxisTitles(sideTitles: SideTitles(showTitles: false));
 
   static AxisTitles _sideTitles({bool reverse = false}) {
@@ -26,7 +26,7 @@ class AxisLabels {
           axisSide: meta.axisSide,
           angle: (reverse ? 45 : -45).degreesToRadians,
           child: Text(
-            '${value.asCompactDollars()}',
+            value.asCompactDollars(),
             style: TextStyle(fontSize: 11),
           ),
         ),
