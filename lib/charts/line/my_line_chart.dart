@@ -42,7 +42,7 @@ class MyLineChart extends StatelessWidget {
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        _Title(title: title),
+        Text(title, style: titleStyle),
         Positioned(top: 50, child: _Legend(lines: lines)),
         _Chart(lines: lines),
       ],
@@ -155,17 +155,6 @@ class _Chart extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _Title extends StatelessWidget {
-  const _Title({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(title, style: titleStyle);
   }
 }
 
