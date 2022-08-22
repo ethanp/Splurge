@@ -12,15 +12,14 @@ class AxisLabels {
     );
   }
 
-  static AxisTitles _none() =>
-      AxisTitles(sideTitles: SideTitles(showTitles: false));
+  static AxisTitles _none() => AxisTitles();
 
   static AxisTitles _sideTitles({bool reverse = false}) {
     return AxisTitles(
       sideTitles: SideTitles(
         showTitles: true,
         reservedSize: 58,
-        interval: 40000,
+        interval: 20000,
         getTitlesWidget: (value, meta) => SideTitleWidget(
           space: 0,
           axisSide: meta.axisSide,

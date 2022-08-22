@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:splurge/charts/line/smoothing.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
@@ -81,7 +80,7 @@ class _Chart extends StatelessWidget {
         maxX: flLines.maxX + horizontalMargin,
         minY: flLines.minY - verticalMargin,
         maxY: flLines.maxY + verticalMargin,
-        titlesData: _titlesData(),
+        titlesData: _axisLabels(),
         lineTouchData: _tooltip(),
       ),
     );
@@ -115,28 +114,44 @@ class _Chart extends StatelessWidget {
     );
   }
 
-  FlTitlesData _titlesData() {
+  FlTitlesData _axisLabels() {
     return FlTitlesData(
       topTitles: AxisTitles(), // Hide for now
+      bottomTitles: _dateAxisLabels(),
+      leftTitles: _leftAxisLabels(),
       rightTitles: AxisTitles(), // Hide for now
-      bottomTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          getTitlesWidget: (value, meta) => _xAxisDateLabels(meta, value),
+    );
+  }
+
+  AxisTitles _leftAxisLabels() {
+    return AxisTitles(
+      sideTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 40,
+        interval: 100,
+        getTitlesWidget: (value, meta) => SideTitleWidget(
+          space: 0,
+          axisSide: meta.axisSide,
+          child: Text(
+            value.asCompactDollars(),
+            style: TextStyle(fontSize: 11),
+          ),
         ),
       ),
     );
   }
 
-  SideTitleWidget _xAxisDateLabels(TitleMeta meta, double value) {
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      angle: 25.degreesToRadians,
-      child: Text(
-        DateFormat.yMMMd().format(value.toDate),
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
+  AxisTitles _dateAxisLabels() {
+    return AxisTitles(
+      sideTitles: SideTitles(
+        showTitles: true,
+        getTitlesWidget: (value, meta) => SideTitleWidget(
+          axisSide: meta.axisSide,
+          angle: 25.degreesToRadians,
+          child: Text(
+            value.toDate.monthString,
+            style: TextStyle(fontSize: 11),
+          ),
         ),
       ),
     );
@@ -150,10 +165,7 @@ class _Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: titleStyle,
-    );
+    return Text(title, style: titleStyle);
   }
 }
 
