@@ -55,6 +55,32 @@ class MyBarChart extends StatelessWidget {
       BarChartData(
         barGroups: _formatData(),
         titlesData: AxisLabels.create(xTitle),
+        barTouchData: _tooltip(),
+      ),
+    );
+  }
+
+  BarTouchData _tooltip() {
+    return BarTouchData(
+      touchTooltipData: BarTouchTooltipData(
+        tooltipBgColor: Colors.grey[900],
+        maxContentWidth: 200, // default is 120
+        getTooltipItem: (
+          BarChartGroupData group,
+          int groupIndex,
+          BarChartRodData rod,
+          int rodIndex,
+        ) =>
+            BarTooltipItem(
+          rod.toY.asCompactDollars(),
+          TextStyle(color: rod.color),
+          children: [
+            TextSpan(
+              text: '\n' + group.x.toDouble().toDate.monthString,
+              style: TextStyle(color: Colors.grey[400]),
+            ),
+          ],
+        ),
       ),
     );
   }
