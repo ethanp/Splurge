@@ -13,8 +13,8 @@ class Line {
     required this.color,
     required this.rawSpots,
     this.smoothing = const SmoothingParams(
-      nDaySmoothing: 100,
-      nEventSmoothing: 100,
+      nDaySmoothing: 60,
+      nEventSmoothing: 5,
     ),
   }) : assert(rawSpots.isNotEmpty);
 

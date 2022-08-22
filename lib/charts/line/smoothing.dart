@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 
+// TODO(feature): Improve this part. The smoothing is really not-great as-is.
 class Smoothing {
   const Smoothing({required this.params});
 

@@ -5,8 +5,8 @@ class Dataset {
 
   final List<Transaction> transactions;
 
-  Transaction? get maybeLast => transactions.maybeLast;
-  Transaction get last => transactions.last;
+  Transaction? get maybeLastTxn => transactions.maybeLast;
+  Transaction get lastTxn => transactions.last;
 
   Dataset get spendingTxns =>
       Dataset(transactions.where((t) => t.txnType == 'regular').toList());
@@ -14,26 +14,28 @@ class Dataset {
   Dataset get incomeTxns =>
       Dataset(transactions.where((t) => t.txnType == 'income').toList());
 
-  List<Dataset> get txnsByMonth => transactions.fold([], (accumulator, txn) {
+  List<MapEntry<String, Dataset>> get txnsByMonth =>
+      transactions.fold([], (accumulator, txn) {
         final month = txn.date.month;
-        final prevItemMonth = accumulator.maybeLast?.maybeLast?.date.month;
+        final prevItemMonth =
+            accumulator.maybeLast?.value.maybeLastTxn?.date.month;
 
         if (month == prevItemMonth)
-          accumulator.last.transactions.add(txn);
+          accumulator.last.value.transactions.add(txn);
         else
-          accumulator.add(Dataset([txn]));
+          accumulator.add(MapEntry(txn.date.monthString, Dataset([txn])));
 
         return accumulator;
       });
 
-  List<MapEntry<String, Dataset>> get txnsByQuarter =>
-      txnsByMonth.fold<List<Dataset>>([], (accumulator, txns) {
-        int quarter(Transaction? txn) => txn?.date.qtr ?? 0;
-
-        if (quarter(txns.last) == quarter(accumulator.maybeLast?.maybeLast))
-          accumulator.last.transactions.addAll(txns.transactions);
+  List<MapEntry<String, Dataset>> get txnsByQuarter => txnsByMonth
+          .map((_) => _.value)
+          .fold<List<Dataset>>([], (accumulator, dataset) {
+        if (dataset.lastTxn.date.qtr ==
+            accumulator.maybeLast?.maybeLastTxn?.date.qtr)
+          accumulator.last.transactions.addAll(dataset.transactions);
         else
-          accumulator.add(txns);
+          accumulator.add(dataset);
 
         return accumulator;
       }).mapL(
