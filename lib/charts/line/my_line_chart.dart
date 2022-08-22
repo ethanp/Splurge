@@ -82,6 +82,36 @@ class _Chart extends StatelessWidget {
         minY: flLines.minY - verticalMargin,
         maxY: flLines.maxY + verticalMargin,
         titlesData: _titlesData(),
+        lineTouchData: _tooltip(),
+      ),
+    );
+  }
+
+  LineTouchData _tooltip() {
+    return LineTouchData(
+      touchTooltipData: LineTouchTooltipData(
+        tooltipBgColor: Colors.grey[900],
+        maxContentWidth: 200, // default is 120.
+        getTooltipItems: (touchedSpots) {
+          return touchedSpots.mapWithIdx((touchedSpot, idx) {
+            final lineName = lines[idx].title;
+            final yValue = touchedSpot.y.asCompactDollars();
+            return LineTooltipItem(
+              '$lineName: $yValue',
+              TextStyle(color: lines[idx].color),
+              // Chart library dictates that #tooltip_items == #touched_spots,
+              //  so to show the date as a separate line, we append it to the
+              //  last tooltip.
+              children: [
+                if (touchedSpot == touchedSpots.last) // yes it's equatable.
+                  TextSpan(
+                    text: '\nDate: ${touchedSpots.first.x.toDate.formatted}',
+                    style: const TextStyle(color: Colors.white60),
+                  ),
+              ],
+            );
+          }).toList();
+        },
       ),
     );
   }
