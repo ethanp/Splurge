@@ -1,4 +1,5 @@
 import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/providers.dart';
 
 class Dataset {
   const Dataset(this.transactions);
@@ -46,6 +47,9 @@ class Dataset {
       );
 
   double get totalAmount => transactions.sumBy((txn) => txn.amount);
+
+  Dataset forCategories(SelectedCategories selectedCategories) => Dataset(
+      transactions.where((txn) => selectedCategories.includes(txn)).toList());
 }
 
 class Transaction {
