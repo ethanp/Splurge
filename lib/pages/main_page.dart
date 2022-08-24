@@ -22,8 +22,7 @@ class MainPage extends StatelessWidget {
             ),
             Expanded(
               child: IncomeVsSpendingLineChart(
-                incomeTxns: dataset.incomeTxns,
-                spendingTxns: dataset.spendingTxns,
+                fullDataset: dataset,
               ),
             ),
           ],
