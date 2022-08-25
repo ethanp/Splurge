@@ -78,7 +78,7 @@ class _Chart extends StatelessWidget {
         lineBarsData: flLines,
         minX: flLines.minX - horizontalMargin,
         maxX: flLines.maxX + horizontalMargin,
-        minY: flLines.minY - verticalMargin,
+        minY: 0, // flLines.minY - verticalMargin,
         maxY: flLines.maxY + verticalMargin,
         titlesData: _axisLabels(),
         lineTouchData: _tooltip(),
