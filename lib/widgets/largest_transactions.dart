@@ -14,29 +14,44 @@ class LargestTransactions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(selectedCategoriesProvider);
     final selectedCategories = ref.read(selectedCategoriesProvider.notifier);
-    final largestTxns = dataset
-        .forCategories(selectedCategories)
-        .transactions
-        .sortOn((txn) => -txn.amount.abs())
-        .take(50);
 
     return Column(children: [
       Text('Largest transactions review', style: titleStyle),
       Expanded(
         child: ListView(
-          children: [
-            for (final txn in largestTxns)
-              ListTile(
-                title: Text(
-                  '$txn',
-                  style: TextStyle(
-                    color: txn.amount < 0 ? Colors.green : Colors.red,
-                  ),
-                ),
-              ),
-          ],
+          children: dataset
+              .forCategories(selectedCategories)
+              .transactions
+              .sortOn((txn) => -txn.amount.abs())
+              .take(50)
+              .mapL(_listTile),
         ),
       ),
     ]);
+  }
+
+  Widget _listTile(Transaction txn) {
+    return ListTile(
+      leading: Text(txn.date.formatted),
+      isThreeLine: true,
+      subtitle: _subtitle(txn),
+      title: Text(
+        txn.title,
+        style: TextStyle(
+          color: txn.amount < 0 ? Colors.green : Colors.red,
+        ),
+      ),
+    );
+  }
+
+  Widget _subtitle(Transaction txn) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text('${txn.txnType}'),
+        Text('${txn.category}'),
+        Text('${txn.amount.asCompactDollars()}'),
+      ],
+    );
   }
 }
