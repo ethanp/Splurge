@@ -19,23 +19,35 @@ class LargestTransactions extends ConsumerWidget {
       color: Colors.grey[900],
       margin: const EdgeInsets.all(12),
       elevation: 6,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Text('Largest transactions review', style: titleStyle),
-            Expanded(
-              child: ListView(
-                children: dataset
-                    .forCategories(selectedCategories)
-                    .transactions
-                    .sortOn((txn) => -txn.amount.abs())
-                    .take(50)
-                    .mapL(_listTile),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 18, bottom: 12, top: 8),
+            color: Colors.grey[800],
+            child: Row(children: [
+              Text(
+                'Largest transactions review',
+                style: titleStyle,
               ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 32, right: 10),
+                  child: SearchBar(),
+                ),
+              ),
+            ]),
+          ),
+          Expanded(
+            child: ListView(
+              children: dataset
+                  .forCategories(selectedCategories)
+                  .transactions
+                  .sortOn((txn) => -txn.amount.abs())
+                  .take(50)
+                  .mapL(_listTile),
             ),
-          ],
-        ),
+          ),
+        ].separatedBy(const SizedBox(height: 10)),
       ),
     );
   }
@@ -67,6 +79,33 @@ class LargestTransactions extends ConsumerWidget {
       children: [
         Text('${txn.txnType}'),
         Text('${txn.category}'),
+      ],
+    );
+  }
+}
+
+class SearchBar extends StatelessWidget {
+  // TODO(feature): filter the list based on the value within this.
+  final TextEditingController textEditingController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Expanded(
+          child: TextFormField(
+            controller: textEditingController,
+          ),
+        ),
+        IconButton(
+          onPressed: null,
+          icon: Icon(
+            Icons.search,
+            color: Colors.lightBlue[200],
+          ),
+        ),
       ],
     );
   }
