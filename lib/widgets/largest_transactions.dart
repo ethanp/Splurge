@@ -134,7 +134,7 @@ class Header extends StatelessWidget {
                 style: titleStyle.copyWith(
                     fontStyle: FontStyle.italic,
                     fontSize: 14,
-                    color: shownTxns.totalAmount.isNegative
+                    color: !shownTxns.totalAmount.isNegative
                         ? Colors.red
                         : Colors.green),
               ),
