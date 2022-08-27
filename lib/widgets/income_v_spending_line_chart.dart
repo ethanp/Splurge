@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:splurge/charts/line/line.dart';
 import 'package:splurge/charts/line/my_line_chart.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
@@ -15,6 +16,7 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(selectedCategoriesProvider);
     final selectedCategories = ref.read(selectedCategoriesProvider.notifier);
+
     final incomeSpots = fullDataset.incomeTxns
         .forCategories(selectedCategories)
         .transactions
@@ -25,6 +27,7 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
             y: -txn.amount,
           ),
         );
+
     final spendingSpots = fullDataset.spendingTxns
         .forCategories(selectedCategories)
         .transactions
@@ -34,31 +37,40 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
             y: txn.amount,
           ),
         );
-    return Padding(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        children: [
-          _categoryChips(selectedCategories),
-          Expanded(
-            child: MyLineChart(
-              title: 'Earning vs Spending',
-              lines: [
-                if (incomeSpots.isNotEmpty)
-                  Line(
-                    title: 'Earning',
-                    color: Colors.green[800]!,
-                    rawSpots: incomeSpots,
-                  ),
-                if (spendingSpots.isNotEmpty)
-                  Line(
-                    title: 'Spending',
-                    color: Colors.red,
-                    rawSpots: spendingSpots,
-                  ),
-              ],
+
+    return Card(
+      margin: const EdgeInsets.all(12),
+      elevation: 8,
+      color: Colors.grey[900],
+      child: Padding(
+        padding: const EdgeInsets.only(top: 18, bottom: 18, right: 16),
+        child: Column(
+          children: [
+            _categoryChips(selectedCategories),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 18),
+                child: MyLineChart(
+                  title: 'Earning vs Spending',
+                  lines: [
+                    if (incomeSpots.isNotEmpty)
+                      Line(
+                        title: 'Earning',
+                        color: Colors.green[800]!,
+                        rawSpots: incomeSpots,
+                      ),
+                    if (spendingSpots.isNotEmpty)
+                      Line(
+                        title: 'Spending',
+                        color: Colors.red,
+                        rawSpots: spendingSpots,
+                      ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

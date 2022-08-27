@@ -1,29 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:splurge/charts/line/smoothing.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
-import 'package:splurge/util/widgets.dart';
 
-/// Part of the interface for creating a [MyLineChart].
-class Line {
-  Line({
-    required this.title,
-    required this.color,
-    required this.rawSpots,
-    this.smoothing = const SmoothingParams(
-      nDaySmoothing: 110,
-      nEventSmoothing: 2,
-    ),
-  }) : assert(rawSpots.isNotEmpty);
-
-  final String title;
-  final Color color;
-  final List<FlSpot> rawSpots;
-  final SmoothingParams smoothing;
-
-  late final List<FlSpot> spots = Smoothing(params: smoothing).smooth(rawSpots);
-}
+import 'axis_labels.dart';
+import 'legend.dart';
+import 'line.dart';
+import 'tooltip.dart';
 
 /// Creates a flexible-height "line chart" widget, including a title and legend.
 /// It should be kept free of application-specific concepts or
@@ -42,8 +25,8 @@ class MyLineChart extends StatelessWidget {
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        Text(title, style: titleStyle),
-        Positioned(top: 50, child: _Legend(lines: lines)),
+        Positioned(
+            left: 80, top: 20, child: Legend(title: title, lines: lines)),
         _Chart(lines: lines),
       ],
     );
@@ -62,7 +45,7 @@ class _Chart extends StatelessWidget {
         spots: line.spots,
         color: line.color,
 
-        // Hide datapoints. Default dot is too big.
+        // Looks better with individual data-dots hidden.
         dotData: FlDotData(show: false),
       ),
     );
@@ -80,102 +63,8 @@ class _Chart extends StatelessWidget {
         maxX: flLines.maxX + horizontalMargin,
         minY: 0, // flLines.minY - verticalMargin,
         maxY: flLines.maxY + verticalMargin,
-        titlesData: _axisLabels(),
-        lineTouchData: _tooltip(),
-      ),
-    );
-  }
-
-  LineTouchData _tooltip() {
-    return LineTouchData(
-      touchTooltipData: LineTouchTooltipData(
-        tooltipBgColor: Colors.grey[900],
-        maxContentWidth: 200, // default is 120.
-        getTooltipItems: (touchedSpots) {
-          return touchedSpots.mapWithIdx((touchedSpot, _) {
-            final line = lines[touchedSpot.barIndex];
-            return LineTooltipItem(
-              '${line.title}: ${touchedSpot.y.asCompactDollars()}',
-              TextStyle(color: line.color),
-              // Chart library dictates that #tooltip_items == #touched_spots,
-              //  so to show the date as a separate line, we append it to the
-              //  last tooltip.
-              children: [
-                if (touchedSpot == touchedSpots.last) // yes it's equatable.
-                  TextSpan(
-                    text: '\nDate: ${touchedSpots.first.x.toDate.formatted}',
-                    style: const TextStyle(color: Colors.white60),
-                  ),
-              ],
-            );
-          }).toList();
-        },
-      ),
-    );
-  }
-
-  FlTitlesData _axisLabels() {
-    return FlTitlesData(
-      topTitles: AxisTitles(), // Hide for now
-      bottomTitles: _dateAxisLabels(),
-      leftTitles: _leftAxisLabels(),
-      rightTitles: AxisTitles(), // Hide for now
-    );
-  }
-
-  AxisTitles _leftAxisLabels() {
-    return AxisTitles(
-      sideTitles: SideTitles(
-        showTitles: true,
-        reservedSize: 40,
-        interval: 100,
-        getTitlesWidget: (value, meta) => SideTitleWidget(
-          space: 0,
-          axisSide: meta.axisSide,
-          child: Text(
-            value.asCompactDollars(),
-            style: TextStyle(fontSize: 11),
-          ),
-        ),
-      ),
-    );
-  }
-
-  AxisTitles _dateAxisLabels() {
-    return AxisTitles(
-      sideTitles: SideTitles(
-        showTitles: true,
-        getTitlesWidget: (value, meta) => SideTitleWidget(
-          axisSide: meta.axisSide,
-          angle: 25.degreesToRadians,
-          child: Text(
-            value.toDate.monthString,
-            style: TextStyle(fontSize: 11),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Legend extends StatelessWidget {
-  const _Legend({required this.lines});
-
-  final List<Line> lines;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: lines.mapL(
-        (line) => Padding(
-          padding: const EdgeInsets.all(8),
-          child: Text(
-            '${line.title}: ${line.rawSpots.length} txns',
-            style: TextStyle(
-              color: line.color,
-            ),
-          ),
-        ),
+        titlesData: AxisLabels.create(),
+        lineTouchData: MyTooltip.create(lines),
       ),
     );
   }
