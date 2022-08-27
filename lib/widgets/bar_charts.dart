@@ -10,14 +10,20 @@ class BarCharts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Expanded(child: _monthlyBarChart()),
-          Expanded(child: _quarterlyBarChart()),
-        ],
+    return Card(
+      margin: const EdgeInsets.all(12),
+      color: Colors.grey[900],
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: <Widget>[
+            Expanded(child: _monthlyBarChart()),
+            Expanded(child: _quarterlyBarChart()),
+          ].separatedBy(
+            const SizedBox(height: 16),
+          ),
+        ),
       ),
     );
   }
