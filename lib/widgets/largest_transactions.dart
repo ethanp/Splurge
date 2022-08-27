@@ -26,23 +26,27 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   @override
   Widget build(BuildContext context) {
     ref.watch(selectedCategoriesProvider);
-
+    final eligibleTxns = _eligibleTxns();
     return Card(
       color: Colors.grey[900],
       margin: const EdgeInsets.all(12),
       elevation: 6,
       child: Column(
         children: [
-          Header(textEditingController),
-          Expanded(child: _txnList()),
+          Header(textEditingController, eligibleTxns),
+          Expanded(
+            child: ListView(
+              children: eligibleTxns.transactions.mapL(_listTile),
+            ),
+          ),
         ].separatedBy(const SizedBox(height: 10)),
       ),
     );
   }
 
-  Widget _txnList() {
-    return ListView(
-      children: widget.dataset
+  Dataset _eligibleTxns() {
+    return Dataset(
+      widget.dataset
           .forCategories(ref.read(selectedCategoriesProvider.notifier))
           .transactions
           .sortOn((txn) => -txn.amount.abs())
@@ -51,8 +55,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
                 textEditingController.text.isEmpty ||
                 txn.title.contains(textEditingController.text),
           )
-          .take(50)
-          .mapL(_listTile),
+          .toList(),
     );
   }
 
@@ -89,14 +92,21 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
 }
 
 class Header extends StatelessWidget {
-  const Header(this.textEditingController);
+  const Header(this.textEditingController, this.shownTxns);
 
   final TextEditingController textEditingController;
+
+  final Dataset shownTxns;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 18, bottom: 12, top: 8),
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 12,
+        top: 12,
+        bottom: 6,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20),
@@ -113,7 +123,24 @@ class Header extends StatelessWidget {
         color: Colors.grey[800],
       ),
       child: Row(children: [
-        Text('Largest transactions review', style: titleStyle),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Largest transactions review', style: titleStyle),
+            Padding(
+              padding: const EdgeInsets.only(top: 6, bottom: 0, left: 2),
+              child: Text(
+                'Total: ${shownTxns.totalAmount.asCompactDollars()}',
+                style: titleStyle.copyWith(
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14,
+                    color: shownTxns.totalAmount.isNegative
+                        ? Colors.red
+                        : Colors.green),
+              ),
+            ),
+          ],
+        ),
         _searchBar(),
       ]),
     );
@@ -122,7 +149,7 @@ class Header extends StatelessWidget {
   Widget _searchBar() {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 10),
+        padding: const EdgeInsets.only(left: 20, right: 16),
         child: Row(children: [
           Expanded(
             child: TextFormField(
