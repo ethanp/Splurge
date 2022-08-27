@@ -42,7 +42,14 @@ class LargestTransactions extends ConsumerWidget {
 
   Widget _listTile(Transaction txn) {
     return ListTile(
-      leading: Text(txn.date.formatted),
+      leading: Text(
+        '${txn.amount.asCompactDollars()}',
+        style: TextStyle(
+          color: txn.amount < 0 ? Colors.green : Colors.red,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      trailing: Text(txn.date.formatted),
       isThreeLine: true,
       subtitle: _subtitle(txn),
       title: Text(
@@ -56,11 +63,10 @@ class LargestTransactions extends ConsumerWidget {
 
   Widget _subtitle(Transaction txn) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text('${txn.txnType}'),
         Text('${txn.category}'),
-        Text('${txn.amount.asCompactDollars()}'),
       ],
     );
   }
