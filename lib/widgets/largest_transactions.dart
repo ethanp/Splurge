@@ -5,15 +5,27 @@ import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/providers.dart';
 import 'package:splurge/util/widgets.dart';
 
-class LargestTransactions extends ConsumerWidget {
+class LargestTransactions extends ConsumerStatefulWidget {
   const LargestTransactions({required this.dataset});
 
   final Dataset dataset;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  LargestTransactionsState createState() => LargestTransactionsState();
+}
+
+class LargestTransactionsState extends ConsumerState<LargestTransactions> {
+  final textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingController.addListener(() => setState(() {}));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.watch(selectedCategoriesProvider);
-    final selectedCategories = ref.read(selectedCategoriesProvider.notifier);
 
     return Card(
       color: Colors.grey[900],
@@ -21,34 +33,26 @@ class LargestTransactions extends ConsumerWidget {
       elevation: 6,
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.only(left: 18, bottom: 12, top: 8),
-            color: Colors.grey[800],
-            child: Row(children: [
-              Text(
-                'Largest transactions review',
-                style: titleStyle,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 32, right: 10),
-                  child: SearchBar(),
-                ),
-              ),
-            ]),
-          ),
-          Expanded(
-            child: ListView(
-              children: dataset
-                  .forCategories(selectedCategories)
-                  .transactions
-                  .sortOn((txn) => -txn.amount.abs())
-                  .take(50)
-                  .mapL(_listTile),
-            ),
-          ),
+          Header(textEditingController),
+          Expanded(child: _txnList()),
         ].separatedBy(const SizedBox(height: 10)),
       ),
+    );
+  }
+
+  Widget _txnList() {
+    return ListView(
+      children: widget.dataset
+          .forCategories(ref.read(selectedCategoriesProvider.notifier))
+          .transactions
+          .sortOn((txn) => -txn.amount.abs())
+          .where(
+            (txn) =>
+                textEditingController.text.isEmpty ||
+                txn.title.contains(textEditingController.text),
+          )
+          .take(50)
+          .mapL(_listTile),
     );
   }
 
@@ -84,29 +88,50 @@ class LargestTransactions extends ConsumerWidget {
   }
 }
 
-class SearchBar extends StatelessWidget {
-  // TODO(feature): filter the list based on the value within this.
-  final TextEditingController textEditingController = TextEditingController();
+class Header extends StatelessWidget {
+  const Header(this.textEditingController);
+
+  final TextEditingController textEditingController;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Expanded(
-          child: TextFormField(
-            controller: textEditingController,
-          ),
+    return Container(
+      padding: const EdgeInsets.only(left: 18, bottom: 12, top: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
         ),
-        IconButton(
-          onPressed: null,
-          icon: Icon(
-            Icons.search,
-            color: Colors.lightBlue[200],
+        boxShadow: [
+          BoxShadow(
+            blurStyle: BlurStyle.outer,
+            blurRadius: 2,
+            spreadRadius: 0,
+            offset: Offset(0, 1),
           ),
-        ),
-      ],
+        ],
+        color: Colors.grey[800],
+      ),
+      child: Row(children: [
+        Text('Largest transactions review', style: titleStyle),
+        _searchBar(),
+      ]),
+    );
+  }
+
+  Widget _searchBar() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 10),
+        child: Row(children: [
+          Expanded(
+            child: TextFormField(
+              controller: textEditingController,
+            ),
+          ),
+          Icon(Icons.search, color: Colors.lightBlue[200]),
+        ]),
+      ),
     );
   }
 }
