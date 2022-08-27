@@ -101,48 +101,63 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 12,
-        top: 12,
-        bottom: 6,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            blurStyle: BlurStyle.outer,
-            blurRadius: 2,
-            spreadRadius: 0,
-            offset: Offset(0, 1),
-          ),
-        ],
-        color: Colors.grey[800],
-      ),
+      padding: const EdgeInsets.only(left: 16, right: 12, top: 12, bottom: 6),
+      decoration: _roundedBottom(),
       child: Row(children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Largest transactions review', style: titleStyle),
-            Padding(
-              padding: const EdgeInsets.only(top: 6, bottom: 0, left: 2),
-              child: Text(
-                'Total: ${shownTxns.totalAmount.asCompactDollars()}',
-                style: titleStyle.copyWith(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 14,
-                    color: !shownTxns.totalAmount.isNegative
-                        ? Colors.red
-                        : Colors.green),
-              ),
-            ),
+            Text('Transactions review', style: titleStyle),
+            _totalEarnedOrSpent(),
           ],
         ),
         _searchBar(),
       ]),
+    );
+  }
+
+  Decoration _roundedBottom() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(20),
+        bottomRight: Radius.circular(20),
+      ),
+      boxShadow: [
+        BoxShadow(
+          blurStyle: BlurStyle.outer,
+          blurRadius: 2,
+          spreadRadius: 0,
+          offset: Offset(0, 1),
+        ),
+      ],
+      color: Colors.grey[800],
+    );
+  }
+
+  Widget _totalEarnedOrSpent() {
+    final earnedOrSpent = shownTxns.totalAmount.isNegative ? 'Earned' : 'Spent';
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 0, left: 2),
+      child: RichText(
+        text: TextSpan(
+          style: appFont.copyWith(
+            fontSize: 14,
+            fontStyle: FontStyle.italic,
+            color: Colors.grey[400],
+          ),
+          children: [
+            TextSpan(text: 'Total $earnedOrSpent: '),
+            TextSpan(
+              text: shownTxns.totalAmount.abs().asCompactDollars(),
+              style: TextStyle(
+                color: !shownTxns.totalAmount.isNegative
+                    ? Colors.red
+                    : Colors.green,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
