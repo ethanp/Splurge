@@ -15,19 +15,29 @@ class LargestTransactions extends ConsumerWidget {
     ref.watch(selectedCategoriesProvider);
     final selectedCategories = ref.read(selectedCategoriesProvider.notifier);
 
-    return Column(children: [
-      Text('Largest transactions review', style: titleStyle),
-      Expanded(
-        child: ListView(
-          children: dataset
-              .forCategories(selectedCategories)
-              .transactions
-              .sortOn((txn) => -txn.amount.abs())
-              .take(50)
-              .mapL(_listTile),
+    return Card(
+      color: Colors.grey[900],
+      margin: const EdgeInsets.all(12),
+      elevation: 6,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Text('Largest transactions review', style: titleStyle),
+            Expanded(
+              child: ListView(
+                children: dataset
+                    .forCategories(selectedCategories)
+                    .transactions
+                    .sortOn((txn) => -txn.amount.abs())
+                    .take(50)
+                    .mapL(_listTile),
+              ),
+            ),
+          ],
         ),
       ),
-    ]);
+    );
   }
 
   Widget _listTile(Transaction txn) {
