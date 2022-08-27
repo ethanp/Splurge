@@ -15,7 +15,7 @@ class BarCharts extends StatelessWidget {
       color: Colors.grey[900],
       elevation: 5,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.only(bottom: 16, top: 2),
         child: Column(
           children: <Widget>[
             Expanded(child: _monthlyBarChart()),
