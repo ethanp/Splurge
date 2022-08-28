@@ -40,25 +40,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       margin: const EdgeInsets.all(12),
       elevation: 18,
       child: Stack(children: <Widget>[
-        Positioned(
-          top: 20,
-          height: 600,
-          width: 800,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 30,
-              horizontal: 12,
-            ),
-            child: ListView.builder(
-              itemCount: eligibleTxns.count + 1,
-              itemBuilder: (_, idx) =>
-                  // We need one blank spot to allow it to go behind the Header.
-                  idx == 0
-                      ? const SizedBox(height: 54)
-                      : _listTile(eligibleTxns.transactions[idx - 1]),
-            ),
-          ),
-        ),
+        _txnListView(eligibleTxns),
         Header(textEditingController, eligibleTxns),
       ]),
     );
@@ -70,12 +52,31 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
           .forCategories(ref.read(selectedCategoriesProvider.notifier))
           .transactions
           .sortOn((txn) => -txn.amount.abs())
-          .where(
-            (txn) =>
-                textEditingController.text.isEmpty ||
-                txn.title.contains(textEditingController.text),
-          )
+          .where((txn) =>
+              textEditingController.text.isEmpty ||
+              txn.title.contains(textEditingController.text))
           .toList(),
+    );
+  }
+
+  Widget _txnListView(Dataset eligibleTxns) {
+    return Positioned(
+      top: 20,
+      height: 600,
+      width: 800,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 30,
+          horizontal: 12,
+        ),
+        child: ListView.builder(
+          itemCount: eligibleTxns.count + 1,
+          itemBuilder: (_, idx) => idx == 0
+              // We need one blank spot to allow it to go behind the Header.
+              ? const SizedBox(height: 54)
+              : _listTile(eligibleTxns.transactions[idx - 1]),
+        ),
+      ),
     );
   }
 
@@ -103,10 +104,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   Widget _subtitle(Transaction txn) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text('${txn.txnType}'),
-        Text('${txn.category}'),
-      ],
+      children: [Text('${txn.txnType}'), Text('${txn.category}')],
     );
   }
 }
