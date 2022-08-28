@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/widgets/bar_charts.dart';
+import 'package:splurge/widgets/filter_card.dart';
 import 'package:splurge/widgets/income_v_spending_line_chart.dart';
 import 'package:splurge/widgets/largest_transactions.dart';
 import 'package:splurge/widgets/totals_card.dart';
@@ -16,9 +17,14 @@ class MainPage extends StatelessWidget {
       Expanded(
         child: Column(
           children: [
-            TotalsCard(
-              totalIncome: -dataset.incomeTxns.totalAmount,
-              totalSpending: dataset.spendingTxns.totalAmount,
+            Row(
+              children: [
+                TotalsCard(
+                  totalIncome: -dataset.incomeTxns.totalAmount,
+                  totalSpending: dataset.spendingTxns.totalAmount,
+                ),
+                FilterCard(),
+              ],
             ),
             Expanded(
               child: IncomeVsSpendingLineChart(
