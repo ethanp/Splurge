@@ -42,15 +42,21 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       child: Stack(children: <Widget>[
         Positioned(
           top: 20,
-          height: 700,
+          height: 600,
           width: 800,
-          child: ListView.builder(
-            itemCount: eligibleTxns.count + 1,
-            itemBuilder: (_, idx) =>
-                // We need one blank spot to allow it to go behind the Header.
-                idx == 0
-                    ? const SizedBox(height: 54)
-                    : _listTile(eligibleTxns.transactions[idx - 1]),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 30,
+              horizontal: 12,
+            ),
+            child: ListView.builder(
+              itemCount: eligibleTxns.count + 1,
+              itemBuilder: (_, idx) =>
+                  // We need one blank spot to allow it to go behind the Header.
+                  idx == 0
+                      ? const SizedBox(height: 54)
+                      : _listTile(eligibleTxns.transactions[idx - 1]),
+            ),
           ),
         ),
         Header(textEditingController, eligibleTxns),
