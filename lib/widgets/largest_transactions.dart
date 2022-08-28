@@ -161,6 +161,31 @@ class Header extends StatelessWidget {
     );
   }
 
+  // TODO(feature): Move this to *a new [FilterCard Widget]*, which _also_ has
+  //  the [Category FilterChips], which applies *across the whole app*,
+  //  including eg. the line chart, bar charts, and "txns review" list.
+  //
+  // Plan:
+  //
+  // 1) Refactor the controller to be an app-level ValueNotifierProvider via
+  //    RiverPods.
+  //
+  //    -> Cleanup: This probably means its widget can be stateless now.
+  //
+  // 2) Plug all the different cards into the list of txns filtered via the
+  //    search bar controller.
+  //
+  //    -> Impl note: This probably means the Dataset StateNotifier should have
+  //    the search bar controller run as a pre-filter configured upon it, if you
+  //    remember what I mean; it's a slightly more advanced usage of the
+  //    riverpod library.
+  //
+  // 3) Plug the Category FilterChips into all the different cards too. Ensuring
+  //    it is INTERSECTION with the SearchBar text filter.
+  //
+  // 4) Create the new FilterCard widget, with this SearchBar inside of it, and
+  //    with the Category FilterChips inside it too.
+  //
   Widget _searchBar() {
     return Expanded(
       child: Padding(
