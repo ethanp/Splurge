@@ -10,10 +10,21 @@ class FilterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(height: 500, width: 400, child: Card(child: _searchBar()));
+    return SizedBox(
+      height: 200,
+      width: 400,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        color: Colors.brown[900],
+        elevation: 4,
+        child: _searchBar(),
+      ),
+    );
   }
 
-  // TODO(feature): Alsot pu the [Category FilterChips] here, and apply them
+  // TODO(feature): Also put the [Category FilterChips] here, and apply them
   //  *across the whole app*; including eg. the line chart, bar charts, and
   //  "txns review" list.
   //
@@ -44,16 +55,24 @@ class FilterCard extends StatelessWidget {
         Expanded(
           child: TextFormField(
             controller: textEditingController,
-            // TODO(UI): Improve this part.
             decoration: InputDecoration(
-              hintText: 'Hint text',
-              helperText: 'Helper text',
-              counterText: 'Counter text',
+              hintText: 'Matches transactions by title',
+              // TODO(UI): Implement real count.
+              helperText: '122 matching txns',
+              labelText: 'Transaction filter',
+              counterText: 'Active iff non-empty',
               border: OutlineInputBorder(),
             ),
           ),
         ),
-        Icon(Icons.search, color: Colors.lightBlue[200]),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 20),
+          child: Icon(
+            Icons.search,
+            size: 40,
+            color: Colors.lightBlue[200],
+          ),
+        ),
       ]),
     );
   }
