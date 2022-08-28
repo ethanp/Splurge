@@ -6,6 +6,7 @@ class Dataset {
 
   final List<Transaction> transactions;
 
+  int get count => transactions.length;
   Transaction? get maybeLastTxn => transactions.maybeLast;
   Transaction get lastTxn => transactions.last;
 

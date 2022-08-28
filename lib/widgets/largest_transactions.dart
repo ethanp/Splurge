@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_model.dart';
@@ -29,18 +31,30 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
     final eligibleTxns = _eligibleTxns();
     return Card(
       color: Colors.grey[900],
-      margin: const EdgeInsets.all(12),
-      elevation: 6,
-      child: Column(
-        children: [
-          Header(textEditingController, eligibleTxns),
-          Expanded(
-            child: ListView(
-              children: eligibleTxns.transactions.mapL(_listTile),
-            ),
-          ),
-        ].separatedBy(const SizedBox(height: 10)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.horizontal(
+          left: Radius.circular(100),
+          right: Radius.elliptical(120, 90),
+        ),
       ),
+      margin: const EdgeInsets.all(12),
+      elevation: 18,
+      child: Stack(children: <Widget>[
+        Positioned(
+          top: 20,
+          height: 700,
+          width: 800,
+          child: ListView.builder(
+            itemCount: eligibleTxns.count + 1,
+            itemBuilder: (_, idx) =>
+                // We need one blank spot to allow it to go behind the Header.
+                idx == 0
+                    ? const SizedBox(height: 54)
+                    : _listTile(eligibleTxns.transactions[idx - 1]),
+          ),
+        ),
+        Header(textEditingController, eligibleTxns),
+      ]),
     );
   }
 
@@ -100,11 +114,10 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 16, right: 12, top: 12, bottom: 6),
-      decoration: _roundedBottom(),
-      child: Row(children: [
+    return _headerCard(
+      content: Row(children: [
         Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Transactions review', style: titleStyle),
@@ -116,21 +129,26 @@ class Header extends StatelessWidget {
     );
   }
 
-  Decoration _roundedBottom() {
-    return BoxDecoration(
-      borderRadius: BorderRadius.only(
-        bottomLeft: Radius.circular(20),
-        bottomRight: Radius.circular(20),
-      ),
-      boxShadow: [
-        BoxShadow(
-          blurStyle: BlurStyle.outer,
-          blurRadius: 2,
-          spreadRadius: 0,
-          offset: Offset(0, 1),
+  Widget _headerCard({required Widget content}) {
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 10),
+        child: Card(
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.elliptical(40, 20),
+              bottomRight: Radius.elliptical(40, 20),
+            ),
+          ),
+          color: Colors.grey[800]!.withBlue(50).withOpacity(.8),
+          elevation: 8,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
+            child: content,
+          ),
         ),
-      ],
-      color: Colors.grey[800],
+      ),
     );
   }
 

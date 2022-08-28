@@ -19,6 +19,7 @@ class TotalsCard extends StatelessWidget {
       width: 420,
       child: Card(
         margin: const EdgeInsets.all(32),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         color: Colors.black.withGreen(10).withRed(40).withBlue(30),
         elevation: 6,
         child: Padding(

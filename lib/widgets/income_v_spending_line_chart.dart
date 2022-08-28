@@ -40,6 +40,7 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
 
     return Card(
       margin: const EdgeInsets.all(12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 8,
       color: Colors.grey[900],
       child: Padding(
