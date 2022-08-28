@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_model.dart';
 
@@ -19,13 +20,15 @@ final selectedCategoriesProvider =
 ///
 /// Rule: Txn title must match text.
 ///
-final textFilterProvider = StateNotifierProvider((ref) => SelectedCategories());
+final textFilterProvider =
+    StateNotifierProvider<TextNotifier, TextEditingController>(
+        (ref) => TextNotifier());
 
 // TODO: Implement.
 /// View of the entire transaction dataset that has been pre-filtered by the
 /// active filters.
 final filteredDatasetProvider =
-    StateNotifierProvider((ref) => SelectedCategories());
+    StateNotifierProvider((ref) => DatasetNotifier());
 
 class SelectedCategories extends StateNotifier<Set<String>>
     with GlobalDatasetFilter {
@@ -53,4 +56,12 @@ class TextFilter extends StateNotifier<String> with GlobalDatasetFilter {
 mixin GlobalDatasetFilter {
   /// True iff the given txn matches this filter.
   bool includes(Transaction txn);
+}
+
+class DatasetNotifier extends StateNotifier<Dataset> {
+  DatasetNotifier() : super(Dataset([]));
+}
+
+class TextNotifier extends StateNotifier<TextEditingController> {
+  TextNotifier() : super(TextEditingController());
 }

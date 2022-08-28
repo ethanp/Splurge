@@ -17,13 +17,13 @@ class LargestTransactions extends ConsumerStatefulWidget {
 }
 
 class LargestTransactionsState extends ConsumerState<LargestTransactions> {
-  final textEditingController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    textEditingController.addListener(() => setState(() {}));
+    _textFilter.addListener(() => setState(() {}));
   }
+
+  TextEditingController get _textFilter => ref.read(textFilterProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       elevation: 18,
       child: Stack(children: <Widget>[
         _txnListView(eligibleTxns),
-        Header(textEditingController, eligibleTxns),
+        Header(eligibleTxns),
       ]),
     );
   }
@@ -53,8 +53,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
           .transactions
           .sortOn((txn) => -txn.amount.abs())
           .where((txn) =>
-              textEditingController.text.isEmpty ||
-              txn.title.contains(textEditingController.text))
+              _textFilter.text.isEmpty || txn.title.contains(_textFilter.text))
           .toList(),
     );
   }
@@ -110,9 +109,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
 }
 
 class Header extends StatelessWidget {
-  const Header(this.textEditingController, this.shownTxns);
-
-  final TextEditingController textEditingController;
+  const Header(this.shownTxns);
 
   final Dataset shownTxns;
 

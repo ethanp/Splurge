@@ -1,12 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:splurge/util/providers.dart';
 
-class FilterCard extends StatelessWidget {
-  FilterCard({Key? key})
-      : textEditingController = TextEditingController(),
-        super(key: key);
+// TODO(feature): Finish up this filter card.
+//
+// Plan:
+//
+// 1) [DONE] Create the filter card.
+//
+// 2) [DONE] Put the search bar into the Filter Card.
+//
+// 3) [DONE] Refactor the [TextEditingController] to be an app-level
+//    [ValueNotifierProvider] via riverpod.
+//
+// 4) Put the Category FilterChips into the Filter Card.
+//
+// 5) Plug all the different cards into the list of txns filtered via the
+//    search bar controller. (Available via a riverpod provider.)
+//
+//    -> Impl note: The Dataset StateNotifier should have the search bar
+//    controller run as a pre-filter configured upon it, if you remember what
+//    I mean; it's a slightly more advanced usage of the riverpod library.
+//    It's very clearly explained in their docs though.
+//
+// 6) Plug the Category FilterChips into all the different cards too. Ensuring
+//    it is INTERSECTION with the SearchBar text filter.
+//
+class FilterCard extends ConsumerStatefulWidget {
+  @override
+  FilterCardState createState() => FilterCardState();
+}
 
-  // TODO: Get this from the correct place.j
-  final TextEditingController textEditingController;
+class FilterCardState extends ConsumerState<FilterCard> {
+  late final TextEditingController textEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(filteredDatasetProvider.notifier);
+    textEditingController = ref.read(textFilterProvider);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,34 +57,11 @@ class FilterCard extends StatelessWidget {
     );
   }
 
-  // TODO(feature): Also put the [Category FilterChips] here, and apply them
-  //  *across the whole app*; including eg. the line chart, bar charts, and
-  //  "txns review" list.
-  //
-  // Plan:
-  //
-  // 1) Put the Category FilterChips inside this FilterCard widget too.
-  //
-  // 2) Refactor the [TextEditingController] to be an app-level
-  //    [ValueNotifierProvider] via riverpod.
-  //
-  //    -> Cleanup: Now we can probably make that one stateful widget stateless.
-  //
-  // 3) Plug all the different cards into the list of txns filtered via the
-  //    search bar controller. (Available via a riverpod provider.)
-  //
-  //    -> Impl note: The Dataset StateNotifier should have the search bar
-  //    controller run as a pre-filter configured upon it, if you remember what
-  //    I mean; it's a slightly more advanced usage of the riverpod library.
-  //    It's very clearly explained in their docs though.
-  //
-  // 4) Plug the Category FilterChips into all the different cards too. Ensuring
-  //    it is INTERSECTION with the SearchBar text filter.
-  //
   Widget _searchBar() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 16),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
+        _clearFieldButton(),
         Expanded(
           child: TextFormField(
             controller: textEditingController,
@@ -74,6 +84,18 @@ class FilterCard extends StatelessWidget {
           ),
         ),
       ]),
+    );
+  }
+
+  Widget _clearFieldButton() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 30, right: 12),
+      child: IconButton(
+        onPressed: () => textEditingController.clear(),
+        icon: Icon(Icons.clear, size: 36),
+        color: Colors.red,
+        hoverColor: Colors.brown[800]!.withOpacity(.5),
+      ),
     );
   }
 }
