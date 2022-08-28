@@ -83,7 +83,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   Widget _listTile(Transaction txn) {
     return ListTile(
       leading: Text(
-        '${txn.amount.asCompactDollars()}',
+        txn.amount.asCompactDollars(),
         style: TextStyle(
           color: txn.amount < 0 ? Colors.green : Colors.red,
           fontWeight: FontWeight.w800,
@@ -104,7 +104,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   Widget _subtitle(Transaction txn) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [Text('${txn.txnType}'), Text('${txn.category}')],
+      children: [Text(txn.txnType), Text(txn.category)],
     );
   }
 }

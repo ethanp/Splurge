@@ -89,7 +89,7 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
             label: Text(categoryName),
             selected: selectedCategories.contains(categoryName),
             onSelected: (bool? isSelected) {
-              print(categoryName + ' ' + isSelected.toString());
+              print('$categoryName $isSelected');
               if (isSelected ?? false)
                 selectedCategories.add(categoryName);
               else

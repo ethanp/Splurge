@@ -99,17 +99,12 @@ extension EDouble on double {
 
   /// Eg. 235768.2359 => '$235K'
   String asCompactDollars() {
-    return this < 0
-        // Fix, so that '$-2K' => '-$2K'
-        ? '-' +
-            NumberFormat.compactCurrency(
-              locale: 'en_US',
-              symbol: '\$',
-            ).format(-this)
-        : NumberFormat.compactCurrency(
-            locale: 'en_US',
-            symbol: '\$',
-          ).format(this);
+    // Fixes bug in library, so that '$-2K' => '-$2K'.
+    return (this < 0 ? '-' : '') +
+        NumberFormat.compactCurrency(
+          locale: 'en_US',
+          symbol: '\$',
+        ).format(abs());
   }
 }
 
