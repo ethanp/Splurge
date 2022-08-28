@@ -15,59 +15,82 @@ class TotalsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(32),
-      color: Colors.black.withGreen(10).withRed(40).withBlue(30),
-      elevation: 6,
-      child: Padding(
-        padding: const EdgeInsets.all(22),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '     Income:    ${totalIncome.asCompactDollars()}',
-              style: defaultFont.copyWith(color: Colors.green[400]),
-              maxLines: 1,
-            ),
-            Text(
-              '– Spending: ${totalSpending.asCompactDollars()}',
-              style: defaultFont.copyWith(color: Colors.red),
-              maxLines: 1,
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: 8,
-                bottom: 2,
-                left: 12,
-                right: 28,
+    return SizedBox(
+      width: 420,
+      child: Card(
+        margin: const EdgeInsets.all(32),
+        color: Colors.black.withGreen(10).withRed(40).withBlue(30),
+        elevation: 6,
+        child: Padding(
+          padding: const EdgeInsets.all(22),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _textLine(
+                prefix: '     Income:    ',
+                color: Colors.green[400]!,
+                amt: totalIncome,
               ),
-              child: Container(
-                height: 3,
-                width: double.infinity,
-                color: Colors.grey,
+              _textLine(
+                prefix: '– Spending: ',
+                color: Colors.red,
+                amt: totalSpending,
               ),
-            ),
-            Text(
-              '     Savings:    ${(totalIncome - totalSpending).asCompactDollars()}',
-              style: defaultFont.copyWith(color: Colors.blue[700]),
-              maxLines: 1,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: SizedBox(
-                width: double.infinity,
-                child: AutoSizeText(
-                  'Since December 2020',
-                  textAlign: TextAlign.right,
-                  style: defaultFont.copyWith(
-                    fontSize: 12,
-                    color: Colors.blueGrey[600],
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
+              _dividerLine(),
+              _textLine(
+                prefix: '     Savings:    ',
+                color: Colors.blue[700]!,
+                amt: totalIncome - totalSpending,
               ),
-            ),
-          ],
+              _dateBound(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Text _textLine({
+    required String prefix,
+    required Color color,
+    required double amt,
+  }) {
+    return Text(
+      '$prefix${amt.asCompactDollars()}',
+      style: defaultFont.copyWith(color: color),
+      maxLines: 1,
+    );
+  }
+
+  Widget _dividerLine() {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 8,
+        bottom: 2,
+        left: 12,
+        right: 28,
+      ),
+      child: Container(
+        height: 3,
+        width: 275,
+        color: Colors.grey,
+      ),
+    );
+  }
+
+  Widget _dateBound() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: SizedBox(
+        width: double.infinity,
+        child: AutoSizeText(
+          'Since December 2020',
+          textAlign: TextAlign.right,
+          style: defaultFont.copyWith(
+            fontSize: 12,
+            color: Colors.blueGrey[600],
+            fontStyle: FontStyle.italic,
+          ),
         ),
       ),
     );
