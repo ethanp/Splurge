@@ -41,7 +41,7 @@ class BarCharts extends StatelessWidget {
           bars: [
             Bar(
               title: 'Earning',
-              value: -earning[month.key]!.totalAmount,
+              value: -(earning[month.key]?.totalAmount ?? 0),
               color: Colors.green[800]!,
             ),
             Bar(
@@ -68,7 +68,7 @@ class BarCharts extends StatelessWidget {
           bars: [
             Bar(
               title: 'Earning',
-              value: -earning[spendingEntry.key]!.totalAmount,
+              value: -(earning[spendingEntry.key]?.totalAmount ?? 0),
               color: Colors.green[800]!,
             ),
             Bar(

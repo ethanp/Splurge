@@ -7,14 +7,15 @@ class Dataset {
   final List<Transaction> transactions;
 
   int get count => transactions.length;
+  bool get isEmpty => transactions.isEmpty;
   Transaction? get maybeLastTxn => transactions.maybeLast;
   Transaction get lastTxn => transactions.last;
 
   Dataset get spendingTxns =>
-      Dataset(transactions.where((t) => t.txnType == 'regular').toList());
+      Dataset(transactions.whereL((t) => t.txnType == 'regular'));
 
   Dataset get incomeTxns =>
-      Dataset(transactions.where((t) => t.txnType == 'income').toList());
+      Dataset(transactions.whereL((t) => t.txnType == 'income'));
 
   List<MapEntry<String, Dataset>> get txnsByMonth =>
       transactions.fold([], (accumulator, txn) {
@@ -49,8 +50,8 @@ class Dataset {
 
   double get totalAmount => transactions.sumBy((txn) => txn.amount);
 
-  Dataset forCategories(SelectedCategories selectedCategories) => Dataset(
-      transactions.where((txn) => selectedCategories.includes(txn)).toList());
+  Dataset forCategories(SelectedCategories selectedCategories) =>
+      Dataset(transactions.whereL((txn) => selectedCategories.includes(txn)));
 }
 
 class Transaction {

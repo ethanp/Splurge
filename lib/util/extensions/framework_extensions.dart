@@ -27,6 +27,10 @@ extension ComparableIterable<T extends Comparable> on Iterable<T> {
 extension IterableT<T> on Iterable<T> {
   List<U> mapL<U>(U Function(T) f) => map(f).toList(growable: false);
 
+  List<T> whereL(bool Function(T) f) => where(f).toList(growable: false);
+
+  bool all(bool Function(T) f) => !any((e) => !f(e));
+
   T? get maybeLast => isEmpty ? null : last;
 
   double sumBy(double Function(T) fn) => map(fn).sum;
@@ -47,6 +51,9 @@ extension IterableT<T> on Iterable<T> {
     }
     return ret;
   }
+
+  List<T> separatedBy(T separator) =>
+      expand((e) => [e, separator]).toList()..removeLast();
 
   T _inner<U extends Comparable>(U Function(T) fn, bool Function(int) comp) {
     T bestSoFar = first;
@@ -130,9 +137,4 @@ extension EInt on int {
   }
 
   int mustBeAtLeast(int n) => math.max(this, n);
-}
-
-extension SeparatorI<T> on Iterable<T> {
-  List<T> separatedBy(T separator) =>
-      expand((e) => [e, separator]).toList()..removeLast();
 }

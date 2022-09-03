@@ -35,8 +35,10 @@ class FilterCardState extends ConsumerState<FilterCard> {
   late final TextEditingController textEditingController;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Riverpod does not allow putting this in initState(); it has to be in
+    // didChangeDependencies().
     textEditingController = ref.watch(TextFilter.provider.notifier).controller;
   }
 

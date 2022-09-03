@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splurge/util/widgets.dart';
+import 'package:splurge/util/style.dart';
 
 import 'line.dart';
 

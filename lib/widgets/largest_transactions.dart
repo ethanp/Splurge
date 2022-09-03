@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/providers.dart';
-import 'package:splurge/util/widgets.dart';
+import 'package:splurge/util/style.dart';
 
 class LargestTransactions extends ConsumerStatefulWidget {
   const LargestTransactions({required this.dataset});
@@ -20,7 +20,6 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   @override
   void initState() {
     super.initState();
-    _textFilter.addListener(() => setState(() {}));
   }
 
   TextFilter get _textFilter => ref.read(TextFilter.provider.notifier);
@@ -52,8 +51,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
           .forCategories(ref.read(SelectedCategories.provider.notifier))
           .transactions
           .sortOn((txn) => -txn.amount.abs())
-          .where((txn) => _textFilter.includes(txn))
-          .toList(),
+          .whereL((txn) => _textFilter.includes(txn)),
     );
   }
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/pages/main_page.dart';
-import 'package:splurge/util/widgets.dart';
+import 'package:splurge/util/style.dart';
 
 void main() => runApp(
     // https://riverpod.dev/docs/getting_started
@@ -21,12 +20,7 @@ class AppWidget extends StatelessWidget {
           title: Text('Personal finances analyzer', style: appFont),
           backgroundColor: Colors.teal[800],
         ),
-        body: Center(
-          child: LoadThenShow(
-            future: CopilotExportReader.loadData,
-            widgetBuilder: MainPage.new,
-          ),
-        ),
+        body: Center(child: MainPage()),
       ),
     );
   }

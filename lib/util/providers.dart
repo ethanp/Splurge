@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/data_model.dart';
+import 'package:splurge/util/extensions/framework_extensions.dart';
 
 class SelectedCategories extends StateNotifier<Set<String>>
     with GlobalDatasetFilter {
@@ -44,16 +46,42 @@ mixin GlobalDatasetFilter {
 }
 
 class DatasetNotifier extends StateNotifier<Dataset> {
-  DatasetNotifier() : super(Dataset([]));
+  DatasetNotifier.empty() : super(Dataset([]));
 
-// TODO: Implement.
+  DatasetNotifier({required Dataset preloaded}) : super(preloaded);
+
   /// Global view of ALL transactions.
+  ///
+  /// Empty until the database loads from disk.
   static final unfilteredProvider =
-      StateNotifierProvider((ref) => DatasetNotifier());
+      StateNotifierProvider<DatasetNotifier, Dataset>(
+          (ref) => DatasetNotifier.empty()..loadData());
 
-  // TODO: Implement.
   /// View of the entire transaction dataset that has been pre-filtered by the
   /// active filters.
+  ///
+  /// Empty until the database loads from disk.
   static final filteredProvider =
-      StateNotifierProvider((ref) => DatasetNotifier());
+      StateNotifierProvider<DatasetNotifier, Dataset>((ref) {
+    final up = ref.watch(unfilteredProvider);
+    ref.watch(TextFilter.provider);
+    ref.watch(SelectedCategories.provider);
+
+    final tf = ref.read(TextFilter.provider.notifier);
+    final sc = ref.read(SelectedCategories.provider.notifier);
+
+    return DatasetNotifier(
+      preloaded: Dataset(
+        up.transactions.whereL(
+          (txn) => [tf, sc].all(
+            (_) => _.includes(txn),
+          ),
+        ),
+      ),
+    );
+  });
+
+  Future<void> loadData() async {
+    state = await CopilotExportReader.loadData;
+  }
 }
