@@ -2,41 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/charts/line/line.dart';
 import 'package:splurge/charts/line/my_line_chart.dart';
-import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/providers.dart';
 
 class IncomeVsSpendingLineChart extends ConsumerWidget {
-  const IncomeVsSpendingLineChart({required this.fullDataset});
-
-  final Dataset fullDataset;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(SelectedCategories.provider);
     final selectedCategories = ref.read(SelectedCategories.provider.notifier);
+    final dataset = ref.read(DatasetNotifier.filteredProvider);
 
-    final incomeSpots = fullDataset.incomeTxns
-        .forCategories(selectedCategories)
-        .transactions
-        .mapL(
-          (txn) => Spot(
-            x: txn.date.toDouble,
-            // Make earning easier to compare with spending by inverting.
-            y: -txn.amount,
-          ),
-        );
+    // Make earning easier to compare with spending by inverting.
+    final incomeSpots = dataset.incomeTxns.transactions
+        .mapL((txn) => Spot(x: txn.date.toDouble, y: -txn.amount));
 
-    final spendingSpots = fullDataset.spendingTxns
-        .forCategories(selectedCategories)
-        .transactions
-        .mapL(
-          (txn) => Spot(
-            x: txn.date.toDouble,
-            y: txn.amount,
-          ),
-        );
+    final spendingSpots = dataset.spendingTxns.transactions
+        .mapL((txn) => Spot(x: txn.date.toDouble, y: txn.amount));
 
     return Card(
       margin: const EdgeInsets.all(12),
@@ -47,7 +29,6 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
         padding: const EdgeInsets.only(top: 18, bottom: 18, right: 16),
         child: Column(
           children: [
-            _categoryChips(selectedCategories),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(top: 18),
@@ -73,30 +54,6 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _categoryChips(SelectedCategories selectedCategories) {
-    final categoryNames =
-        fullDataset.transactions.map((txn) => txn.category).toSet();
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: [
-        for (final categoryName in categoryNames)
-          FilterChip(
-            selectedColor: Colors.orange[900],
-            label: Text(categoryName),
-            selected: selectedCategories.contains(categoryName),
-            onSelected: (bool? isSelected) {
-              print('$categoryName $isSelected');
-              if (isSelected ?? false)
-                selectedCategories.add(categoryName);
-              else
-                selectedCategories.remove(categoryName);
-            },
-          ),
-      ],
     );
   }
 }

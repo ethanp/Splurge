@@ -13,18 +13,13 @@ import 'package:splurge/util/providers.dart';
 // 3) [DONE] Refactor the [TextEditingController] to be an app-level
 //    [ValueNotifierProvider] via riverpod.
 //
-// 4) Put the Category FilterChips into the Filter Card.
+// 4) [DONE] Put the Category FilterChips into the Filter Card.
 //
-// 5) Plug all the different cards into the list of txns filtered via the
-//    search bar controller. (Available via a riverpod provider.)
+// 5) [DONE] Create a Dataset StateNotifier which has the search bar controller
+//    and filter chips run as pre-filters configured upon it.
 //
-//    -> Impl note: The Dataset StateNotifier should have the search bar
-//    controller run as a pre-filter configured upon it, if you remember what
-//    I mean; it's a slightly more advanced usage of the riverpod library.
-//    It's very clearly explained in their docs though.
-//
-// 6) Plug the Category FilterChips into all the different cards too. Ensuring
-//    it is INTERSECTION with the SearchBar text filter.
+// 6) [IN PROGRESS] Plug all the different cards into the list of txns filtered
+//    via the search bar controller and filtered categories.
 //
 class FilterCard extends ConsumerStatefulWidget {
   @override
@@ -45,22 +40,25 @@ class FilterCardState extends ConsumerState<FilterCard> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
-      width: 400,
+      height: 220,
+      width: 450,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
         color: Colors.brown[900],
         elevation: 4,
-        child: _searchBar(),
+        child: Column(children: [
+          _searchBar(),
+          _categoryChips(),
+        ]),
       ),
     );
   }
 
   Widget _searchBar() {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 16),
+      padding: const EdgeInsets.only(left: 20, right: 16, top: 12, bottom: 20),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         _clearFieldButton(),
         Expanded(
@@ -97,6 +95,32 @@ class FilterCardState extends ConsumerState<FilterCard> {
         color: Colors.red,
         hoverColor: Colors.brown[800]!.withOpacity(.5),
       ),
+    );
+  }
+
+  Widget _categoryChips() {
+    ref.watch(SelectedCategories.provider);
+    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
+    final fullDataset = ref.read(DatasetNotifier.unfilteredProvider);
+    final categoryNames =
+        fullDataset.transactions.map((txn) => txn.category).toSet();
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final categoryName in categoryNames)
+          FilterChip(
+            selectedColor: Colors.orange[900],
+            label: Text(categoryName),
+            selected: selectedCategories.contains(categoryName),
+            onSelected: (bool? isSelected) {
+              if (isSelected ?? false)
+                selectedCategories.add(categoryName);
+              else
+                selectedCategories.remove(categoryName);
+            },
+          ),
+      ],
     );
   }
 }

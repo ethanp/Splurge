@@ -15,24 +15,16 @@ class MainPage extends ConsumerWidget {
 
     return Row(children: [
       Expanded(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                TotalsCard(
-                  totalIncome: -dataset.incomeTxns.totalAmount,
-                  totalSpending: dataset.spendingTxns.totalAmount,
-                ),
-                FilterCard(),
-              ],
+        child: Column(children: [
+          Row(children: [
+            TotalsCard(
+              totalIncome: -dataset.incomeTxns.totalAmount,
+              totalSpending: dataset.spendingTxns.totalAmount,
             ),
-            Expanded(
-              child: IncomeVsSpendingLineChart(
-                fullDataset: dataset,
-              ),
-            ),
-          ],
-        ),
+            FilterCard(),
+          ]),
+          Expanded(child: IncomeVsSpendingLineChart()),
+        ]),
       ),
       Expanded(
         child: Column(children: [
