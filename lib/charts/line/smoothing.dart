@@ -97,4 +97,8 @@ class SmoothingParams {
   /// more pretty when combined with the nDay smoothing, but there may be no
   /// "n-event cycles" in the data that have to be smoothed.
   final int nEventSmoothing;
+
+  @override
+  String toString() =>
+      'smoothed at $nDaySmoothing days, $nEventSmoothing events';
 }

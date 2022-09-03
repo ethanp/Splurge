@@ -23,7 +23,7 @@ class Legend extends StatelessWidget {
               (line) => Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  '${line.title}: ${line.rawSpots.length} txns',
+                  '${line.title}: ${line.rawSpots.length} txns, ${line.smoothing}',
                   style: TextStyle(
                     color: line.color,
                   ),
