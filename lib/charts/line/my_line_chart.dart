@@ -1,7 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/style.dart';
 
 import 'axis_labels.dart';
 import 'legend.dart';
@@ -22,17 +24,18 @@ class MyLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        Positioned(
-          left: 80,
-          top: 160,
-          child: Legend(title: title, lines: lines),
-        ),
-        _Chart(lines: lines),
-      ],
-    );
+    return Column(children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // TODO(UI): This info should be on a "hood" like the
+        //  [LargestTransactions] widget (aka "Transactions review") has.
+        children: [
+          AutoSizeText(title, style: titleStyle),
+          Legend(lines: lines),
+        ],
+      ),
+      Expanded(child: _Chart(lines: lines)),
+    ]);
   }
 }
 

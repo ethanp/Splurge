@@ -4,6 +4,7 @@ import 'package:splurge/util/extensions/framework_extensions.dart';
 
 import 'line.dart';
 
+// TODO(feature): Show txns from the surrounding dates in the tooltip.
 class MyTooltip {
   static LineTouchData create(List<Line> lines) {
     return LineTouchData(
