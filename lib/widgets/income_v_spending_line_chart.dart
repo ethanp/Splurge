@@ -26,31 +26,22 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
       elevation: 8,
       color: Colors.grey[900],
       child: Padding(
-        padding: const EdgeInsets.only(top: 18, bottom: 18, right: 16),
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 18),
-                child: MyLineChart(
-                  title: 'Earning vs Spending',
-                  lines: [
-                    if (incomeSpots.isNotEmpty)
-                      Line(
-                        title: 'Earning',
-                        color: Colors.green[800]!,
-                        rawSpots: incomeSpots,
-                      ),
-                    if (spendingSpots.isNotEmpty)
-                      Line(
-                        title: 'Spending',
-                        color: Colors.red,
-                        rawSpots: spendingSpots,
-                      ),
-                  ],
-                ),
+        padding: const EdgeInsets.only(left: 4, top: 12, right: 20, bottom: 20),
+        child: MyLineChart(
+          title: 'Earning vs Spending',
+          lines: [
+            if (incomeSpots.isNotEmpty)
+              Line(
+                title: 'Earning',
+                color: Colors.green[800]!,
+                rawSpots: incomeSpots,
               ),
-            ),
+            if (spendingSpots.isNotEmpty)
+              Line(
+                title: 'Spending',
+                color: Colors.red,
+                rawSpots: spendingSpots,
+              ),
           ],
         ),
       ),
