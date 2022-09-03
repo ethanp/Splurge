@@ -16,7 +16,7 @@ class TotalsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 420,
+      width: 440,
       child: Card(
         margin: const EdgeInsets.all(32),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -28,18 +28,18 @@ class TotalsCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _textLine(
-                prefix: '     Income:    ',
+                prefix: '     Income:      ',
                 color: Colors.green[400]!,
                 amt: totalIncome,
               ),
               _textLine(
-                prefix: '– Spending: ',
+                prefix: '– Spending:   ',
                 color: Colors.red,
                 amt: totalSpending,
               ),
               _dividerLine(),
               _textLine(
-                prefix: '     Savings:    ',
+                prefix: '     Savings:      ',
                 color: Colors.blue[700]!,
                 amt: totalIncome - totalSpending,
               ),
@@ -51,12 +51,14 @@ class TotalsCard extends StatelessWidget {
     );
   }
 
-  Text _textLine({
+  Widget _textLine({
     required String prefix,
     required Color color,
     required double amt,
   }) {
-    return Text(
+    // Give room for the negative sign.
+    if (amt < 0) prefix = prefix.substring(0, prefix.length - 3);
+    return AutoSizeText(
       '$prefix${amt.asCompactDollars()}',
       style: defaultFont.copyWith(color: color),
       maxLines: 1,
@@ -64,18 +66,15 @@ class TotalsCard extends StatelessWidget {
   }
 
   Widget _dividerLine() {
-    return Padding(
-      padding: EdgeInsets.only(
+    return Container(
+      margin: EdgeInsets.only(
         top: 8,
         bottom: 2,
         left: 12,
         right: 28,
       ),
-      child: Container(
-        height: 3,
-        width: 275,
-        color: Colors.grey,
-      ),
+      height: 3,
+      color: Colors.grey,
     );
   }
 

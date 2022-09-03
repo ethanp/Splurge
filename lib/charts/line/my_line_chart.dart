@@ -26,7 +26,10 @@ class MyLineChart extends StatelessWidget {
       alignment: Alignment.topCenter,
       children: [
         Positioned(
-            left: 80, top: 20, child: Legend(title: title, lines: lines)),
+          left: 80,
+          top: 160,
+          child: Legend(title: title, lines: lines),
+        ),
         _Chart(lines: lines),
       ],
     );

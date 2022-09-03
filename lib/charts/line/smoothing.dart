@@ -76,6 +76,7 @@ class Smoothing {
     // Add one last day.
     lineBuilder.add(FlSpot(currDate.toDouble, _periodAvg()));
 
+    // Cut off the initial ramp-up days for cleanliness.
     return lineBuilder.sublist(
       math.min(
         lineBuilder.length - 1,

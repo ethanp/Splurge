@@ -40,8 +40,8 @@ class FilterCardState extends ConsumerState<FilterCard> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 220,
-      width: 450,
+      height: 200,
+      width: 480,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -49,17 +49,23 @@ class FilterCardState extends ConsumerState<FilterCard> {
         color: Colors.brown[900],
         elevation: 4,
         child: Column(children: [
-          _searchBar(),
-          _categoryChips(),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: _searchBar(),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: _categoryChips(),
+          ),
         ]),
       ),
     );
   }
 
   Widget _searchBar() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 16, top: 12, bottom: 20),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         _clearFieldButton(),
         Expanded(
           child: TextFormField(
@@ -82,7 +88,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
             color: Colors.lightBlue[200],
           ),
         ),
-      ]),
+      ],
     );
   }
 
@@ -110,6 +116,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
       children: [
         for (final categoryName in categoryNames)
           FilterChip(
+            showCheckmark: false, // This way the chip doesn't ever change size.
             selectedColor: Colors.orange[900],
             label: Text(categoryName),
             selected: selectedCategories.contains(categoryName),
