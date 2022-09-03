@@ -28,6 +28,7 @@ class BarGroup {
   final List<Bar> bars;
 }
 
+// TODO(Big bug): When no txns go on the bar chart, it breaks.
 class MyBarChart extends StatelessWidget {
   const MyBarChart({
     required this.title,

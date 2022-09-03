@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/data_model.dart';
@@ -26,17 +25,16 @@ class SelectedCategories extends StateNotifier<Set<String>>
   void remove(String category) => state = {...state..remove(category)};
 }
 
-class TextFilter extends ValueNotifier<String> with GlobalDatasetFilter {
-  TextFilter() : super('') {
-    controller.addListener(() => notifyListeners());
-  }
+class TextFilter extends StateNotifier<String> with GlobalDatasetFilter {
+  TextFilter() : super('');
 
-  final TextEditingController controller = TextEditingController();
+  void updateTo(String v) => state = v;
 
-  static final provider = ChangeNotifierProvider((ref) => TextFilter());
+  static final provider =
+      StateNotifierProvider<TextFilter, String>((ref) => TextFilter());
 
   @override
-  bool includes(Transaction txn) => txn.title.contains(value);
+  bool includes(Transaction txn) => txn.title.contains(state);
 }
 
 /// Interface for filters that can be applied to the global Dataset.
@@ -57,6 +55,9 @@ class DatasetNotifier extends StateNotifier<Dataset> {
       StateNotifierProvider<DatasetNotifier, Dataset>(
           (ref) => DatasetNotifier.empty()..loadData());
 
+  // TODO(Big bug): When no txns match the filter the app goes into the loading
+  //  screen, with no way to come back out :(. We should probably return [null]
+  //  for the not-loaded state, and leave empty for the no-data state.
   /// View of the entire transaction dataset that has been pre-filtered by the
   /// active filters.
   ///

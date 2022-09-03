@@ -2,39 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/util/providers.dart';
 
-// TODO(feature): Finish up this filter card.
-//
-// Plan:
-//
-// 1) [DONE] Create the filter card.
-//
-// 2) [DONE] Put the search bar into the Filter Card.
-//
-// 3) [DONE] Refactor the [TextEditingController] to be an app-level
-//    [ValueNotifierProvider] via riverpod.
-//
-// 4) [DONE] Put the Category FilterChips into the Filter Card.
-//
-// 5) [DONE] Create a Dataset StateNotifier which has the search bar controller
-//    and filter chips run as pre-filters configured upon it.
-//
-// 6) [IN PROGRESS] Plug all the different cards into the list of txns filtered
-//    via the search bar controller and filtered categories.
-//
 class FilterCard extends ConsumerStatefulWidget {
   @override
   FilterCardState createState() => FilterCardState();
 }
 
 class FilterCardState extends ConsumerState<FilterCard> {
-  late final TextEditingController textEditingController;
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Riverpod does not allow putting this in initState(); it has to be in
-    // didChangeDependencies().
-    textEditingController = ref.watch(TextFilter.provider.notifier).controller;
+    // Riverpod does not allow putting reads of providers in initState(); it has
+    // to be in didChangeDependencies().
+    textEditingController.addListener(() => ref
+        .read(TextFilter.provider.notifier)
+        .updateTo(textEditingController.text));
   }
 
   @override
