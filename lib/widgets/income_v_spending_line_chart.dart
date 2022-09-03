@@ -14,8 +14,8 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(selectedCategoriesProvider);
-    final selectedCategories = ref.read(selectedCategoriesProvider.notifier);
+    ref.watch(SelectedCategories.provider);
+    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
 
     final incomeSpots = fullDataset.incomeTxns
         .forCategories(selectedCategories)

@@ -37,8 +37,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
   @override
   void initState() {
     super.initState();
-    ref.read(filteredDatasetProvider.notifier);
-    textEditingController = ref.read(textFilterProvider);
+    textEditingController = ref.watch(TextFilter.provider.notifier).controller;
   }
 
   @override

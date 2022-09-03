@@ -23,11 +23,11 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
     _textFilter.addListener(() => setState(() {}));
   }
 
-  TextEditingController get _textFilter => ref.read(textFilterProvider);
+  TextFilter get _textFilter => ref.read(TextFilter.provider.notifier);
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(selectedCategoriesProvider);
+    ref.watch(SelectedCategories.provider);
     final eligibleTxns = _eligibleTxns();
     return Card(
       color: Colors.grey[900],
@@ -49,11 +49,10 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   Dataset _eligibleTxns() {
     return Dataset(
       widget.dataset
-          .forCategories(ref.read(selectedCategoriesProvider.notifier))
+          .forCategories(ref.read(SelectedCategories.provider.notifier))
           .transactions
           .sortOn((txn) => -txn.amount.abs())
-          .where((txn) =>
-              _textFilter.text.isEmpty || txn.title.contains(_textFilter.text))
+          .where((txn) => _textFilter.includes(txn))
           .toList(),
     );
   }
@@ -90,20 +89,16 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       ),
       trailing: Text(txn.date.formatted),
       isThreeLine: true,
-      subtitle: _subtitle(txn),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text(txn.txnType), Text(txn.category)],
+      ),
       title: Text(
         txn.title,
         style: TextStyle(
           color: txn.amount < 0 ? Colors.green : Colors.red,
         ),
       ),
-    );
-  }
-
-  Widget _subtitle(Transaction txn) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [Text(txn.txnType), Text(txn.category)],
     );
   }
 }
