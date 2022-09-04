@@ -47,34 +47,39 @@ class CopilotExportValueSplitter extends Iterator<String> {
   String get curChar => rawRow[cursorPosition];
 
   @override
-  bool moveNext() => cursorPosition < rawRow.length;
+  bool moveNext() {
+    if (done) return false;
+    current = curChar == '"' ? _extractFromQuotes() : _extractNoQuotes();
+    return !done;
+  }
+
+  bool get done => cursorPosition >= rawRow.length;
 
   @override
-  String get current =>
-      curChar == '"' ? _extractFromQuotes() : _extractNoQuotes();
+  String current = '';
 
   String _extractFromQuotes() {
-    int start = cursorPosition;
+    int openQuoteLoc = cursorPosition;
     cursorPosition++;
-    while (curChar != '"' && moveNext()) {
+    while (curChar != '"' && !done) {
       cursorPosition++;
     }
     cursorPosition++; // Close quote
 
     // Weird bug in the raw csv where there can be an extra pair of quotes!
     var offset = 0;
-    if (moveNext() && curChar == '"') {
+    if (!done && curChar == '"') {
       cursorPosition += 2; // skip the quotes
       offset = 2;
     }
 
     cursorPosition++; // Comma
-    return rawRow.substring(start + 1, cursorPosition - 2 - offset);
+    return rawRow.substring(openQuoteLoc + 1, cursorPosition - 2 - offset);
   }
 
   String _extractNoQuotes() {
     int start = cursorPosition;
-    while (curChar != ',' && moveNext()) {
+    while (curChar != ',' && !done) {
       cursorPosition++;
     }
     cursorPosition++;

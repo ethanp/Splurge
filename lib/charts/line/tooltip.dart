@@ -57,7 +57,7 @@ class MyTooltip {
         .map((t) => '${t.amount.asCompactDollars()} ${t.title}')
         .join('\n');
     final ret = TextSpan(
-      text: '\n\nThis day\'s txns:\n${_txnsStr(dataset, date)}',
+      text: '\n\nThis day\'s txns:\n$txnsStr',
       style: const TextStyle(color: Colors.white60),
     );
     return [ret];
