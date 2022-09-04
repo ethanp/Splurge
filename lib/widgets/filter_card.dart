@@ -46,6 +46,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
   }
 
   Widget _searchBar() {
+    final txns = ref.read(DatasetNotifier.filteredProvider);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -55,8 +56,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
             controller: textEditingController,
             decoration: InputDecoration(
               hintText: 'Matches transactions by title',
-              // TODO(UI): Implement real count.
-              helperText: '122 matching txns',
+              helperText: '${txns.count} matching txns',
               labelText: 'Transaction filter',
               counterText: 'Active iff non-empty',
               border: OutlineInputBorder(),
