@@ -32,7 +32,8 @@ class FilterCardState extends ConsumerState<FilterCard> {
         elevation: 4,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 6),
             child: _searchBar(),
           ),
           Padding(
@@ -45,21 +46,6 @@ class FilterCardState extends ConsumerState<FilterCard> {
   }
 
   Widget _searchBar() {
-    return Row(children: [
-      Padding(
-        padding: const EdgeInsets.only(bottom: 22),
-        child: _searchIcon(),
-      ),
-      Expanded(
-        child: Stack(children: [
-          _textFormField(),
-          Positioned(top: 7, right: 10, child: _clearFieldButton()),
-        ]),
-      ),
-    ]);
-  }
-
-  TextFormField _textFormField() {
     final txns = ref.read(DatasetNotifier.filteredProvider);
     final isActive = ref.watch(TextFilter.provider).isNotEmpty;
     return TextFormField(
@@ -77,34 +63,24 @@ class FilterCardState extends ConsumerState<FilterCard> {
           color: isActive ? Colors.green : Colors.grey[600],
         ),
         border: const OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Card _searchIcon() {
-    return Card(
-      color: Colors.brown[700]!.withOpacity(.7),
-      child: SizedBox(
-        height: 52,
-        width: 46,
-        child: Icon(
-          Icons.search,
-          size: 40,
-          color: Colors.lightBlue[200],
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(left: 8, right: 4),
+          child: Icon(
+            Icons.search,
+            size: 40,
+            color: Colors.blueGrey[400]!.withBlue(140),
+          ),
         ),
+        suffixIcon: _clearFieldButton(),
       ),
     );
   }
 
   Widget _clearFieldButton() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        elevation: 4,
-        backgroundColor: Colors.brown.withOpacity(.6),
-        shape: Shape.roundedRect(circular: 8),
-      ),
+    return IconButton(
+      padding: const EdgeInsets.only(right: 4),
       onPressed: () => textEditingController.clear(),
-      child: Icon(
+      icon: Icon(
         Icons.clear,
         size: 36,
         color: Colors.red.withOpacity(.6),
