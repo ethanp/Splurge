@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/providers.dart';
 import 'package:splurge/util/style.dart';
 
 import 'axis_labels.dart';
@@ -39,13 +41,13 @@ class MyLineChart extends StatelessWidget {
   }
 }
 
-class _Chart extends StatelessWidget {
+class _Chart extends ConsumerWidget {
   const _Chart({required this.lines});
 
   final List<Line> lines;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final List<LineChartBarData> flLines = lines.mapL(
       (line) => LineChartBarData(
         spots: line.spots,
@@ -70,7 +72,10 @@ class _Chart extends StatelessWidget {
         minY: 0, // flLines.minY - verticalMargin,
         maxY: flLines.maxY + verticalMargin,
         titlesData: AxisLabels.create(),
-        lineTouchData: MyTooltip.create(lines),
+        lineTouchData: MyTooltip.create(
+          lines,
+          ref.watch(DatasetNotifier.filteredProvider),
+        ),
       ),
     );
   }

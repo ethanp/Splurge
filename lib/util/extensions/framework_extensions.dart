@@ -76,27 +76,15 @@ extension ListT<T> on List<T> {
 
 extension EDateTime on DateTime {
   /// Eg. 'Sat Jul 30 2022'
-  String get formatted {
-    final dayOfWeek = DateFormat.E().format(this);
-    final date = DateFormat.MMMd().format(this);
-    final year = DateFormat.y().format(this);
-    return '$dayOfWeek $date $year';
-  }
+  String get formatted => DateFormat('E MMM d y').format(this);
 
   /// Eg. 'Jul 2022'
-  String get monthString {
-    final date = DateFormat.MMM().format(this);
-    final year = DateFormat.y().format(this);
-    return '$date $year';
-  }
+  String get monthString => DateFormat('MMM y').format(this);
 
   int get qtr => (month ~/ 4) + 1;
 
   /// Eg. 'Q1 2022'
-  String get qtrString {
-    final year = DateFormat.y().format(this);
-    return 'Q$qtr $year';
-  }
+  String get qtrString => 'Q$qtr $year';
 
   double get toDouble => millisecondsSinceEpoch.toDouble();
 }

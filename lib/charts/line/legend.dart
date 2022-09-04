@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splurge/util/style.dart';
 
 import 'line.dart';
 
@@ -14,21 +15,19 @@ class Legend extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            ...lines.map(
-              (line) => Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  '${line.title}: ${line.rawSpots.length} txns, ${line.smoothing}',
-                  style: TextStyle(
-                    color: line.color,
-                  ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          for (final line in lines)
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Text(
+                // TODO(UI): Make the [line.title] bold.
+                '– ${line.title}: ${line.rawSpots.length} txns, ${line.smoothing}',
+                style: appFont.copyWith(
+                  color: line.color,
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+        ]),
       ),
     );
   }
