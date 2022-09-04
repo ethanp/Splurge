@@ -124,18 +124,15 @@ class Header extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Colors.brown,
-                Colors.brown.withOpacity(.4),
-              ],
+              colors: [Colors.brown, Colors.brown.withOpacity(.4)],
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
-            // The [Row] is just there to make the Text infinite width and centered.
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('Matching transactions', style: titleStyle)],
+          child: SizedBox(
+            width: double.infinity,
+            child: Center(
+              // The below performs: `this.height = child.height * 2`
+              heightFactor: 2,
+              child: Text('Matching transactions', style: titleStyle),
             ),
           ),
         ),
