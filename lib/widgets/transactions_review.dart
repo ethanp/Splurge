@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_model.dart';
@@ -33,51 +34,40 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       ),
       margin: const EdgeInsets.all(12),
       elevation: 18,
-      child: Stack(children: <Widget>[
-        _txnListView(eligibleTxns),
+      child: Stack(children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: ListView.builder(
+            itemCount: eligibleTxns.count + 1,
+            itemBuilder: (_, idx) => idx == 0
+                // Add one blank spot to allow it to go behind the Header.
+                ? const SizedBox(height: 24)
+                : _listTile(eligibleTxns.transactions[idx - 1]),
+          ),
+        ),
         Header(eligibleTxns),
       ]),
     );
   }
 
-  Dataset _eligibleTxns() {
-    return Dataset(
-      widget.dataset
-          .forCategories(ref.read(SelectedCategories.provider.notifier))
-          .transactions
-          .sortOn((txn) => -txn.amount.abs())
-          .whereL((txn) => _textFilter.includes(txn)),
-    );
-  }
-
-  Widget _txnListView(Dataset eligibleTxns) {
-    return Positioned(
-      top: 20,
-      height: 600,
-      width: 800,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: ListView.builder(
-          itemCount: eligibleTxns.count + 1,
-          itemBuilder: (_, idx) => idx == 0
-              // We need one blank spot to allow it to go behind the Header.
-              ? const SizedBox(height: 24)
-              : _listTile(eligibleTxns.transactions[idx - 1]),
-        ),
-      ),
-    );
-  }
+  Dataset _eligibleTxns() => Dataset(widget.dataset
+      .forCategories(ref.read(SelectedCategories.provider.notifier))
+      .transactions
+      .sortOn((txn) => -txn.amount.abs())
+      .whereL((txn) => _textFilter.includes(txn)));
 
   Widget _listTile(Transaction txn) {
     final amount = Text(
       txn.amount.asCompactDollars(),
+      textAlign: TextAlign.right,
       style: appFont.copyWith(
         color: Colors.grey,
         fontSize: 18,
       ),
     );
-    final title = Text(
+    final title = AutoSizeText(
       txn.title,
+      maxLines: 2,
       style: appFont.copyWith(
         color: txn.amount < 0 ? Colors.green : Colors.red,
         fontSize: 17,
@@ -97,14 +87,16 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       ),
     );
 
-    return ListTile(
-      leading: amount,
-      title: Row(children: [
-        Expanded(flex: 2, child: title),
-        Expanded(child: category),
-      ]),
-      trailing: date,
-    );
+    return Card(
+        color: Colors.black87.withOpacity(.2),
+        margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+        child: Row(
+            children: <Widget>[
+          Expanded(child: amount),
+          Expanded(flex: 2, child: title),
+          Expanded(child: category),
+          Expanded(child: date),
+        ].separatedBy(const SizedBox(width: 30, height: 40))));
   }
 }
 
