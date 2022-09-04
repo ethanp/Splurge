@@ -23,20 +23,12 @@ class MyTooltip {
 
         getTooltipItems: (touchedSpots) {
           final date = touchedSpots.first.x.toDate;
-          final txns = Dataset(dataset.transactions
-              .whereL((e) => e.date.formatted == date.formatted));
-          final txnsStr = txns.transactions
-              .map((t) => '${t.amount.asCompactDollars()} ${t.title}')
-              .join('\n');
           final lastSpot = [
             TextSpan(
-              text: '\nDate: ${date.formatted}',
+              text: '\n\nDate: ${date.formatted}',
               style: const TextStyle(color: Colors.white60),
             ),
-            TextSpan(
-              text: '\n\nThis day\'s txns:\n$txnsStr',
-              style: const TextStyle(color: Colors.white60),
-            ),
+            ..._txnsStr(dataset, date),
           ];
           return touchedSpots.mapL((touchedSpot) {
             final line = lines[touchedSpot.barIndex];
@@ -52,5 +44,22 @@ class MyTooltip {
         },
       ),
     );
+  }
+
+  // TODO(UI): Spending in red, earning in green.
+  static List<TextSpan> _txnsStr(Dataset dataset, DateTime date) {
+    final txns = Dataset(
+        dataset.transactions.whereL((e) => e.date.formatted == date.formatted));
+    final txnsStr = txns.transactions
+        // List txns in DESCENDING order; with income at the bottom in
+        // ASCENDING order.
+        .sortOn((t) => -t.amount)
+        .map((t) => '${t.amount.asCompactDollars()} ${t.title}')
+        .join('\n');
+    final ret = TextSpan(
+      text: '\n\nThis day\'s txns:\n${_txnsStr(dataset, date)}',
+      style: const TextStyle(color: Colors.white60),
+    );
+    return [ret];
   }
 }

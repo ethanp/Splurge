@@ -77,26 +77,36 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   }
 
   Widget _listTile(Transaction txn) {
+    final color = txn.amount < 0 ? Colors.green : Colors.red;
+    final amount = Text(
+      txn.amount.asCompactDollars(),
+      style: appFont.copyWith(color: color),
+    );
+    final title = Text(txn.title, style: appFont.copyWith(color: color));
+    final typeAndCategory = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        txn.txnType,
+        txn.category,
+      ].mapL(
+        (string) => Text(
+          string,
+          style: appFont.copyWith(
+            fontSize: 10,
+            color: Colors.grey[300],
+          ),
+        ),
+      ),
+    );
+    final date = Text(txn.date.formatted);
+
+    // TODO(ui): I've been unable to get these any closer together. But there's
+    //  too much space between them.
     return ListTile(
-      leading: Text(
-        txn.amount.asCompactDollars(),
-        style: TextStyle(
-          color: txn.amount < 0 ? Colors.green : Colors.red,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-      trailing: Text(txn.date.formatted),
-      isThreeLine: true,
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text(txn.txnType), Text(txn.category)],
-      ),
-      title: Text(
-        txn.title,
-        style: TextStyle(
-          color: txn.amount < 0 ? Colors.green : Colors.red,
-        ),
-      ),
+      leading: amount,
+      title: title,
+      subtitle: typeAndCategory,
+      trailing: date,
     );
   }
 }
