@@ -88,15 +88,17 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
     );
 
     return Card(
-        color: Colors.black87.withOpacity(.2),
-        margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-        child: Row(
-            children: <Widget>[
+      color: Colors.black87.withOpacity(.2),
+      margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+      child: Row(
+        children: <Widget>[
           Expanded(child: amount),
           Expanded(flex: 2, child: title),
           Expanded(child: category),
           Expanded(child: date),
-        ].separatedBy(const SizedBox(width: 30, height: 40))));
+        ].separatedBy(const SizedBox(width: 30, height: 40)),
+      ),
+    );
   }
 }
 
