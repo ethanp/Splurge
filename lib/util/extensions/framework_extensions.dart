@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 /// The goal of this package is to provide methods that "satisfying" in the
@@ -125,4 +126,9 @@ extension EInt on int {
   }
 
   int mustBeAtLeast(int n) => math.max(this, n);
+}
+
+class Shape {
+  static OutlinedBorder roundedRect({required double circular}) =>
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(circular));
 }

@@ -17,11 +17,6 @@ class LargestTransactions extends ConsumerStatefulWidget {
 }
 
 class LargestTransactionsState extends ConsumerState<LargestTransactions> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   TextFilter get _textFilter => ref.read(TextFilter.provider.notifier);
 
   @override
@@ -30,7 +25,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
     final eligibleTxns = _eligibleTxns();
     return Card(
       color: Colors.grey[900],
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.horizontal(
           left: Radius.circular(100),
           right: Radius.elliptical(120, 90),

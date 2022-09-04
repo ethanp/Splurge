@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/style.dart';
 
 import 'line.dart';
@@ -12,7 +13,7 @@ class Legend extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.grey[800]!.withOpacity(.7),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      shape: Shape.roundedRect(circular: 6),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
