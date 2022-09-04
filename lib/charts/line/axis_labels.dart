@@ -5,12 +5,14 @@ import 'package:splurge/util/extensions/framework_extensions.dart';
 class AxisLabels {
   static FlTitlesData create() {
     return FlTitlesData(
-      topTitles: AxisTitles(), // Hide for now
+      topTitles: _hide(),
       bottomTitles: _dateAxisLabels(),
       leftTitles: _leftAxisLabels(),
-      rightTitles: AxisTitles(), // Hide for now
+      rightTitles: _hide(),
     );
   }
+
+  static _hide() => AxisTitles();
 
   static AxisTitles _leftAxisLabels() {
     return AxisTitles(

@@ -29,8 +29,6 @@ class MyLineChart extends StatelessWidget {
     return Column(children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        // TODO(UI): This info should be on a "hood" like the
-        //  [LargestTransactions] widget (aka "Transactions review") has.
         children: [
           AutoSizeText(title, style: titleStyle),
           Legend(lines: lines),

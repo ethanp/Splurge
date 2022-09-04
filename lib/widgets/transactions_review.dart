@@ -56,6 +56,8 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       .sortOn((txn) => -txn.amount.abs())
       .whereL((txn) => _textFilter.includes(txn)));
 
+  // TODO(UX): Make this a TableView instead so that the user can choose which
+  //  column to filter by, and so that each column will have the same width.
   Widget _listTile(Transaction txn) {
     final amount = Text(
       txn.amount.asCompactDollars(),
@@ -133,7 +135,7 @@ class Header extends StatelessWidget {
             // The [Row] is just there to make the Text infinite width and centered.
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('Transactions review', style: titleStyle)],
+              children: [Text('Matching transactions', style: titleStyle)],
             ),
           ),
         ),
