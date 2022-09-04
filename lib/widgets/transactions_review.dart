@@ -56,15 +56,12 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       height: 600,
       width: 800,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 30,
-          horizontal: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: ListView.builder(
           itemCount: eligibleTxns.count + 1,
           itemBuilder: (_, idx) => idx == 0
               // We need one blank spot to allow it to go behind the Header.
-              ? const SizedBox(height: 54)
+              ? const SizedBox(height: 24)
               : _listTile(eligibleTxns.transactions[idx - 1]),
         ),
       ),
@@ -72,35 +69,40 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   }
 
   Widget _listTile(Transaction txn) {
-    final color = txn.amount < 0 ? Colors.green : Colors.red;
     final amount = Text(
       txn.amount.asCompactDollars(),
-      style: appFont.copyWith(color: color),
-    );
-    final title = Text(txn.title, style: appFont.copyWith(color: color));
-    final typeAndCategory = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        txn.txnType,
-        txn.category,
-      ].mapL(
-        (string) => Text(
-          string,
-          style: appFont.copyWith(
-            fontSize: 10,
-            color: Colors.grey[300],
-          ),
-        ),
+      style: appFont.copyWith(
+        color: Colors.grey,
+        fontSize: 18,
       ),
     );
-    final date = Text(txn.date.formatted);
+    final title = Text(
+      txn.title,
+      style: appFont.copyWith(
+        color: txn.amount < 0 ? Colors.green : Colors.red,
+        fontSize: 17,
+      ),
+    );
+    final category = Text(
+      txn.txnType == 'regular' ? txn.category : txn.txnType,
+      style: appFont.copyWith(
+        color: Colors.blueGrey[300],
+        fontSize: 14,
+      ),
+    );
+    final date = Text(
+      txn.date.formatted,
+      style: appFont.copyWith(
+        color: Colors.blueGrey[400],
+      ),
+    );
 
-    // TODO(ui): I've been unable to get these any closer together. But there's
-    //  too much space between them.
     return ListTile(
       leading: amount,
-      title: title,
-      subtitle: typeAndCategory,
+      title: Row(children: [
+        Expanded(flex: 2, child: title),
+        Expanded(child: category),
+      ]),
       trailing: date,
     );
   }
@@ -113,25 +115,11 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _headerCard(
-      content: Row(children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Transactions review', style: titleStyle),
-            _totalEarnedOrSpent(),
-          ],
-        ),
-      ]),
-    );
-  }
-
-  Widget _headerCard({required Widget content}) {
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 1.4, sigmaY: 4),
         child: Container(
+          width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.elliptical(40, 20),
@@ -148,35 +136,12 @@ class Header extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
-            child: content,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _totalEarnedOrSpent() {
-    final earnedOrSpent = shownTxns.totalAmount.isNegative ? 'Earned' : 'Spent';
-    return Padding(
-      padding: const EdgeInsets.only(top: 6, bottom: 0, left: 2),
-      child: RichText(
-        text: TextSpan(
-          style: appFont.copyWith(
-            fontSize: 14,
-            fontStyle: FontStyle.italic,
-            color: Colors.grey[400],
-          ),
-          children: [
-            TextSpan(text: 'Total $earnedOrSpent: '),
-            TextSpan(
-              text: shownTxns.totalAmount.abs().asCompactDollars(),
-              style: TextStyle(
-                color: !shownTxns.totalAmount.isNegative
-                    ? Colors.red
-                    : Colors.green,
-              ),
+            // The [Row] is just there to make the Text infinite width and centered.
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text('Transactions review', style: titleStyle)],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -23,6 +23,7 @@ class MyTooltip {
 
         getTooltipItems: (touchedSpots) {
           final date = touchedSpots.first.x.toDate;
+          // Have to keep this out of the inner-loop to keep latency down.
           final lastSpot = [
             TextSpan(
               text: '\n\nDate: ${date.formatted}',

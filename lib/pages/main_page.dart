@@ -4,8 +4,8 @@ import 'package:splurge/util/providers.dart';
 import 'package:splurge/widgets/bar_charts.dart';
 import 'package:splurge/widgets/filter_card.dart';
 import 'package:splurge/widgets/income_v_spending_line_chart.dart';
-import 'package:splurge/widgets/largest_transactions.dart';
 import 'package:splurge/widgets/totals_card.dart';
+import 'package:splurge/widgets/transactions_review.dart';
 
 class MainPage extends ConsumerWidget {
   @override
