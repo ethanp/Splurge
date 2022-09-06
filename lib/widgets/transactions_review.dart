@@ -76,7 +76,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       ),
     );
     final category = Text(
-      txn.txnType == 'regular' ? txn.category : txn.txnType,
+      txn.category,
       style: appFont.copyWith(
         color: Colors.blueGrey[300],
         fontSize: 14,

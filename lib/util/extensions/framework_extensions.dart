@@ -39,9 +39,11 @@ extension IterableT<T> on Iterable<T> {
   double avgBy(double Function(T) fn) => map(fn).sum / length;
 
   U max<U extends Comparable>(U Function(T) fn) => fn(maxBy(fn));
+
   U min<U extends Comparable>(U Function(T) fn) => fn(minBy(fn));
 
   T minBy<U extends Comparable>(U Function(T) fn) => _inner(fn, (x) => x < 0);
+
   T maxBy<U extends Comparable>(U Function(T) fn) => _inner(fn, (x) => x > 0);
 
   List<U> mapWithIdx<U>(U Function(T, int) fn) {
@@ -87,7 +89,9 @@ extension EDateTime on DateTime {
   /// Eg. 'Q1 2022'
   String get qtrString => 'Q$qtr $year';
 
-  double get toDouble => millisecondsSinceEpoch.toDouble();
+  int get toInt => millisecondsSinceEpoch;
+
+  double get toDouble => toInt.toDouble();
 }
 
 extension EDouble on double {

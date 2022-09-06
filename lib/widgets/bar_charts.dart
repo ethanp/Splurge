@@ -29,28 +29,37 @@ class BarCharts extends StatelessWidget {
   }
 
   Widget _monthlyBarChart() {
-    final Map<String, Dataset> earning =
-        dataset.incomeTxns.txnsByMonth.asMap().map((_, v) => v);
+    Map<String, Dataset> f(Dataset d) => d.txnsByMonth.asMap().map((_, v) => v);
+
+    final Map<String, Dataset> earningMap = f(dataset.incomeTxns);
+    final Map<String, Dataset> spendingMap = f(dataset.spendingTxns);
+
+    final Set<String> mapKeys =
+        [earningMap, spendingMap].expand((_) => _.keys).toSet();
 
     return MyBarChart(
       title: 'Earning vs Spending by month',
       xTitle: (xVal) => xVal.toDate.monthString,
-      barGroups: dataset.spendingTxns.txnsByMonth.mapL(
-        (MapEntry<String, Dataset> month) => BarGroup(
-          xValue: month.value.transactions.first.date.toDouble.toInt(),
-          bars: [
-            Bar(
-              title: 'Earning',
-              value: -(earning[month.key]?.totalAmount ?? 0),
-              color: Colors.green[800]!,
-            ),
-            Bar(
-              title: 'Spending',
-              value: month.value.totalAmount,
-              color: Colors.red,
-            ),
-          ],
-        ),
+      barGroups: mapKeys.mapL(
+        (String month) {
+          final dataset = (spendingMap[month] ?? earningMap[month])!;
+          final firstDate = dataset.transactions.first.date.toInt;
+          return BarGroup(
+            xValue: firstDate,
+            bars: [
+              Bar(
+                title: 'Earning',
+                value: -(earningMap[month]?.totalAmount ?? 0),
+                color: Colors.green[800]!,
+              ),
+              Bar(
+                title: 'Spending',
+                value: spendingMap[month]?.totalAmount ?? 0,
+                color: Colors.red,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -64,7 +73,7 @@ class BarCharts extends StatelessWidget {
       xTitle: (xVal) => xVal.toDate.qtrString,
       barGroups: dataset.spendingTxns.txnsByQuarter.mapL(
         (MapEntry<String, Dataset> spendingEntry) => BarGroup(
-          xValue: spendingEntry.value.transactions.first.date.toDouble.toInt(),
+          xValue: spendingEntry.value.transactions.first.date.toInt,
           bars: [
             Bar(
               title: 'Earning',

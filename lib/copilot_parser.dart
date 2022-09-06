@@ -116,7 +116,6 @@ class CopilotExportRow {
         date: date,
         title: title,
         amount: amount,
-        category: category,
-        txnType: txnType,
+        category: txnType == 'regular' ? category : txnType,
       );
 }

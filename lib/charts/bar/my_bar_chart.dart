@@ -42,13 +42,20 @@ class MyBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.only(bottom: 8, top: 12),
-        child: AutoSizeText(title, maxLines: 1, style: titleStyle),
-      ),
-      Expanded(child: _barChart()),
-    ]);
+    return barGroups.isEmpty
+        ? Center(
+            child: Text(
+              'This bar chart has data to show',
+              style: titleStyle,
+            ),
+          )
+        : Column(children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8, top: 12),
+              child: AutoSizeText(title, maxLines: 1, style: titleStyle),
+            ),
+            Expanded(child: _barChart()),
+          ]);
   }
 
   Widget _barChart() {
@@ -71,17 +78,19 @@ class MyBarChart extends StatelessWidget {
           int groupIndex,
           BarChartRodData rod,
           int rodIndex,
-        ) =>
-            BarTooltipItem(
-          rod.toY.asCompactDollars(),
-          TextStyle(color: rod.color),
-          children: [
-            TextSpan(
-              text: '\n' + group.x.toDouble().toDate.monthString,
-              style: TextStyle(color: Colors.grey[400]),
-            ),
-          ],
-        ),
+        ) {
+          return BarTooltipItem(
+            rod.toY.asCompactDollars(),
+            TextStyle(color: rod.color),
+            children: [
+              TextSpan(
+                // ignore: prefer_interpolation_to_compose_strings
+                text: '\n' + group.x.toDouble().toDate.monthString,
+                style: TextStyle(color: Colors.grey[400]),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
