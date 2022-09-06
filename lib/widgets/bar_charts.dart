@@ -64,6 +64,16 @@ class BarCharts extends StatelessWidget {
     );
   }
 
+  // TODO(math bug): Steps to reproduce:
+  //
+  //  1. Select the rent category, with no title filter.
+  //  2. Compare the spending by month in Q3 vs Q4 of 2021.
+  //  3. Compare the spending by quarter in Q3 vs Q4 of '21.
+  //  4. It's easy to see that (2) != (3) which comes out looking like there's
+  //     a problem with the quarter calculation.
+  //
+  //  However, this is a low-priority bug, since I never found this quarterly-
+  //   chart to provide any value anyhow.
   Widget _quarterlyBarChart() {
     final Map<String, Dataset> earning =
         dataset.incomeTxns.txnsByQuarter.asMap().map((_, v) => v);

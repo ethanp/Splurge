@@ -14,10 +14,7 @@ class Line {
     //  via Riverpod. Create a [SmoothingParamsWidget] to handle the UI, which
     //  will evolve along with the params object itself as the smoothness
     //  library (hopefully) improves over time.
-    this.smoothing = const SmoothingParams(
-      nDaySmoothing: 99,
-      nEventSmoothing: 2,
-    ),
+    this.smoothing = const SmoothingParams(nDaySmoothing: 99),
   })  : assert(rawSpots.isNotEmpty, 'fl_chart does not allow empty lines'),
         spots = Smoothing(params: smoothing).smooth(rawSpots);
 

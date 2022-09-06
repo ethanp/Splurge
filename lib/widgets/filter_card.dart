@@ -23,9 +23,13 @@ class FilterCardState extends ConsumerState<FilterCard> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO(UI): Consider using ConstrainedBox or something to let this resize
+    //  itself to some extent; since I can't find a single size that looks good
+    //  on both laptop and big monitor. OR, another option entirely is to move
+    //  the contents of this card into the AppBar. Dunno.
     return SizedBox(
-      height: 200,
-      width: 480,
+      height: 250,
+      width: 360,
       child: Card(
         shape: Shape.roundedRect(circular: 20),
         color: Colors.brown[900],

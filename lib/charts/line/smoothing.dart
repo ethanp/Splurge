@@ -1,34 +1,20 @@
 import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 
 // TODO(feature): Improve this part. The smoothing is really not-great as-is.
+//  One idea is to "back-propagate" txns so they have a "bell curve"-shaped
+//  effect on the avg. Should be *relatively* easy to implement, and it visually
+//  should make even more sense the current smoothing system. And as long as the
+//  "area under the curve" = 1, then I don't think it's going to bias the final
+//  number in a bad way, like the event avg was doing before.
 class Smoothing {
   const Smoothing({required this.params});
 
   final SmoothingParams params;
 
-  List<FlSpot> smooth(List<FlSpot> spots) => _nDayAvg(_nEventAvg(spots));
-
-  /// Represent each point of a new line as the avg of the last
-  /// [SmoothingParams.nEventSmoothing] points of this line's [spots].
-  List<FlSpot> _nEventAvg(List<FlSpot> spots) {
-    if (spots.isEmpty || params.nEventSmoothing < 2) return spots;
-
-    return spots.mapWithIdx(
-      (FlSpot spot, int lastIdx) => Spot(
-        x: spot.x,
-        y: spots
-            .sublist(
-              (lastIdx - params.nEventSmoothing).mustBeAtLeast(0) + 1,
-              lastIdx + 1, // ending is exclusive (I double-checked).
-            )
-            .avgBy((s) => s.y),
-      ),
-    );
-  }
+  List<FlSpot> smooth(List<FlSpot> spots) => _nDayAvg(spots);
 
   /// Daily, output a point that represents the average of all sessions from
   /// within the preceding [SmoothingParams.nDaySmoothing] days.
@@ -89,17 +75,10 @@ class Smoothing {
 class SmoothingParams {
   const SmoothingParams({
     required this.nDaySmoothing,
-    required this.nEventSmoothing,
   });
 
   final int nDaySmoothing;
 
-  /// In some cases the only reason this is useful is because it makes the line
-  /// more pretty when combined with the nDay smoothing, but there may be no
-  /// "n-event cycles" in the data that have to be smoothed.
-  final int nEventSmoothing;
-
   @override
-  String toString() =>
-      'smoothed at $nDaySmoothing days, $nEventSmoothing events';
+  String toString() => 'smoothed over a $nDaySmoothing day std moving avg';
 }

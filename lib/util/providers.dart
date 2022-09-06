@@ -34,7 +34,8 @@ class TextFilter extends StateNotifier<String> with GlobalDatasetFilter {
       StateNotifierProvider<TextFilter, String>((ref) => TextFilter());
 
   @override
-  bool includes(Transaction txn) => txn.title.contains(state);
+  bool includes(Transaction txn) =>
+      state.toLowerCase().split(' ').all(txn.title.toLowerCase().contains);
 }
 
 /// Interface for filters that can be applied to the global Dataset.
