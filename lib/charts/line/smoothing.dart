@@ -18,11 +18,11 @@ class Smoothing {
     if (spots.isEmpty || params.nEventSmoothing < 2) return spots;
 
     return spots.mapWithIdx(
-      (spot, lastIdx) => Spot(
+      (FlSpot spot, int lastIdx) => Spot(
         x: spot.x,
         y: spots
             .sublist(
-              (lastIdx - params.nEventSmoothing).mustBeAtLeast(0),
+              (lastIdx - params.nEventSmoothing).mustBeAtLeast(0) + 1,
               lastIdx + 1, // ending is exclusive (I double-checked).
             )
             .avgBy((s) => s.y),
@@ -41,7 +41,7 @@ class Smoothing {
     var currDate = spots.first.x.toDate;
 
     /// Finds the average for all sessions within preceding [avgPeriod] duration.
-    double _periodAvg() {
+    double periodAvg() {
       /// Find the last valid idx before currDate.
       while (lastValidIdx + 1 < spots.length &&
           currDate.isAfter(spots[lastValidIdx + 1].x.toDate)) {
@@ -70,11 +70,11 @@ class Smoothing {
     // Add a point for every day from start to finish.
     final lineBuilder = <FlSpot>[];
     while (currDate.isBefore(spots.last.x.toDate)) {
-      lineBuilder.add(FlSpot(currDate.toDouble, _periodAvg()));
+      lineBuilder.add(FlSpot(currDate.toDouble, periodAvg()));
       currDate = currDate.add(const Duration(days: 1));
     }
     // Add one last day.
-    lineBuilder.add(FlSpot(currDate.toDouble, _periodAvg()));
+    lineBuilder.add(FlSpot(currDate.toDouble, periodAvg()));
 
     // Cut off the initial ramp-up days for cleanliness.
     return lineBuilder.sublist(

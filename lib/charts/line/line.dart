@@ -15,7 +15,7 @@ class Line {
     //  will evolve along with the params object itself as the smoothness
     //  library (hopefully) improves over time.
     this.smoothing = const SmoothingParams(
-      nDaySmoothing: 110,
+      nDaySmoothing: 99,
       nEventSmoothing: 2,
     ),
   })  : assert(rawSpots.isNotEmpty, 'fl_chart does not allow empty lines'),
