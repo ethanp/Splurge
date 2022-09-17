@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:io';
 
 import 'package:splurge/data_model.dart';
@@ -109,11 +111,15 @@ class CopilotExportRow {
         return rowValues[4];
       case 'income':
         if (title.toLowerCase().contains('payroll')) {
-          return amount.abs() < 5000 ? 'Payroll' : 'Bonus';
+          if (amount.abs() < 5000) {
+            return IncomeCategory.Payroll.name;
+          } else {
+            return IncomeCategory.Bonus.name;
+          }
         } else if (title.toLowerCase().contains('brokerage')) {
-          return 'GSUs';
+          return IncomeCategory.GSUs.name;
         } else {
-          return 'Other Income';
+          return IncomeCategory.Random.name;
         }
       case 'internal transfer':
         return txnType;
@@ -131,4 +137,15 @@ class CopilotExportRow {
         category: category,
         txnType: txnType,
       );
+}
+
+enum IncomeCategory {
+  Payroll,
+  Bonus,
+  GSUs,
+  Random;
+}
+
+extension IncomeCat on String {
+  bool get isIncome => IncomeCategory.values.any((i) => i.name == this);
 }

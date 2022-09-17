@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/providers.dart';
 
@@ -104,9 +105,10 @@ class FilterCardState extends ConsumerState<FilterCard> {
       // TODO(UX): Can we do a right-click to EXCLUDE feature?
       for (final categoryName in categoryNames)
         FilterChip(
-          showCheckmark: false,
           // This way the chip doesn't ever change size.
-          selectedColor: Colors.orange[900],
+          showCheckmark: false,
+          selectedColor:
+              categoryName.isIncome ? Colors.green[700] : Colors.red[600],
           label: Text(categoryName),
           selected: selectedCategories.contains(categoryName),
           onSelected: (bool? isSelected) {
