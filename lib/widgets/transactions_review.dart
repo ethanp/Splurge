@@ -41,7 +41,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
             itemCount: eligibleTxns.count + 1,
             itemBuilder: (_, idx) => idx == 0
                 // Add one blank spot to allow it to go behind the Header.
-                ? const SizedBox(height: 24)
+                ? const SizedBox(height: 50)
                 : _listTile(eligibleTxns.transactions[idx - 1]),
           ),
         ),

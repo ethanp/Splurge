@@ -15,10 +15,10 @@ class Dataset {
   Transaction get lastTxn => transactions.last;
 
   Dataset get spendingTxns => Dataset(transactions.whereL(
-      (t) => t.category != 'income' && t.category != 'internal transfer'));
+      (t) => t.txnType != 'income' && t.txnType != 'internal transfer'));
 
   Dataset get incomeTxns =>
-      Dataset(transactions.whereL((t) => t.category == 'income'));
+      Dataset(transactions.whereL((t) => t.txnType == 'income'));
 
   List<MapEntry<String, Dataset>> get txnsByMonth =>
       transactions.fold([], (accumulator, txn) {
@@ -63,17 +63,20 @@ class Transaction {
     required this.title,
     required this.amount,
     required this.category,
+    required this.txnType,
   });
 
   final DateTime date;
   final String title;
   final double amount;
   final String category;
+  final String txnType;
 
   @override
   String toString() => ''
       '${date.formatted}, '
       '$title, '
       '$amount, '
-      '${category.isEmpty ? 'no category' : category}';
+      '${category.isEmpty ? 'no category' : category}, '
+      '$txnType';
 }

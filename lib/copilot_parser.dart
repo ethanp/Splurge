@@ -92,11 +92,6 @@ class CopilotExportRow {
     rowValues = CopilotExportValueGenerator(rawRow).toList(growable: false);
   }
 
-  static String removeSurroundingQuotes(String rawValue) =>
-      rawValue.length >= 2 && rawValue.startsWith('"') && rawValue.endsWith('"')
-          ? rawValue.substring(1, rawValue.length - 1)
-          : rawValue;
-
   late final List<String> rowValues;
 
   DateTime get date => DateTime.parse(rowValues[0]);
@@ -108,7 +103,24 @@ class CopilotExportRow {
     return rawValue.isEmpty ? 0 : double.parse(rawValue);
   }
 
-  String get category => rowValues[4];
+  String get category {
+    switch (txnType) {
+      case 'regular':
+        return rowValues[4];
+      case 'income':
+        if (title.toLowerCase().contains('payroll')) {
+          return amount.abs() < 5000 ? 'Payroll' : 'Bonus';
+        } else if (title.toLowerCase().contains('brokerage')) {
+          return 'GSUs';
+        } else {
+          return 'Other Income';
+        }
+      case 'internal transfer':
+        return txnType;
+      default:
+        throw Exception('Unknown txnType $txnType in $rowValues');
+    }
+  }
 
   String get txnType => rowValues[7];
 
@@ -116,6 +128,7 @@ class CopilotExportRow {
         date: date,
         title: title,
         amount: amount,
-        category: txnType == 'regular' ? category : txnType,
+        category: category,
+        txnType: txnType,
       );
 }

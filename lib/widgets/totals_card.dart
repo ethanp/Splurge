@@ -16,9 +16,9 @@ class TotalsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 440,
+      width: 400,
       child: Card(
-        margin: const EdgeInsets.all(32),
+        margin: const EdgeInsets.all(12),
         shape: Shape.roundedRect(circular: 20),
         color: Colors.black.withGreen(10).withRed(40).withBlue(30),
         elevation: 6,

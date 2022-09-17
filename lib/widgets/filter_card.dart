@@ -25,19 +25,23 @@ class FilterCardState extends ConsumerState<FilterCard> {
   Widget build(BuildContext context) {
     // TODO(UI): Consider using ConstrainedBox or something to let this resize
     //  itself to some extent; since I can't find a single size that looks good
-    //  on both laptop and big monitor. OR, another option entirely is to move
-    //  the contents of this card into the AppBar. Dunno.
+    //  on both laptop and big monitor. Specifically, the card should get taller
+    //  as it gets skinnier, to still fit all the chips.
     return SizedBox(
       height: 250,
-      width: 360,
+      width: 500,
       child: Card(
         shape: Shape.roundedRect(circular: 20),
         color: Colors.brown[900],
         elevation: 4,
         child: Column(children: [
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 6),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: 6,
+            ),
             child: _searchBar(),
           ),
           Padding(
@@ -56,9 +60,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
       controller: textEditingController,
       decoration: InputDecoration(
         hintText: 'Enter search text',
-        // TODO(ui): Move this info to elsewhere in the card, and either
-        //  keep this area empty or find something else to put over here.
-        helperText: '${txns.count} matching txns',
+        helperText: '${txns.count} matches',
         labelText: 'Filter transactions by title',
         counterText: isActive
             ? 'Filter is active'
@@ -99,6 +101,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
     final categoryNames =
         fullDataset.transactions.map((txn) => txn.category).toSet();
     final filterChips = [
+      // TODO(UX): Can we do a right-click to EXCLUDE feature?
       for (final categoryName in categoryNames)
         FilterChip(
           showCheckmark: false,
