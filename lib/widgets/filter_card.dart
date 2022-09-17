@@ -99,27 +99,29 @@ class FilterCardState extends ConsumerState<FilterCard> {
     ref.watch(SelectedCategories.provider);
     final selectedCategories = ref.read(SelectedCategories.provider.notifier);
     final fullDataset = ref.read(DatasetNotifier.unfilteredProvider);
-    final categoryNames =
-        fullDataset.transactions.map((txn) => txn.category).toSet();
-    final filterChips = [
-      // TODO(UX): Can we do a right-click to EXCLUDE feature?
-      for (final categoryName in categoryNames)
-        FilterChip(
-          // This way the chip doesn't ever change size.
-          showCheckmark: false,
-          selectedColor:
-              categoryName.isIncome ? Colors.green[700] : Colors.red[600],
-          label: Text(categoryName),
-          selected: selectedCategories.contains(categoryName),
-          onSelected: (bool? isSelected) {
-            if (isSelected ?? false)
-              selectedCategories.add(categoryName);
-            else
-              selectedCategories.remove(categoryName);
-          },
-        ),
-    ];
+    final categoryNames = fullDataset.txns.map((txn) => txn.category).toSet();
 
-    return Wrap(spacing: 6, runSpacing: 6, children: filterChips);
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        // TODO(UX): Can we do a right-click to EXCLUDE feature?
+        for (final categoryName in categoryNames)
+          FilterChip(
+            // This way the chip doesn't ever change size.
+            showCheckmark: false,
+            selectedColor:
+                categoryName.isIncome ? Colors.green[700] : Colors.red[600],
+            label: Text(categoryName),
+            selected: selectedCategories.contains(categoryName),
+            onSelected: (bool? isSelected) {
+              if (isSelected ?? false)
+                selectedCategories.add(categoryName);
+              else
+                selectedCategories.remove(categoryName);
+            },
+          ),
+      ],
+    );
   }
 }

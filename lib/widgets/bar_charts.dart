@@ -43,7 +43,7 @@ class BarCharts extends StatelessWidget {
       barGroups: mapKeys.mapL(
         (String month) {
           final dataset = (spendingMap[month] ?? earningMap[month])!;
-          final firstDate = dataset.transactions.first.date.toInt;
+          final firstDate = dataset.txns.first.date.toInt;
           return BarGroup(
             xValue: firstDate,
             bars: [
@@ -83,7 +83,7 @@ class BarCharts extends StatelessWidget {
       xTitle: (xVal) => xVal.toDate.qtrString,
       barGroups: dataset.spendingTxns.txnsByQuarter.mapL(
         (MapEntry<String, Dataset> spendingEntry) => BarGroup(
-          xValue: spendingEntry.value.transactions.first.date.toInt,
+          xValue: spendingEntry.value.txns.first.date.toInt,
           bars: [
             Bar(
               title: 'Earning',

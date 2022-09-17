@@ -74,7 +74,7 @@ class DatasetNotifier extends StateNotifier<Dataset> {
 
     return DatasetNotifier(
       preloaded: Dataset(
-        up.transactions.whereL(
+        up.txns.whereL(
           (txn) => [tf, sc].all(
             (_) => _.includes(txn),
           ),

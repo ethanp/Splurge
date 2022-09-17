@@ -12,10 +12,10 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
     final dataset = ref.read(DatasetNotifier.filteredProvider);
 
     // Make earning easier to compare with spending by inverting.
-    final incomeSpots = dataset.incomeTxns.transactions
+    final incomeSpots = dataset.incomeTxns.txns
         .mapL((txn) => Spot(x: txn.date.toDouble, y: -txn.amount));
 
-    final spendingSpots = dataset.spendingTxns.transactions
+    final spendingSpots = dataset.spendingTxns.txns
         .mapL((txn) => Spot(x: txn.date.toDouble, y: txn.amount));
 
     return Card(

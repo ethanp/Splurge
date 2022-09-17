@@ -49,9 +49,9 @@ class MyTooltip {
 
   // TODO(UI): Spending in red, earning in green.
   static List<TextSpan> _txnsStr(Dataset dataset, DateTime date) {
-    final txns = Dataset(
-        dataset.transactions.whereL((e) => e.date.formatted == date.formatted));
-    final txnsStr = txns.transactions
+    final txns =
+        Dataset(dataset.txns.whereL((e) => e.date.formatted == date.formatted));
+    final txnsStr = txns.txns
         // List txns in DESCENDING order; with income at the bottom in
         // ASCENDING order.
         .sortOn((t) => -t.amount)

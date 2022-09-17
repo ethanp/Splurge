@@ -42,7 +42,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
             itemBuilder: (_, idx) => idx == 0
                 // Add one blank spot to allow it to go behind the Header.
                 ? const SizedBox(height: 50)
-                : _listTile(eligibleTxns.transactions[idx - 1]),
+                : _listTile(eligibleTxns.txns[idx - 1]),
           ),
         ),
         Header(eligibleTxns),
@@ -52,7 +52,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
 
   Dataset _eligibleTxns() => Dataset(widget.dataset
       .forCategories(ref.read(SelectedCategories.provider.notifier))
-      .transactions
+      .txns
       .sortOn((txn) => -txn.amount.abs())
       .whereL((txn) => _textFilter.includes(txn)));
 

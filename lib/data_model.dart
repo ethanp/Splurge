@@ -2,32 +2,31 @@ import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/providers.dart';
 
 class Dataset {
-  const Dataset(this.transactions);
+  const Dataset(this.txns);
 
-  final List<Transaction> transactions;
+  final List<Transaction> txns;
 
-  int get count => transactions.length;
+  int get count => txns.length;
 
-  bool get isEmpty => transactions.isEmpty;
+  bool get isEmpty => txns.isEmpty;
 
-  Transaction? get maybeLastTxn => transactions.maybeLast;
+  Transaction? get maybeLastTxn => txns.maybeLast;
 
-  Transaction get lastTxn => transactions.last;
+  Transaction get lastTxn => txns.last;
 
-  Dataset get spendingTxns => Dataset(transactions.whereL(
+  Dataset get spendingTxns => Dataset(txns.whereL(
       (t) => t.txnType != 'income' && t.txnType != 'internal transfer'));
 
-  Dataset get incomeTxns =>
-      Dataset(transactions.whereL((t) => t.txnType == 'income'));
+  Dataset get incomeTxns => Dataset(txns.whereL((t) => t.txnType == 'income'));
 
   List<MapEntry<String, Dataset>> get txnsByMonth =>
-      transactions.fold([], (accumulator, txn) {
+      txns.fold([], (accumulator, txn) {
         final month = txn.date.month;
         final prevItemMonth =
             accumulator.maybeLast?.value.maybeLastTxn?.date.month;
 
         if (month == prevItemMonth)
-          accumulator.last.value.transactions.add(txn);
+          accumulator.last.value.txns.add(txn);
         else
           accumulator.add(MapEntry(txn.date.monthString, Dataset([txn])));
 
@@ -39,22 +38,22 @@ class Dataset {
           .fold<List<Dataset>>([], (accumulator, dataset) {
         if (dataset.lastTxn.date.qtr ==
             accumulator.maybeLast?.maybeLastTxn?.date.qtr)
-          accumulator.last.transactions.addAll(dataset.transactions);
+          accumulator.last.txns.addAll(dataset.txns);
         else
           accumulator.add(dataset);
 
         return accumulator;
       }).mapL(
         (value) => MapEntry(
-          value.transactions.first.date.qtrString,
+          value.txns.first.date.qtrString,
           value,
         ),
       );
 
-  double get totalAmount => transactions.sumBy((txn) => txn.amount);
+  double get totalAmount => txns.sumBy((txn) => txn.amount);
 
   Dataset forCategories(SelectedCategories selectedCategories) =>
-      Dataset(transactions.whereL((txn) => selectedCategories.includes(txn)));
+      Dataset(txns.whereL((txn) => selectedCategories.includes(txn)));
 }
 
 class Transaction {
