@@ -12,10 +12,7 @@ class MainPage extends ConsumerWidget {
     return Row(children: [
       Expanded(
         child: Column(children: [
-          Row(children: [
-            TotalsCard(),
-            FilterCard(),
-          ]),
+          Row(children: [TotalsCard(), FilterCard()]),
           Expanded(child: IncomeVsSpendingLineChart()),
         ]),
       ),

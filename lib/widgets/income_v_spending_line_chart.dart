@@ -9,7 +9,7 @@ import 'package:splurge/util/providers.dart';
 class IncomeVsSpendingLineChart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataset = ref.read(DatasetNotifier.filteredProvider);
+    final dataset = ref.watch(DatasetNotifier.filteredProvider);
 
     // Make earning easier to compare with spending by inverting.
     final incomeSpots = dataset.incomeTxns.txns
