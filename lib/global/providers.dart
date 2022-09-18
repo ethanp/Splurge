@@ -3,9 +3,9 @@ import 'package:splurge/data_loading/copilot_parser.dart';
 import 'package:splurge/data_loading/perscap_parser.dart';
 import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/extensions/riverpod_extensions.dart';
 
-class SelectedCategories extends StateNotifier<Set<String>>
-    with GlobalDatasetFilter {
+class SelectedCategories extends SetNotifier<String> with GlobalDatasetFilter {
   SelectedCategories() : super({});
 
   /// One of several pre-filters for the global view of transactions.
@@ -18,19 +18,6 @@ class SelectedCategories extends StateNotifier<Set<String>>
 
   @override
   bool includes(Transaction txn) => state.isEmpty || contains(txn.category);
-
-  bool contains(String category) => state.contains(category);
-
-  void add(String category) => state = {...state, category};
-
-  void remove(String category) => state = {...state..remove(category)};
-
-  void addAll(Iterable<String> categories) => state = {...state, ...categories};
-
-  bool containsAll(Iterable<String> allCategories) =>
-      state.containsAll(allCategories);
-
-  void clear() => state = {};
 }
 
 class TextFilter extends StateNotifier<String> with GlobalDatasetFilter {
