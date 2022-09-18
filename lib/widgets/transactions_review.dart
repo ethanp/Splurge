@@ -9,10 +9,6 @@ import 'package:splurge/util/providers.dart';
 import 'package:splurge/util/style.dart';
 
 class LargestTransactions extends ConsumerStatefulWidget {
-  const LargestTransactions({required this.dataset});
-
-  final Dataset dataset;
-
   @override
   LargestTransactionsState createState() => LargestTransactionsState();
 }
@@ -50,7 +46,8 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
     );
   }
 
-  Dataset _eligibleTxns() => Dataset(widget.dataset
+  Dataset _eligibleTxns() => Dataset(ref
+      .watch(DatasetNotifier.filteredProvider)
       .forCategories(ref.read(SelectedCategories.provider.notifier))
       .txns
       .sortOn((txn) => -txn.amount.abs())

@@ -1,20 +1,18 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:splurge/util/providers.dart';
 
 import '../util/extensions/framework_extensions.dart';
 
-class TotalsCard extends StatelessWidget {
-  const TotalsCard({
-    required this.totalIncome,
-    required this.totalSpending,
-  });
-
-  final double totalIncome;
-  final double totalSpending;
-
+class TotalsCard extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataset = ref.watch(DatasetNotifier.filteredProvider);
+    final totalIncome = -dataset.incomeTxns.totalAmount;
+    final totalSpending = dataset.spendingTxns.totalAmount;
+
     return SizedBox(
       width: 400,
       child: Card(

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/charts/bar/my_bar_chart.dart';
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/providers.dart';
 
-class BarCharts extends StatelessWidget {
-  const BarCharts({required this.dataset});
-
-  final Dataset dataset;
-
+class BarCharts extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataset = ref.watch(DatasetNotifier.filteredProvider);
+
     return Card(
       margin: const EdgeInsets.all(12),
       color: Colors.grey[900],
@@ -18,8 +18,8 @@ class BarCharts extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 16, top: 2),
         child: Column(
           children: <Widget>[
-            Expanded(child: _monthlyBarChart()),
-            Expanded(child: _quarterlyBarChart()),
+            Expanded(child: _monthlyBarChart(dataset)),
+            Expanded(child: _quarterlyBarChart(dataset)),
           ].separatedBy(
             const SizedBox(height: 16),
           ),
@@ -28,7 +28,7 @@ class BarCharts extends StatelessWidget {
     );
   }
 
-  Widget _monthlyBarChart() {
+  Widget _monthlyBarChart(Dataset dataset) {
     Map<String, Dataset> f(Dataset d) => d.txnsByMonth.asMap().map((_, v) => v);
 
     final Map<String, Dataset> earningMap = f(dataset.incomeTxns);
@@ -74,7 +74,7 @@ class BarCharts extends StatelessWidget {
   //
   //  However, this is a low-priority bug, since I never found this quarterly-
   //   chart to provide any value anyhow.
-  Widget _quarterlyBarChart() {
+  Widget _quarterlyBarChart(Dataset dataset) {
     final Map<String, Dataset> earning =
         dataset.incomeTxns.txnsByQuarter.asMap().map((_, v) => v);
 
