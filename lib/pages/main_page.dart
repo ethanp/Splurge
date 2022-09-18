@@ -11,7 +11,6 @@ class MainPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dataset = ref.watch(DatasetNotifier.filteredProvider);
-    if (dataset.isEmpty) return const CircularProgressIndicator();
 
     return Row(children: [
       Expanded(

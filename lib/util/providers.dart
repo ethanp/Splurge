@@ -48,7 +48,7 @@ mixin GlobalDatasetFilter {
 class DatasetNotifier extends StateNotifier<Dataset> {
   DatasetNotifier.empty() : super(Dataset([]));
 
-  DatasetNotifier({required Dataset preloaded}) : super(preloaded);
+  DatasetNotifier(Dataset preloaded) : super(preloaded);
 
   /// Global view of ALL transactions.
   ///
@@ -57,31 +57,29 @@ class DatasetNotifier extends StateNotifier<Dataset> {
       StateNotifierProvider<DatasetNotifier, Dataset>(
           (ref) => DatasetNotifier.empty()..loadData());
 
-  // TODO(Big bug): When no txns match the filter the app goes into the loading
-  //  screen, with no way to come back out :(. We should probably return [null]
-  //  for the not-loaded state, and leave empty for the no-data state.
   /// View of the entire transaction dataset that has been pre-filtered by the
   /// active filters.
   ///
   /// Empty until the database loads from disk.
   static final filteredProvider =
       StateNotifierProvider<DatasetNotifier, Dataset>((ref) {
-    final up = ref.watch(unfilteredProvider);
     ref.watch(TextFilter.provider);
+    final textFieldFilter = ref.read(TextFilter.provider.notifier);
     ref.watch(SelectedCategories.provider);
+    final selectedCategoryFilter =
+        ref.read(SelectedCategories.provider.notifier);
 
-    final tf = ref.read(TextFilter.provider.notifier);
-    final sc = ref.read(SelectedCategories.provider.notifier);
+    bool matchesAllFilters(Transaction txn) {
+      return [
+        textFieldFilter,
+        selectedCategoryFilter,
+      ].all(
+        (_) => _.includes(txn),
+      );
+    }
 
-    return DatasetNotifier(
-      preloaded: Dataset(
-        up.txns.whereL(
-          (txn) => [tf, sc].all(
-            (_) => _.includes(txn),
-          ),
-        ),
-      ),
-    );
+    final allTxns = ref.watch(unfilteredProvider);
+    return DatasetNotifier(Dataset(allTxns.txns.whereL(matchesAllFilters)));
   });
 
   /// Import all datasets in parallel.
