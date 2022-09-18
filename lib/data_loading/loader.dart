@@ -19,3 +19,7 @@ Future<Dataset> loader({
       dumpContents.split('\n').skip(numHeaderLines).map(f).where(filter);
   return Dataset(txns);
 }
+
+// TODO(feature): Also figure out how much has been deposited into the different
+//  investment accounts. Not sure which datasource is more complete here, but
+//  I'm guessing Perscap might be.
