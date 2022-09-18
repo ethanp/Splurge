@@ -2,10 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:splurge/global/providers.dart';
+import 'package:splurge/global/style.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
-import 'package:splurge/util/providers.dart';
-import 'package:splurge/util/style.dart';
 
 import 'axis_labels.dart';
 import 'legend.dart';

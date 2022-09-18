@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:splurge/data_model.dart';
+import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/errors.dart';
 
 Future<Dataset> loader({

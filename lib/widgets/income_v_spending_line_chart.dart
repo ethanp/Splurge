@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/charts/line/line.dart';
 import 'package:splurge/charts/line/my_line_chart.dart';
+import 'package:splurge/global/providers.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
-import 'package:splurge/util/providers.dart';
 
 class IncomeVsSpendingLineChart extends ConsumerWidget {
   @override

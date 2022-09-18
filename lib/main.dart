@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:splurge/global/style.dart';
 import 'package:splurge/pages/main_page.dart';
-import 'package:splurge/util/style.dart';
 
 void main() => runApp(
     // https://riverpod.dev/docs/getting_started

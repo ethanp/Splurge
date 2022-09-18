@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:splurge/util/providers.dart';
+import 'package:splurge/global/providers.dart';
 
 import '../util/extensions/framework_extensions.dart';
 

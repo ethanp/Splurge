@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:splurge/data_model.dart';
+import 'package:splurge/global/data_model.dart';
+import 'package:splurge/global/providers.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
-import 'package:splurge/util/providers.dart';
 
 class FilterCard extends ConsumerStatefulWidget {
   @override

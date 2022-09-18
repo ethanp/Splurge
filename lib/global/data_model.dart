@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:splurge/global/providers.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
-import 'package:splurge/util/providers.dart';
 
 class Dataset {
   Dataset(Iterable<Transaction> txns) {

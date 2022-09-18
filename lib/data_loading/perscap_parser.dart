@@ -1,4 +1,4 @@
-import 'package:splurge/data_model.dart';
+import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/csv.dart';
 
 import 'loader.dart';
