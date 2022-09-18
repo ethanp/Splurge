@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:splurge/global/providers.dart';
 
-import '../util/extensions/framework_extensions.dart';
+import '../util/extensions/stdlib_extensions.dart';
 
 class TotalsCard extends ConsumerWidget {
   @override

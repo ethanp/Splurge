@@ -1,20 +1,30 @@
 import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
-// TODO(feature): Improve this part. The smoothing is really not-great as-is.
-//  One idea is to "back-propagate" txns so they have a "bell curve"-shaped
-//  effect on the avg. Should be *relatively* easy to implement, and it visually
-//  should make even more sense the current smoothing system. And as long as the
-//  "area under the curve" = 1, then I don't think it's going to bias the final
-//  number in a bad way, like the event avg was doing before.
 class Smoothing {
   const Smoothing({required this.params});
 
   final SmoothingParams params;
 
-  List<FlSpot> smooth(List<FlSpot> spots) => _nDayAvg(spots);
+  List<FlSpot> smooth(List<FlSpot> spots) => _smear(_nDayAvg(spots));
+
+  List<FlSpot> _smear(List<FlSpot> spots) {
+    assert(params.nbrWeights.sum - 1 < .0001);
+    final nbrLen = params.nbrWeights.length ~/ 2;
+
+    final List<FlSpot> ret = [];
+    for (int idx = nbrLen; idx < spots.length - nbrLen; idx++) {
+      double acc = 0;
+      for (int nbr = -nbrLen; nbr <= nbrLen; nbr++) {
+        acc += spots[idx + nbr].y * params.nbrWeights[nbr + nbrLen];
+      }
+      ret.add(spots[idx].copyWith(y: acc));
+    }
+
+    return ret;
+  }
 
   /// Daily, output a point that represents the average of all sessions from
   /// within the preceding [SmoothingParams.nDaySmoothing] days.
@@ -75,9 +85,11 @@ class Smoothing {
 class SmoothingParams {
   const SmoothingParams({
     required this.nDaySmoothing,
+    required this.nbrWeights,
   });
 
   final int nDaySmoothing;
+  final List<double> nbrWeights;
 
   @override
   String toString() => 'smoothed over a $nDaySmoothing day std moving avg';

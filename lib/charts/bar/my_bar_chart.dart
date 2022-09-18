@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:splurge/global/style.dart';
-import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 import 'axis_labels.dart';
 

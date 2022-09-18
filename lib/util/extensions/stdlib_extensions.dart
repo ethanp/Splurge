@@ -46,13 +46,9 @@ extension IterableT<T> on Iterable<T> {
 
   T maxBy<U extends Comparable>(U Function(T) fn) => _inner(fn, (x) => x > 0);
 
-  List<U> mapWithIdx<U>(U Function(T, int) fn) {
-    final ret = <U>[];
+  Iterable<U> mapWithIdx<U>(U Function(T, int) fn) sync* {
     int i = 0;
-    for (final item in this) {
-      ret.add(fn(item, i++));
-    }
-    return ret;
+    for (final item in this) yield fn(item, i++);
   }
 
   List<T> separatedBy(T separator) =>

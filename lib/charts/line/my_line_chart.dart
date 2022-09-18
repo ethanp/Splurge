@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/global/providers.dart';
 import 'package:splurge/global/style.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
-import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 import 'axis_labels.dart';
 import 'legend.dart';

@@ -1,5 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:splurge/util/extensions/framework_extensions.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 extension MBounds on Iterable<FlSpot> {
   double get minX => map((e) => e.x).min;

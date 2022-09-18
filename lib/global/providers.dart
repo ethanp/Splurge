@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_loading/copilot_parser.dart';
 import 'package:splurge/data_loading/perscap_parser.dart';
 import 'package:splurge/global/data_model.dart';
-import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/extensions/riverpod_extensions.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 class SelectedCategories extends SetNotifier<String> with GlobalDatasetFilter {
   SelectedCategories() : super({});
