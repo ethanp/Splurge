@@ -14,45 +14,58 @@ class _CommaSeparatedValueSplitter extends Iterator<String> {
 
   int cursorPosition = 0;
 
-  bool get done => cursorPosition >= rawRow.length;
+  bool get doneReading => cursorPosition >= rawRow.length;
 
   String get curChar => rawRow[cursorPosition];
 
   @override
   bool moveNext() {
-    if (done) return false;
-    current = curChar == '"' ? _extractFromQuotes() : _extractNoQuotes();
-    return !done;
+    if (doneReading) return false;
+    final startsWithQuote = curChar == '"';
+    current = startsWithQuote ? _extractFromQuotes() : _extractNoQuotes();
+    return !doneReading;
   }
 
   @override
   String current = '';
 
   String _extractFromQuotes() {
-    int openQuoteLoc = cursorPosition;
+    // Skip open-quote.
     cursorPosition++;
-    while (curChar != '"' && !done) {
-      cursorPosition++;
-    }
-    cursorPosition++; // Close quote
+
+    final int contentStartIdx = cursorPosition;
+
+    // Find length of quote contents.
+    while (curChar != '"' && !doneReading) cursorPosition++;
+
+    // Skip close-quote.
+    cursorPosition++;
 
     // Weird bug in the raw csv where there can be an extra pair of quotes!
     var offset = 0;
-    if (!done && curChar == '"') {
-      cursorPosition += 2; // skip the quotes
+    if (!doneReading && curChar == '"') {
+      // Skip occasional extraneous quotes.
+      cursorPosition += 2;
       offset = 2;
     }
 
-    cursorPosition++; // Comma
-    return rawRow.substring(openQuoteLoc + 1, cursorPosition - 2 - offset);
+    // Skip comma.
+    cursorPosition++;
+
+    // Extract quote contents from whole row string.
+    return rawRow.substring(contentStartIdx, cursorPosition - 2 - offset);
   }
 
   String _extractNoQuotes() {
-    int start = cursorPosition;
-    while (curChar != ',' && !done) {
-      cursorPosition++;
-    }
+    final int start = cursorPosition;
+
+    // Find length of contents.
+    while (curChar != ',' && !doneReading) cursorPosition++;
+
+    // Skip past the comma.
     cursorPosition++;
+
+    // Extract contents (minus comma).
     return rawRow.substring(start, cursorPosition - 1);
   }
 }
