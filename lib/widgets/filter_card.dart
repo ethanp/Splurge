@@ -96,32 +96,70 @@ class FilterCardState extends ConsumerState<FilterCard> {
   }
 
   Widget _categoryChips() {
-    ref.watch(SelectedCategories.provider);
-    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
     final fullDataset = ref.read(DatasetNotifier.unfilteredProvider);
-    final categoryNames = fullDataset.txns.map((txn) => txn.category).toSet();
+    final allCategories = fullDataset.txns.map((txn) => txn.category).toSet();
 
     return Wrap(
       spacing: 6,
       runSpacing: 6,
       children: [
-        // TODO(UX): Can we do a right-click to EXCLUDE feature?
-        for (final categoryName in categoryNames)
-          FilterChip(
-            // This way the chip doesn't ever change size.
-            showCheckmark: false,
-            selectedColor:
-                categoryName.isIncome ? Colors.green[700] : Colors.red[600],
-            label: Text(categoryName),
-            selected: selectedCategories.contains(categoryName),
-            onSelected: (bool? isSelected) {
-              if (isSelected ?? false)
-                selectedCategories.add(categoryName);
-              else
-                selectedCategories.remove(categoryName);
-            },
-          ),
+        _AllChip(allCategories),
+        ...allCategories.map(_CategoryChip.new),
       ],
+    );
+  }
+}
+
+/// Simple way to allow the user to analyze by EXCLUDING categories.
+class _AllChip extends ConsumerWidget {
+  const _AllChip(this.allCategories);
+
+  final Set<String> allCategories;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(SelectedCategories.provider);
+    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
+
+    return FilterChip(
+      label: Text('ALL'),
+      backgroundColor: Colors.blue[800],
+      selectedColor: Colors.blue[300],
+      // This way the chip doesn't ever change size.
+      showCheckmark: false,
+      selected: selectedCategories.containsAll(allCategories),
+      onSelected: (bool? isSelected) {
+        if (isSelected ?? false)
+          selectedCategories.addAll(allCategories);
+        else
+          selectedCategories.clear();
+      },
+    );
+  }
+}
+
+class _CategoryChip extends ConsumerWidget {
+  const _CategoryChip(this.category);
+
+  final String category;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(SelectedCategories.provider);
+    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
+
+    return FilterChip(
+      // This way the chip doesn't ever change size.
+      showCheckmark: false,
+      selectedColor: category.isIncome ? Colors.green[700] : Colors.red[600],
+      label: Text(category),
+      selected: selectedCategories.contains(category),
+      onSelected: (bool? isSelected) {
+        if (isSelected ?? false)
+          selectedCategories.add(category);
+        else
+          selectedCategories.remove(category);
+      },
     );
   }
 }

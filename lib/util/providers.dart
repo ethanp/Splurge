@@ -24,6 +24,13 @@ class SelectedCategories extends StateNotifier<Set<String>>
   void add(String category) => state = {...state, category};
 
   void remove(String category) => state = {...state..remove(category)};
+
+  void addAll(Iterable<String> categories) => state = {...state, ...categories};
+
+  bool containsAll(Iterable<String> allCategories) =>
+      state.containsAll(allCategories);
+
+  void clear() => state = {};
 }
 
 class TextFilter extends StateNotifier<String> with GlobalDatasetFilter {
