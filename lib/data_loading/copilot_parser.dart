@@ -1,26 +1,16 @@
-// ignore_for_file: constant_identifier_names
-
-import 'dart:io';
-
 import 'package:splurge/data_model.dart';
 import 'package:splurge/util/csv.dart';
-import 'package:splurge/util/errors.dart';
+
+import 'loader.dart';
 
 class CopilotExportReader {
-  static Future<Dataset> get loadData async {
-    try {
-      print('Parsing Copilot dump');
-      final dumpContents =
-          await File('/Users/Ethan/Downloads/transactions.csv').readAsString();
-      final txns = dumpContents
-          .split('\n')
-          .skip(1) // Skip header.
-          .map((text) => CopilotExportRow(text).toTransaction());
-      return Dataset(txns);
-    } catch (e) {
-      throw FileReadError('Copilot parse issue! $e');
-    }
-  }
+  static Future<Dataset> get loadData async => loader(
+        title: 'Copilot',
+        fileSubstring: 'transactions.csv',
+        numHeaderLines: 1,
+        f: (text) => CopilotExportRow(text).toTransaction(),
+        filter: (_) => true,
+      );
 }
 
 class CopilotExportRow {
@@ -71,15 +61,4 @@ class CopilotExportRow {
         category: category,
         txnType: txnType,
       );
-}
-
-enum IncomeCategory {
-  Payroll,
-  Bonus,
-  GSUs,
-  Random;
-}
-
-extension IncomeCat on String {
-  bool get isIncome => IncomeCategory.values.any((i) => i.name == this);
 }

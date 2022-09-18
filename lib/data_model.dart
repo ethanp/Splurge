@@ -8,6 +8,9 @@ class Dataset {
     this.txns = [...txns].sortOn((_) => _.date);
   }
 
+  factory Dataset.merge(List<Dataset> list) =>
+      Dataset(list.expand((e) => e.txns));
+
   late final List<Transaction> txns;
 
   int get count => txns.length;

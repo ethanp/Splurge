@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:splurge/data_loading/copilot_parser.dart';
+import 'package:splurge/data_loading/perscap_parser.dart';
 import 'package:splurge/data_model.dart';
-import 'package:splurge/import/copilot_parser.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 
 class SelectedCategories extends StateNotifier<Set<String>>
@@ -83,7 +84,10 @@ class DatasetNotifier extends StateNotifier<Dataset> {
     );
   });
 
+  /// Import all datasets in parallel.
   Future<void> loadData() async {
-    state = await CopilotExportReader.loadData;
+    final copilotF = CopilotExportReader.loadData;
+    final perscapF = PerscapExportReader.loadData;
+    state = Dataset.merge([await copilotF, await perscapF]);
   }
 }
