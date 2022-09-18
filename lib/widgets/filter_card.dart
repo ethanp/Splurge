@@ -55,7 +55,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
   }
 
   Widget _searchBar() {
-    final txns = ref.read(DatasetNotifier.filteredProvider);
+    final txns = ref.watch(DatasetNotifier.filteredProvider);
     final isActive = ref.watch(TextFilter.provider).isNotEmpty;
     return TextFormField(
       controller: textEditingController,
