@@ -47,15 +47,16 @@ class PerscapExportRow {
   }
 
   String get category {
-    // TODO(feature): Add more cases here (esp. HSA... maybe *just* HSA).
-    if (rowValues[4].contains('401(k)')) {
-      return IncomeCategory.TaxAdvContrib.name;
-    }
-    // We're just filtering these out, so the value doesn't matter.
-    return '';
+    // Right now this is the only useful data getting extracted from this dump.
+    // NB: HSA contribution data is not available here AFAICT.
+    return rowValues[4].contains('401(k)')
+        ? IncomeCategory.TaxAdvContrib.name
+        // These get filtered out, so the value doesn't matter.
+        : '';
   }
 
-  String get txnType => rowValues[7];
+  String get txnType =>
+      rowValues[2].toLowerCase().contains('income') ? 'income' : rowValues[2];
 
   Transaction toTransaction() => Transaction(
         date: date,

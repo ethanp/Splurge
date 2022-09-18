@@ -9,14 +9,13 @@ import 'package:splurge/util/errors.dart';
 class CopilotExportReader {
   static Future<Dataset> get loadData async {
     try {
-      final file = File('/Users/Ethan/Downloads/transactions.csv');
       print('Parsing Copilot dump');
-      final dumpContents = (await file.readAsString());
+      final dumpContents =
+          await File('/Users/Ethan/Downloads/transactions.csv').readAsString();
       final txns = dumpContents
           .split('\n')
           .skip(1) // Skip header.
-          .map(CopilotExportRow.new)
-          .map((row) => row.toTransaction());
+          .map((text) => CopilotExportRow(text).toTransaction());
       return Dataset(txns);
     } catch (e) {
       throw FileReadError('Copilot parse issue! $e');
