@@ -11,7 +11,10 @@ class Smoothing {
   List<FlSpot> smooth(List<FlSpot> spots) => _smear(_nDayAvg(spots));
 
   List<FlSpot> _smear(List<FlSpot> spots) {
-    assert(params.nbrWeights.sum - 1 < .0001);
+    assert(
+      (params.nbrWeights.sum - 1).abs() < .0001,
+      'Invalid nbrWeights: ${params.nbrWeights}',
+    );
     final nbrLen = params.nbrWeights.length ~/ 2;
 
     final List<FlSpot> ret = [];

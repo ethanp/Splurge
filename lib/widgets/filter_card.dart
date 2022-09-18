@@ -36,6 +36,9 @@ class FilterCardState extends ConsumerState<FilterCard> {
         color: Colors.brown[900],
         elevation: 4,
         child: Column(children: [
+          // TODO(feature): Allow filter by date-range. I'm thinking using a
+          //  date-picker off-the-shelf, placed to the right of the of the
+          //  search bar.
           Padding(
             padding: const EdgeInsets.only(
               left: 16,
