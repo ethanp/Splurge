@@ -1,10 +1,14 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:splurge/util/extensions/framework_extensions.dart';
 import 'package:splurge/util/providers.dart';
 
 class Dataset {
-  const Dataset(this.txns);
+  Dataset(Iterable<Transaction> txns) {
+    this.txns = [...txns].sortOn((_) => _.date);
+  }
 
-  final List<Transaction> txns;
+  late final List<Transaction> txns;
 
   int get count => txns.length;
 
@@ -75,4 +79,21 @@ class Transaction {
       '$amount, '
       '${category.isEmpty ? 'no category' : category}, '
       '$txnType';
+}
+
+enum IncomeCategory {
+  // That ~biweekly paycheck.
+  Payroll,
+  // Includes spot & annual bonuses.
+  Bonus,
+  // Amount of cash I got from a transfer from brokerage account.
+  GSUs,
+  // Contribution into a tax-advantaged account, eg. 401(k), IRA, or HSA.
+  TaxAdvContrib,
+  // Eg. cash-out of life insurance.
+  Random;
+}
+
+extension IncomeCat on String {
+  bool get isIncome => IncomeCategory.values.any((i) => i.name == this);
 }

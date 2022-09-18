@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:splurge/copilot_parser.dart';
 import 'package:splurge/data_model.dart';
+import 'package:splurge/import/copilot_parser.dart';
 import 'package:splurge/util/extensions/framework_extensions.dart';
 
 class SelectedCategories extends StateNotifier<Set<String>>
