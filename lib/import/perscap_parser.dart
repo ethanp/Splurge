@@ -46,17 +46,14 @@ class PerscapExportRow {
     return double.parse(dbl);
   }
 
-  String get category {
-    // Right now this is the only useful data getting extracted from this dump.
-    // NB: HSA contribution data is not available here AFAICT.
-    return rowValues[4].contains('401(k)')
-        ? IncomeCategory.TaxAdvContrib.name
-        // These get filtered out, so the value doesn't matter.
-        : '';
-  }
+  /// Right now 401(k) is the only useful data getting extracted from this dump.
+  /// NB: HSA contribution data is not available here AFAICT.
+  String get category => rowValues[4].contains('401(k)')
+      ? IncomeCategory.TaxAdvContrib.name
+      // These get filtered out, so the value doesn't matter.
+      : '';
 
-  String get txnType =>
-      rowValues[2].toLowerCase().contains('income') ? 'income' : rowValues[2];
+  String get txnType => category.isNotEmpty ? 'income' : '';
 
   Transaction toTransaction() => Transaction(
         date: date,
