@@ -51,6 +51,11 @@ extension IterableT<T> on Iterable<T> {
     for (final item in this) yield fn(item, i++);
   }
 
+  Iterable<int> get indices sync* {
+    int i = 0;
+    for (final _ in this) yield i++;
+  }
+
   List<T> separatedBy(T separator) =>
       expand((e) => [e, separator]).toList()..removeLast();
 

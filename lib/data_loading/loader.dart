@@ -20,6 +20,6 @@ Future<Dataset> loader({
   return Dataset(txns);
 }
 
-// TODO(feature): Also figure out how much has been deposited into the different
-//  investment accounts. Not sure which datasource is more complete here, but
-//  I'm guessing Perscap might be.
+// TODO(feature): Also figure out how much has been *deposited* into the
+//  different *investment* accounts (eg. coinbase, WealthFront, m1). I'm
+//  guessing Perscap would be more complete for this, but do check first.

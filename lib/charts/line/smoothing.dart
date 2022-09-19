@@ -8,25 +8,32 @@ class Smoothing {
 
   final SmoothingParams params;
 
-  List<FlSpot> smooth(List<FlSpot> spots) => _smear(_nDayAvg(spots));
+  List<FlSpot> smooth(List<FlSpot> spots) =>
+      _chopEndsOff(_smear(_nDayAvg(spots)));
 
+  /// Since it's weird looking and incomplete data and ultimately distracting
+  /// and too noisy to provide value.
+  List<FlSpot> _chopEndsOff(List<FlSpot> spots) => spots.whereL((s) =>
+      s.x.toDate.monthString != DateTime.now().monthString &&
+      !s.x.toDate.isBefore(DateTime(2021)));
+
+  /// The extent of smoothing is a function of the point's magnitude, since
+  /// events like bonus payment, GSU cash-out, car purchase, need to be
+  /// "smeared" *more*. Here, we smear down to a cap of "$20 of influence" per
+  /// day.
   List<FlSpot> _smear(List<FlSpot> spots) {
-    assert(
-      (params.nbrWeights.sum - 1).abs() < .0001,
-      'Invalid nbrWeights: ${params.nbrWeights}',
-    );
-    final nbrLen = params.nbrWeights.length ~/ 2;
-
-    final List<FlSpot> ret = [];
-    for (int idx = nbrLen; idx < spots.length - nbrLen; idx++) {
-      double acc = 0;
-      for (int nbr = -nbrLen; nbr <= nbrLen; nbr++) {
-        acc += spots[idx + nbr].y * params.nbrWeights[nbr + nbrLen];
+    final List<double> ys = List.filled(spots.length, 0);
+    for (final idx in spots.indices) {
+      final int neighborhoodWidth = (spots[idx].y.abs() ~/ 20)
+          .clamp(0, math.min(idx, spots.length - idx));
+      final double scaled = spots[idx].y / (neighborhoodWidth * 2 + 1);
+      for (int nbr = -neighborhoodWidth; nbr <= neighborhoodWidth; nbr++) {
+        if (idx + nbr >= 0 && idx + nbr < spots.length) {
+          ys[idx + nbr] += scaled;
+        }
       }
-      ret.add(spots[idx].copyWith(y: acc));
     }
-
-    return ret;
+    return spots.mapWithIdx((spot, idx) => spot.copyWith(y: ys[idx])).toList();
   }
 
   /// Daily, output a point that represents the average of all sessions from
@@ -88,11 +95,9 @@ class Smoothing {
 class SmoothingParams {
   const SmoothingParams({
     required this.nDaySmoothing,
-    required this.nbrWeights,
   });
 
   final int nDaySmoothing;
-  final List<double> nbrWeights;
 
   @override
   String toString() => 'smoothed over a $nDaySmoothing day std moving avg';
