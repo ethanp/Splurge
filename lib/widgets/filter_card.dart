@@ -29,16 +29,13 @@ class FilterCardState extends ConsumerState<FilterCard> {
     //  on both laptop and big monitor. Specifically, the card should get taller
     //  as it gets skinnier, to still fit all the chips.
     return SizedBox(
-      height: 250,
+      height: 290,
       width: 500,
       child: Card(
         shape: Shape.roundedRect(circular: 20),
         color: Colors.brown[900],
         elevation: 4,
         child: Column(children: [
-          // TODO(feature): Allow filter by date-range. I'm thinking using a
-          //  date-picker off-the-shelf, placed to the right of the of the
-          //  search bar.
           Padding(
             padding: const EdgeInsets.only(
               left: 16,
@@ -52,8 +49,30 @@ class FilterCardState extends ConsumerState<FilterCard> {
             padding: const EdgeInsets.all(8),
             child: _categoryChips(),
           ),
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: _timeRangeSelector(),
+          ),
         ]),
       ),
+    );
+  }
+
+  // TODO(UX): Consider using an off-the-shelf date range picker.
+  Widget _timeRangeSelector() {
+    final selectedDateRange = ref.read(SelectedDateRange.provider.notifier);
+    return Wrap(
+      spacing: 6,
+      children: [
+        ElevatedButton(
+          onPressed: () => selectedDateRange.reset(),
+          child: Text('All time'),
+        ),
+        ElevatedButton(
+          onPressed: () => selectedDateRange.lastMonths(3),
+          child: Text('Last 3 months'),
+        ),
+      ],
     );
   }
 

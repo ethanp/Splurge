@@ -1,9 +1,41 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_loading/copilot_parser.dart';
 import 'package:splurge/data_loading/perscap_parser.dart';
 import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/extensions/riverpod_extensions.dart';
 import 'package:splurge/util/extensions/stdlib_extensions.dart';
+
+class SelectedDateRange extends StateNotifier<DateTimeRange>
+    with GlobalDatasetFilter {
+  SelectedDateRange() : super(allTimeRange);
+
+  static final provider =
+      StateNotifierProvider<SelectedDateRange, DateTimeRange>(
+          (ref) => SelectedDateRange());
+
+  @override
+  bool includes(Transaction txn) {
+    final afterStart =
+        txn.date.isAtSameMomentAs(state.start) || txn.date.isAfter(state.start);
+    final beforeEnd = txn.date.isBefore(state.end);
+    return afterStart && beforeEnd;
+  }
+
+  void reset() => state = allTimeRange;
+
+  void lastMonths(int count) {
+    final now = DateTime.now();
+    final startOfLastMonth = DateTime(now.year, now.month - count);
+    final startOfThisMonth = DateTime(now.year, now.month);
+    state = DateTimeRange(start: startOfLastMonth, end: startOfThisMonth);
+  }
+
+  static DateTimeRange get allTimeRange => DateTimeRange(
+        start: DateTime(2020, 12, 1),
+        end: DateTime.now(),
+      );
+}
 
 class SelectedCategories extends SetNotifier<String> with GlobalDatasetFilter {
   SelectedCategories() : super({});
@@ -62,15 +94,14 @@ class DatasetNotifier extends StateNotifier<Dataset> {
     ref.watch(SelectedCategories.provider);
     final selectedCategoryFilter =
         ref.read(SelectedCategories.provider.notifier);
+    ref.watch(SelectedDateRange.provider);
+    final dateRangeFilter = ref.read(SelectedDateRange.provider.notifier);
 
-    bool matchesAllFilters(Transaction txn) {
-      return [
-        textFieldFilter,
-        selectedCategoryFilter,
-      ].all(
-        (_) => _.includes(txn),
-      );
-    }
+    bool matchesAllFilters(Transaction txn) => [
+          textFieldFilter,
+          selectedCategoryFilter,
+          dateRangeFilter,
+        ].all((_) => _.includes(txn));
 
     final allTxns = ref.watch(unfilteredProvider);
     return DatasetNotifier(Dataset(allTxns.txns.whereL(matchesAllFilters)));

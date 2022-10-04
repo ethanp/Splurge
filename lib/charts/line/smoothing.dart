@@ -9,10 +9,9 @@ class Smoothing {
   final SmoothingParams params;
 
   List<FlSpot> smooth(List<FlSpot> spots) =>
-      _chopEndsOff(_smear(_nDayAvg(spots)));
+      _smear(_chopEndsOff(_nDayAvg(spots)));
 
-  /// Since it's weird looking and incomplete data and ultimately distracting
-  /// and too noisy to provide value.
+  /// Since it's ultimately distracting and too noisy to provide value.
   List<FlSpot> _chopEndsOff(List<FlSpot> spots) => spots.whereL((s) =>
       s.x.toDate.monthString != DateTime.now().monthString &&
       !s.x.toDate.isBefore(DateTime(2021)));
@@ -24,7 +23,9 @@ class Smoothing {
   List<FlSpot> _smear(List<FlSpot> spots) {
     final List<double> ys = List.filled(spots.length, 0);
     for (final idx in spots.indices) {
-      final int neighborhoodWidth = (spots[idx].y.abs() ~/ 20)
+      // ignore: prefer_const_declarations
+      final double maxInfluence = 20;
+      final int neighborhoodWidth = (spots[idx].y.abs() ~/ maxInfluence)
           .clamp(0, math.min(idx, spots.length - idx));
       final double scaled = spots[idx].y / (neighborhoodWidth * 2 + 1);
       for (int nbr = -neighborhoodWidth; nbr <= neighborhoodWidth; nbr++) {
