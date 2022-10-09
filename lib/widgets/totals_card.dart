@@ -10,8 +10,9 @@ import '../util/extensions/stdlib_extensions.dart';
 class TotalsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataset = ref.watch(DatasetNotifier.filteredProvider);
     final selectedDateRange = ref.watch(SelectedDateRange.provider);
+
+    final dataset = ref.watch(DatasetNotifier.filteredProvider);
     final totalIncome = -dataset.incomeTxns.totalAmount;
     final totalSpending = dataset.spendingTxns.totalAmount;
 

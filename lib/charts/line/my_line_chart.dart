@@ -30,12 +30,20 @@ class MyLineChart extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          AutoSizeText(title, style: titleStyle),
-          Legend(lines: lines),
+          Expanded(flex: 3, child: _chartTitle()),
+          Expanded(flex: 2, child: Legend(lines: lines)),
         ],
       ),
       Expanded(child: _Chart(lines: lines)),
     ]);
+  }
+
+  AutoSizeText _chartTitle() {
+    return AutoSizeText(
+      title,
+      style: titleStyle,
+      textAlign: TextAlign.center,
+    );
   }
 }
 
