@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:splurge/global/style.dart';
 import 'package:splurge/pages/main_page.dart';
 
 void main() => runApp(
@@ -16,10 +15,12 @@ class AppWidget extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
+        /* Right now, not feeling the AppBar.
         appBar: AppBar(
           title: Text('Personal finances analyzer', style: appFont),
           backgroundColor: Colors.teal[800],
         ),
+         */
         body: Center(child: MainPage()),
       ),
     );

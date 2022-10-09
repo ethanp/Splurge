@@ -58,11 +58,10 @@ class FilterCardState extends ConsumerState<FilterCard> {
     );
   }
 
-  // TODO(UX): Consider using an off-the-shelf date range picker.
   Widget _timeRangeSelector() {
     final selectedDateRange = ref.read(SelectedDateRange.provider.notifier);
     return Wrap(
-      spacing: 6,
+      spacing: 8,
       children: [
         ElevatedButton(
           onPressed: () => selectedDateRange.reset(),
@@ -71,6 +70,20 @@ class FilterCardState extends ConsumerState<FilterCard> {
         ElevatedButton(
           onPressed: () => selectedDateRange.lastMonths(3),
           child: Text('Last 3 months'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            final DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: selectedDateRange.range.start,
+              firstDate: DateTime(2020, 12),
+              lastDate: DateTime.now(),
+            );
+            if (picked == null || picked == selectedDateRange.range.start)
+              return; // no change.
+            selectedDateRange.setStart(picked);
+          },
+          child: Text('Set start date'),
         ),
       ],
     );

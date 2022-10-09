@@ -10,12 +10,14 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       Expanded(
+        flex: 3,
         child: Column(children: [
           Row(children: [TotalsCard(), FilterCard()]),
           Expanded(child: IncomeVsSpendingLineChart()),
         ]),
       ),
       Expanded(
+        flex: 2,
         child: Column(children: [
           Expanded(child: BarCharts()),
           Expanded(child: LargestTransactions()),

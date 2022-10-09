@@ -24,6 +24,8 @@ class SelectedDateRange extends StateNotifier<DateTimeRange>
 
   void reset() => state = allTimeRange;
 
+  DateTimeRange get range => state;
+
   void lastMonths(int count) {
     final now = DateTime.now();
     final startOfLastMonth = DateTime(now.year, now.month - count);
@@ -35,6 +37,9 @@ class SelectedDateRange extends StateNotifier<DateTimeRange>
         start: DateTime(2020, 12, 1),
         end: DateTime.now(),
       );
+
+  void setStart(DateTime newStart) =>
+      state = DateTimeRange(start: newStart, end: state.end);
 }
 
 class SelectedCategories extends SetNotifier<String> with GlobalDatasetFilter {

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:splurge/global/providers.dart';
 
 import '../util/extensions/stdlib_extensions.dart';
@@ -10,6 +11,7 @@ class TotalsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dataset = ref.watch(DatasetNotifier.filteredProvider);
+    final selectedDateRange = ref.watch(SelectedDateRange.provider);
     final totalIncome = -dataset.incomeTxns.totalAmount;
     final totalSpending = dataset.spendingTxns.totalAmount;
 
@@ -41,7 +43,7 @@ class TotalsCard extends ConsumerWidget {
                 color: Colors.blue[700]!,
                 amt: totalIncome - totalSpending,
               ),
-              _dateBound(),
+              _dateBound(selectedDateRange),
             ],
           ),
         ),
@@ -76,13 +78,14 @@ class TotalsCard extends ConsumerWidget {
     );
   }
 
-  Widget _dateBound() {
+  Widget _dateBound(DateTimeRange selectedDateRange) {
+    final startDate = DateFormat('MMMM d, y').format(selectedDateRange.start);
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: SizedBox(
         width: double.infinity,
         child: AutoSizeText(
-          'Since December 2020',
+          'From $startDate -through- Today',
           textAlign: TextAlign.right,
           style: defaultFont.copyWith(
             fontSize: 12,
