@@ -60,7 +60,7 @@ class SelectedCategories extends SetNotifier<String> with GlobalDatasetFilter {
 class TextFilter extends StateNotifier<String> with GlobalDatasetFilter {
   TextFilter() : super('');
 
-  void updateTo(String v) => state = v;
+  void checkFor(String v) => state = v;
 
   static final provider =
       StateNotifierProvider<TextFilter, String>((ref) => TextFilter());

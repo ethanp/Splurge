@@ -31,10 +31,20 @@ class MyLineChart extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Expanded(flex: 3, child: _chartTitle()),
-          Expanded(flex: 2, child: Legend(lines: lines)),
         ],
       ),
-      Expanded(child: _Chart(lines: lines)),
+      Expanded(
+        child: Stack(
+          children: [
+            _Chart(lines: lines),
+            Positioned(
+              left: 50,
+              top: 12,
+              child: Legend(lines: lines),
+            ),
+          ],
+        ),
+      ),
     ]);
   }
 

@@ -19,7 +19,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
     // to be in didChangeDependencies().
     textEditingController.addListener(() => ref
         .read(TextFilter.provider.notifier)
-        .updateTo(textEditingController.text));
+        .checkFor(textEditingController.text));
   }
 
   @override
