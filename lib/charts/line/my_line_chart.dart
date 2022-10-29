@@ -27,12 +27,7 @@ class MyLineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Expanded(flex: 3, child: _chartTitle()),
-        ],
-      ),
+      _chartTitle(),
       Expanded(
         child: Stack(
           children: [
@@ -48,11 +43,14 @@ class MyLineChart extends StatelessWidget {
     ]);
   }
 
-  AutoSizeText _chartTitle() {
-    return AutoSizeText(
-      title,
-      style: titleStyle,
-      textAlign: TextAlign.center,
+  Widget _chartTitle() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 14),
+      child: AutoSizeText(
+        title,
+        style: titleStyle,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
