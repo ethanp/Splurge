@@ -21,7 +21,7 @@ class TotalsCard extends ConsumerWidget {
     const String space = '             ';
 
     return SizedBox(
-      width: 400,
+      width: 410,
       child: Card(
         margin: const EdgeInsets.all(12),
         shape: Shape.roundedRect(circular: 20),
@@ -37,31 +37,29 @@ class TotalsCard extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AutoSizeText(
-                '${space * 4} raw $space annualized',
+              Text(
+                '${space * 4}     raw $space annualized',
                 style: defaultFont.copyWith(
                   color: Colors.grey[700],
                   fontStyle: FontStyle.italic,
+                  fontSize: 14,
                 ),
-                maxFontSize: 18,
-                minFontSize: 13,
-                maxLines: 1,
               ),
               _textLine(
-                prefix: '     Income:       ',
+                prefix: '     Income:',
                 color: Colors.green[400]!,
                 amt: totalIncome,
                 dateRange: selectedDateRange,
               ),
               _textLine(
-                prefix: '– Spending:   ',
+                prefix: '– Spending:',
                 color: Colors.red,
                 amt: totalSpending,
                 dateRange: selectedDateRange,
               ),
               _dividerLine(),
               _textLine(
-                prefix: '     Savings:       ',
+                prefix: '     Savings:',
                 color: Colors.blue[700]!,
                 amt: totalIncome - totalSpending,
                 dateRange: selectedDateRange,
@@ -82,12 +80,26 @@ class TotalsCard extends ConsumerWidget {
   }) {
     final double numYears = dateRange.duration.inDays / 365.0;
     final double annualizedAmt = amt / numYears;
-    // Give room for the negative sign.
-    if (amt < 0) prefix = prefix.substring(0, prefix.length - 3);
-    return AutoSizeText(
-      '$prefix${amt.asCompactDollars()}   ${annualizedAmt.asCompactDollars()}',
-      style: defaultFont.copyWith(color: color),
-      maxLines: 1,
+    Widget cell({required String text, required double width}) {
+      return SizedBox(
+        width: width,
+        child: Text(
+          text,
+          textAlign: TextAlign.right,
+          style: defaultFont.copyWith(
+            color: color,
+            fontSize: 21,
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      children: [
+        cell(text: prefix, width: 140),
+        cell(text: amt.asCompactDollars(), width: 100),
+        cell(text: annualizedAmt.asCompactDollars(), width: 100),
+      ],
     );
   }
 
@@ -96,8 +108,8 @@ class TotalsCard extends ConsumerWidget {
       margin: EdgeInsets.only(
         top: 8,
         bottom: 2,
-        left: 12,
-        right: 28,
+        left: 18,
+        right: 4,
       ),
       height: 3,
       color: Colors.grey,
