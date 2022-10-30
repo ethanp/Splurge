@@ -17,11 +17,11 @@ import 'tooltip.dart';
 /// code-dependencies.
 class MyLineChart extends StatelessWidget {
   const MyLineChart({
-    required this.title,
+    this.title,
     required this.lines,
   });
 
-  final String title;
+  final String? title;
   final List<Line> lines;
 
   @override
@@ -47,7 +47,7 @@ class MyLineChart extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 14),
       child: AutoSizeText(
-        title,
+        title ?? '',
         style: titleStyle,
         textAlign: TextAlign.center,
       ),
