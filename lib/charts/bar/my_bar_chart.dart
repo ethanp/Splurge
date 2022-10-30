@@ -41,20 +41,24 @@ class MyBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return barGroups.isEmpty
-        ? Center(
-            child: Text(
-              'This bar-chart has no data to show (barGroups.isEmpty)',
-              style: titleStyle,
-            ),
-          )
-        : Column(children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8, top: 12),
-              child: AutoSizeText(title, maxLines: 1, style: titleStyle),
-            ),
-            Expanded(child: _barChart()),
-          ]);
+    if (barGroups.isEmpty) {
+      return Center(
+        child: Text(
+          'This bar-chart has no data to show (barGroups.isEmpty)',
+          style: titleStyle,
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8, top: 12),
+          child: AutoSizeText(title, maxLines: 1, style: titleStyle),
+        ),
+        Expanded(child: _barChart()),
+      ],
+    );
   }
 
   Widget _barChart() {
