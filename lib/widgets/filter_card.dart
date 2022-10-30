@@ -60,18 +60,36 @@ class FilterCardState extends ConsumerState<FilterCard> {
 
   Widget _timeRangeSelector() {
     final selectedDateRange = ref.read(SelectedDateRange.provider.notifier);
+    final buttonStyle = ElevatedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+    );
+    final thisYear = DateTime.now().year;
+    final lastYear = thisYear - 1;
     return Wrap(
-      spacing: 8,
+      spacing: 4,
       children: [
         ElevatedButton(
+          style: buttonStyle,
           onPressed: () => selectedDateRange.reset(),
           child: Text('All time'),
         ),
         ElevatedButton(
+          style: buttonStyle,
           onPressed: () => selectedDateRange.lastMonths(3),
           child: Text('Last 3 months'),
         ),
         ElevatedButton(
+          style: buttonStyle,
+          onPressed: () => selectedDateRange.year(lastYear),
+          child: Text(lastYear.toString()),
+        ),
+        ElevatedButton(
+          style: buttonStyle,
+          onPressed: () => selectedDateRange.year(thisYear),
+          child: Text(thisYear.toString()),
+        ),
+        ElevatedButton(
+          style: buttonStyle,
           onPressed: () async {
             final DateTime? picked = await showDatePicker(
               context: context,

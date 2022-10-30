@@ -29,20 +29,23 @@ class TotalsCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _textLine(
-                prefix: '     Income:      ',
+                prefix: '     Income:       ',
                 color: Colors.green[400]!,
                 amt: totalIncome,
+                dateRange: selectedDateRange,
               ),
               _textLine(
                 prefix: '– Spending:   ',
                 color: Colors.red,
                 amt: totalSpending,
+                dateRange: selectedDateRange,
               ),
               _dividerLine(),
               _textLine(
-                prefix: '     Savings:      ',
+                prefix: '     Savings:       ',
                 color: Colors.blue[700]!,
                 amt: totalIncome - totalSpending,
+                dateRange: selectedDateRange,
               ),
               _dateBound(selectedDateRange),
             ],
@@ -56,11 +59,14 @@ class TotalsCard extends ConsumerWidget {
     required String prefix,
     required Color color,
     required double amt,
+    required DateTimeRange dateRange,
   }) {
+    final double numYears = dateRange.duration.inDays / 365.0;
+    final double annualizedAmt = amt / numYears;
     // Give room for the negative sign.
     if (amt < 0) prefix = prefix.substring(0, prefix.length - 3);
     return AutoSizeText(
-      '$prefix${amt.asCompactDollars()}',
+      '$prefix${amt.asCompactDollars()}   ${annualizedAmt.asCompactDollars()}',
       style: defaultFont.copyWith(color: color),
       maxLines: 1,
     );
@@ -80,13 +86,17 @@ class TotalsCard extends ConsumerWidget {
   }
 
   Widget _dateBound(DateTimeRange selectedDateRange) {
-    final startDate = DateFormat('MMMM d, y').format(selectedDateRange.start);
+    String format(DateTime d) => DateFormat('MMMM d, y').format(d);
+    final start = format(selectedDateRange.start);
+    final end = format(selectedDateRange.end);
+    final text = 'From $start -through- $end';
+
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: SizedBox(
         width: double.infinity,
         child: AutoSizeText(
-          'From $startDate -through- Today',
+          text,
           textAlign: TextAlign.right,
           style: defaultFont.copyWith(
             fontSize: 12,

@@ -33,6 +33,13 @@ class SelectedDateRange extends StateNotifier<DateTimeRange>
     state = DateTimeRange(start: startOfLastMonth, end: startOfThisMonth);
   }
 
+  void year(int i) {
+    state = DateTimeRange(
+      start: DateTime(i),
+      end: [DateTime.now(), DateTime(i + 1)].min,
+    );
+  }
+
   static DateTimeRange get allTimeRange => DateTimeRange(
         start: DateTime(2020, 12, 1),
         end: DateTime.now(),
