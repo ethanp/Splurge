@@ -30,7 +30,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
     //  as it gets skinnier, to still fit all the chips.
     return SizedBox(
       height: 290,
-      width: 500,
+      width: 510,
       child: Card(
         shape: Shape.roundedRect(circular: 20),
         color: Colors.brown[900],
@@ -153,8 +153,8 @@ class FilterCardState extends ConsumerState<FilterCard> {
     final allCategories = fullDataset.txns.map((txn) => txn.category).toSet();
 
     return Wrap(
-      spacing: 6,
-      runSpacing: 6,
+      spacing: 3,
+      runSpacing: 4,
       children: [
         _AllChip(allCategories),
         ...allCategories.map(_CategoryChip.new),

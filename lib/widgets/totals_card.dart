@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:splurge/global/data_model.dart';
 import 'package:splurge/global/providers.dart';
 
 import '../util/extensions/stdlib_extensions.dart';
@@ -10,24 +11,42 @@ import '../util/extensions/stdlib_extensions.dart';
 class TotalsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedDateRange = ref.watch(SelectedDateRange.provider);
+    final DateTimeRange selectedDateRange =
+        ref.watch(SelectedDateRange.provider);
 
-    final dataset = ref.watch(DatasetNotifier.filteredProvider);
-    final totalIncome = -dataset.incomeTxns.totalAmount;
-    final totalSpending = dataset.spendingTxns.totalAmount;
+    final Dataset dataset = ref.watch(DatasetNotifier.filteredProvider);
+    final double totalIncome = -dataset.incomeTxns.totalAmount;
+    final double totalSpending = dataset.spendingTxns.totalAmount;
+
+    const String space = '             ';
 
     return SizedBox(
       width: 400,
       child: Card(
         margin: const EdgeInsets.all(12),
         shape: Shape.roundedRect(circular: 20),
-        color: Colors.black.withGreen(10).withRed(40).withBlue(30),
+        color: Color.fromRGBO(40, 10, 30, 1),
         elevation: 6,
         child: Padding(
-          padding: const EdgeInsets.all(22),
+          padding: const EdgeInsets.only(
+            left: 22,
+            right: 22,
+            bottom: 14,
+            top: 10,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              AutoSizeText(
+                '${space * 4} raw $space annualized',
+                style: defaultFont.copyWith(
+                  color: Colors.grey[700],
+                  fontStyle: FontStyle.italic,
+                ),
+                maxFontSize: 18,
+                minFontSize: 13,
+                maxLines: 1,
+              ),
               _textLine(
                 prefix: '     Income:       ',
                 color: Colors.green[400]!,
