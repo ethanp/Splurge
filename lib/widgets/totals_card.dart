@@ -18,105 +18,65 @@ class TotalsCard extends ConsumerWidget {
     final double totalIncome = -dataset.incomeTxns.totalAmount;
     final double totalSpending = dataset.spendingTxns.totalAmount;
 
-    const String space = '             ';
+    const Color deepBluePurple = Color.fromRGBO(40, 10, 30, 1);
+
+    final incomeLine = _TextLine(
+      prefix: '     Income:',
+      color: Colors.green[400]!,
+      amt: totalIncome,
+      dateRange: selectedDateRange,
+    );
+    final spendingLine = _TextLine(
+      prefix: '– Spending:',
+      color: Colors.red,
+      amt: totalSpending,
+      dateRange: selectedDateRange,
+    );
+    final savingsLine = _TextLine(
+      prefix: '     Savings:',
+      color: Colors.blue[700]!,
+      amt: totalIncome - totalSpending,
+      dateRange: selectedDateRange,
+    );
 
     return SizedBox(
       width: 410,
       child: Card(
         margin: const EdgeInsets.all(12),
         shape: Shape.roundedRect(circular: 20),
-        color: Color.fromRGBO(40, 10, 30, 1),
+        color: deepBluePurple,
         elevation: 6,
         child: Padding(
           padding: const EdgeInsets.only(
-            left: 22,
-            right: 22,
+            left: 8,
+            right: 18,
             bottom: 14,
             top: 10,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '${space * 4}     raw $space annualized',
-                style: defaultFont.copyWith(
-                  color: Colors.grey[700],
-                  fontStyle: FontStyle.italic,
-                  fontSize: 14,
-                ),
-              ),
-              _textLine(
-                prefix: '     Income:',
-                color: Colors.green[400]!,
-                amt: totalIncome,
-                dateRange: selectedDateRange,
-              ),
-              _textLine(
-                prefix: '– Spending:',
-                color: Colors.red,
-                amt: totalSpending,
-                dateRange: selectedDateRange,
-              ),
-              _dividerLine(),
-              _textLine(
-                prefix: '     Savings:',
-                color: Colors.blue[700]!,
-                amt: totalIncome - totalSpending,
-                dateRange: selectedDateRange,
-              ),
-              _dateBound(selectedDateRange),
+              _ColumnDescriptors(),
+              incomeLine,
+              spendingLine,
+              _DividerLine(),
+              savingsLine,
+              _DateBound(selectedDateRange),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _textLine({
-    required String prefix,
-    required Color color,
-    required double amt,
-    required DateTimeRange dateRange,
-  }) {
-    final double numYears = dateRange.duration.inDays / 365.0;
-    final double annualizedAmt = amt / numYears;
-    Widget cell({required String text, required double width}) {
-      return SizedBox(
-        width: width,
-        child: Text(
-          text,
-          textAlign: TextAlign.right,
-          style: defaultFont.copyWith(
-            color: color,
-            fontSize: 21,
-          ),
-        ),
-      );
-    }
+class _DateBound extends StatelessWidget {
+  const _DateBound(this.selectedDateRange);
 
-    return Row(
-      children: [
-        cell(text: prefix, width: 140),
-        cell(text: amt.asCompactDollars(), width: 100),
-        cell(text: annualizedAmt.asCompactDollars(), width: 100),
-      ],
-    );
-  }
+  final DateTimeRange selectedDateRange;
 
-  Widget _dividerLine() {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 8,
-        bottom: 2,
-        left: 18,
-        right: 4,
-      ),
-      height: 3,
-      color: Colors.grey,
-    );
-  }
-
-  Widget _dateBound(DateTimeRange selectedDateRange) {
+  @override
+  Widget build(BuildContext context) {
     String format(DateTime d) => DateFormat('MMMM d, y').format(d);
     final start = format(selectedDateRange.start);
     final end = format(selectedDateRange.end);
@@ -129,7 +89,7 @@ class TotalsCard extends ConsumerWidget {
         child: AutoSizeText(
           text,
           textAlign: TextAlign.right,
-          style: defaultFont.copyWith(
+          style: _defaultFont.copyWith(
             fontSize: 12,
             color: Colors.blueGrey[600],
             fontStyle: FontStyle.italic,
@@ -138,6 +98,100 @@ class TotalsCard extends ConsumerWidget {
       ),
     );
   }
-
-  static TextStyle get defaultFont => GoogleFonts.merriweather(fontSize: 30);
 }
+
+class _DividerLine extends StatelessWidget {
+  const _DividerLine();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 8,
+        bottom: 2,
+        left: 18,
+        right: 4,
+      ),
+      height: 3,
+      color: Colors.grey,
+    );
+  }
+}
+
+class _ColumnDescriptors extends StatelessWidget {
+  const _ColumnDescriptors();
+
+  @override
+  Widget build(BuildContext context) {
+    const String space = '             ';
+    return Row(
+      children: [
+        SizedBox(width: 190),
+        Text(
+          'raw $space annualized',
+          style: _defaultFont.copyWith(
+            color: Colors.grey[700],
+            fontStyle: FontStyle.italic,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TextLine extends StatelessWidget {
+  const _TextLine({
+    required this.prefix,
+    required this.color,
+    required this.amt,
+    required this.dateRange,
+  });
+
+  final String prefix;
+  final Color color;
+  final double amt;
+  final DateTimeRange dateRange;
+
+  @override
+  Widget build(BuildContext context) {
+    final double numYears = dateRange.duration.inDays / 365.0;
+    final double annualizedAmt = amt / numYears;
+
+    return Row(
+      children: [
+        _cell(
+          text: prefix,
+          width: 140,
+        ),
+        _cell(
+          text: amt.asCompactDollars(),
+          width: 98,
+        ),
+        _cell(
+          text: annualizedAmt.asCompactDollars(),
+          width: 98,
+        ),
+      ],
+    );
+  }
+
+  Widget _cell({
+    required String text,
+    required double width,
+  }) {
+    return SizedBox(
+      width: width,
+      child: Text(
+        text,
+        textAlign: TextAlign.right,
+        style: _defaultFont.copyWith(
+          color: color,
+          fontSize: 21,
+        ),
+      ),
+    );
+  }
+}
+
+TextStyle get _defaultFont => GoogleFonts.merriweather(fontSize: 30);
