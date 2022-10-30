@@ -44,7 +44,7 @@ class MyBarChart extends StatelessWidget {
     return barGroups.isEmpty
         ? Center(
             child: Text(
-              'This bar chart has data to show',
+              'This bar-chart has no data to show (barGroups.isEmpty)',
               style: titleStyle,
             ),
           )

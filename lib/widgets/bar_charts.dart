@@ -77,22 +77,24 @@ class BarCharts extends ConsumerWidget {
   Widget _quarterlyBarChart(Dataset dataset) {
     final Map<String, Dataset> earning =
         dataset.incomeTxns.txnsByQuarter.asMap().map((_, v) => v);
+    final Map<String, Dataset> spending =
+        dataset.spendingTxns.txnsByQuarter.asMap().map((_, v) => v);
 
     return MyBarChart(
       title: 'Earning vs Spending by quarter',
       xTitle: (xVal) => xVal.toDate.qtrString,
-      barGroups: dataset.spendingTxns.txnsByQuarter.mapL(
-        (MapEntry<String, Dataset> spendingEntry) => BarGroup(
-          xValue: spendingEntry.value.txns.first.date.toInt,
+      barGroups: dataset.txnsByQuarter.mapL(
+        (MapEntry<String, Dataset> qtr) => BarGroup(
+          xValue: qtr.value.txns.first.date.toInt,
           bars: [
             Bar(
               title: 'Earning',
-              value: -(earning[spendingEntry.key]?.totalAmount ?? 0),
+              value: -(earning[qtr.key]?.totalAmount ?? 0),
               color: Colors.green[800]!,
             ),
             Bar(
               title: 'Spending',
-              value: spendingEntry.value.totalAmount,
+              value: spending[qtr.key]?.totalAmount ?? 0,
               color: Colors.red,
             ),
           ],

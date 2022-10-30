@@ -1,17 +1,18 @@
+import 'dart:io';
+
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/pages/main_page.dart';
 
-void main() {
-  // TODO(UI): Use that tagger util to set the screen size on init, so that the
-  //  content actually *fits*:
-  //
-  //    "A RenderFlex overflowed by 1446 pixels on the bottom."
-  //
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  /// [ProviderScope] is where the state of our providers will be stored.
-  /// See: https://riverpod.dev/docs/getting_started
-  runApp(const ProviderScope(child: AppWidget()));
+  // So far, it doesn't seem to work to call this *after* calling runApp() :(
+  const minReasonableSize = Size(1600, 800);
+  if (Platform.isMacOS) await DesktopWindow.setWindowSize(minReasonableSize);
+
+  runApp(AppWidget());
 }
 
 class AppWidget extends StatelessWidget {
@@ -19,16 +20,20 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: Scaffold(
-        /* Right now, not feeling the AppBar.
-        appBar: AppBar(
-          title: Text('Personal finances analyzer', style: appFont),
-          backgroundColor: Colors.teal[800],
+    // [ProviderScope] is where the state of our providers will be stored.
+    // See: https://riverpod.dev/docs/getting_started
+    return ProviderScope(
+      child: MaterialApp(
+        theme: ThemeData.dark(),
+        home: Scaffold(
+          /* Right now, not feeling the AppBar.
+          appBar: AppBar(
+            title: Text('Personal finances analyzer', style: appFont),
+            backgroundColor: Colors.teal[800],
+          ),
+           */
+          body: Center(child: MainPage()),
         ),
-         */
-        body: Center(child: MainPage()),
       ),
     );
   }
