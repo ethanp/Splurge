@@ -42,9 +42,19 @@ extension IterableT<T> on Iterable<T> {
 
   U min<U extends Comparable>(U Function(T) fn) => fn(minBy(fn));
 
-  T minBy<U extends Comparable>(U Function(T) fn) => _inner(fn, (x) => x < 0);
+  T minBy<U extends Comparable>(U Function(T) fn) => _most(fn, (x) => x < 0);
 
-  T maxBy<U extends Comparable>(U Function(T) fn) => _inner(fn, (x) => x > 0);
+  T maxBy<U extends Comparable>(U Function(T) fn) => _most(fn, (x) => x > 0);
+
+  T _most<U extends Comparable>(U Function(T) fn, bool Function(int) op) {
+    T bestSoFar = first;
+    for (T curr in skip(1)) {
+      if (op(fn(curr).compareTo(fn(bestSoFar)))) {
+        bestSoFar = curr;
+      }
+    }
+    return bestSoFar;
+  }
 
   Iterable<U> mapWithIdx<U>(U Function(T, int) fn) sync* {
     int i = 0;
@@ -58,16 +68,6 @@ extension IterableT<T> on Iterable<T> {
 
   List<T> separatedBy(T separator) =>
       expand((e) => [e, separator]).toList()..removeLast();
-
-  T _inner<U extends Comparable>(U Function(T) fn, bool Function(int) comp) {
-    T bestSoFar = first;
-    for (T curr in skip(1)) {
-      if (comp(fn(curr).compareTo(fn(bestSoFar)))) {
-        bestSoFar = curr;
-      }
-    }
-    return bestSoFar;
-  }
 }
 
 extension ListT<T> on List<T> {

@@ -35,7 +35,7 @@ class CopilotExportRow {
         return rowValues[4];
       case 'income':
         if (title.toLowerCase().contains('payroll')) {
-          if (amount.abs() < 5000) {
+          if (amount.abs() < 5500) {
             return IncomeCategory.Payroll.name;
           } else {
             return IncomeCategory.Bonus.name;

@@ -147,8 +147,8 @@ class _CategoryChips extends ConsumerWidget {
 
   Widget _chips(Iterable<String> names) {
     return Wrap(
-      spacing: 3,
-      runSpacing: 4,
+      spacing: 4,
+      runSpacing: 5,
       children: [
         _AllChip(names),
         ...names.map(_CategoryChip.new),
@@ -284,8 +284,9 @@ class _CategoryChip extends ConsumerWidget {
     ref.watch(SelectedCategories.provider);
     final selectedCategories = ref.read(SelectedCategories.provider.notifier);
 
-    // TODO(UI): Reduce rounded-rect radius, like in Tagger.
     return FilterChip(
+      padding: EdgeInsets.zero,
+      shape: Shape.roundedRect(circular: 10),
       // This way the chip doesn't ever change size.
       showCheckmark: false,
       selectedColor: category.isIncome ? Colors.green[700] : Colors.red[600],
