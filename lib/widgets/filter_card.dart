@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:splurge/global/data_model.dart';
 import 'package:splurge/global/providers.dart';
 import 'package:splurge/util/extensions/stdlib_extensions.dart';
@@ -7,6 +8,7 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 class FilterCard extends ConsumerStatefulWidget {
   @override
   FilterCardState createState() => FilterCardState();
+  static final cardColor = Colors.brown[900];
 }
 
 class FilterCardState extends ConsumerState<FilterCard> {
@@ -29,28 +31,23 @@ class FilterCardState extends ConsumerState<FilterCard> {
     //  on both laptop and big monitor. Specifically, the card should get taller
     //  as it gets skinnier, to still fit all the chips.
     return SizedBox(
-      height: 330,
+      height: 340,
       width: 510,
       child: Card(
         shape: Shape.roundedRect(circular: 20),
-        color: Colors.brown[900],
+        color: FilterCard.cardColor,
         elevation: 4,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 16,
-              bottom: 6,
-            ),
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
             child: _searchBar(),
           ),
           Padding(
-            padding: const EdgeInsets.all(8),
-            child: _categoryChips(),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: _CategoryChips(),
           ),
           Padding(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             child: _TimeRangeSelector(),
           ),
         ]),
@@ -98,8 +95,11 @@ class FilterCardState extends ConsumerState<FilterCard> {
       ),
     );
   }
+}
 
-  Widget _categoryChips() {
+class _CategoryChips extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final fullDataset = ref.read(DatasetNotifier.unfilteredProvider);
     final allCategories = fullDataset.txns.map((txn) => txn.category).toSet();
     bool isIncome(String category) => category.isIncome;
@@ -107,27 +107,64 @@ class FilterCardState extends ConsumerState<FilterCard> {
     return Wrap(
       runSpacing: 8,
       children: [
-        _categorySection(allCategories.where(isIncome)),
-        _categorySection(allCategories.where(isIncome.inverted)),
+        _categorySection(
+          title: 'Income',
+          color: Colors.blueGrey[300]!.withGreen(200),
+          categoryNames: allCategories.where(isIncome),
+        ),
+        _categorySection(
+          title: 'Spending',
+          color: Colors.blueGrey[300]!.withRed(200),
+          categoryNames: allCategories.where(isIncome.inverted),
+        ),
       ],
     );
   }
 
-  Widget _categorySection(Iterable<String> categories) {
+  Widget _categorySection({
+    required String title,
+    required Color color,
+    required Iterable<String> categoryNames,
+  }) {
+    return Stack(
+      children: [
+        _roundedRect(child: _chips(categoryNames)),
+        Container(
+          margin: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          color: FilterCard.cardColor,
+          child: Text(
+            title,
+            style: GoogleFonts.robotoSlab(
+              fontSize: 12,
+              color: color,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _chips(Iterable<String> names) {
+    return Wrap(
+      spacing: 3,
+      runSpacing: 4,
+      children: [
+        _AllChip(names),
+        ...names.map(_CategoryChip.new),
+      ],
+    );
+  }
+
+  Widget _roundedRect({required Widget child}) {
     return Container(
+      margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.grey[700]!),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: Wrap(
-        spacing: 3,
-        runSpacing: 4,
-        children: [
-          _AllChip(categories),
-          ...categories.map(_CategoryChip.new),
-        ],
-      ),
+      child: child,
     );
   }
 }
@@ -148,26 +185,50 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
     return Wrap(
       spacing: 4,
       children: [
-        _button(() => selectedDateRange.reset(), 0, 'All time'),
-        _button(() => selectedDateRange.lastMonths(3), 1, 'Last 3 months'),
-        _button(() => selectedDateRange.year(lastYear), 2, lastYear.toString()),
-        _button(() => selectedDateRange.year(thisYear), 3, thisYear.toString()),
-        _button(() async {
-          final DateTime? picked = await showDatePicker(
-            context: context,
-            initialDate: selectedDateRange.range.start,
-            firstDate: DateTime(2020, 12),
-            lastDate: DateTime.now(),
-          );
-          if (picked == null || picked == selectedDateRange.range.start)
-            return; // no change.
-          selectedDateRange.setStart(picked);
-        }, 4, 'Set start date'),
+        _button(
+          idx: 0,
+          text: 'All time',
+          callback: () => selectedDateRange.reset(),
+        ),
+        _button(
+          idx: 1,
+          text: 'Last 3 months',
+          callback: () => selectedDateRange.lastMonths(3),
+        ),
+        _button(
+          idx: 2,
+          text: lastYear.toString(),
+          callback: () => selectedDateRange.year(lastYear),
+        ),
+        _button(
+          idx: 3,
+          text: thisYear.toString(),
+          callback: () => selectedDateRange.year(thisYear),
+        ),
+        _button(
+          idx: 4,
+          text: 'Set start date',
+          callback: () async {
+            final DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: selectedDateRange.range.start,
+              firstDate: DateTime(2020, 12),
+              lastDate: DateTime.now(),
+            );
+            if (picked == null || picked == selectedDateRange.range.start)
+              return; // no change.
+            selectedDateRange.setStart(picked);
+          },
+        ),
       ],
     );
   }
 
-  Widget _button(VoidCallback callback, int idx, String text) {
+  Widget _button({
+    required int idx,
+    required String text,
+    required VoidCallback callback,
+  }) {
     final selectedStyle = ElevatedButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 8),
     );
@@ -197,7 +258,7 @@ class _AllChip extends ConsumerWidget {
     final selectedCategories = ref.read(SelectedCategories.provider.notifier);
 
     return FilterChip(
-      label: Text('ALL'),
+      label: Text('All'),
       backgroundColor: Colors.blue[800],
       selectedColor: Colors.blue[300],
       // This way the chip doesn't ever change size.

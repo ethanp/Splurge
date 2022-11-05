@@ -24,6 +24,7 @@ class AppWidget extends StatelessWidget {
     // See: https://riverpod.dev/docs/getting_started
     return ProviderScope(
       child: MaterialApp(
+        // TODO(UI): Try background color: dark-grey to darker-grey gradient.
         theme: ThemeData.dark(),
         home: Scaffold(
           /* Right now, not feeling the AppBar.
