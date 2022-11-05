@@ -151,13 +151,17 @@ class FilterCardState extends ConsumerState<FilterCard> {
   Widget _categoryChips() {
     final fullDataset = ref.read(DatasetNotifier.unfilteredProvider);
     final allCategories = fullDataset.txns.map((txn) => txn.category).toSet();
+    final allChips = allCategories.map(_CategoryChip.new);
+    final incomeChips = allChips.where((chip) => chip.category.isIncome);
+    final spendingChips = allChips.where((chip) => !chip.category.isIncome);
 
     return Wrap(
       spacing: 3,
       runSpacing: 4,
       children: [
         _AllChip(allCategories),
-        ...allCategories.map(_CategoryChip.new),
+        ...incomeChips,
+        ...spendingChips,
       ],
     );
   }

@@ -6,17 +6,25 @@ Future<Dataset> loader({
   required String title,
   required String fileSubstring,
   required int numHeaderLines,
-  required Transaction Function(String) f,
+  required Transaction Function(String) parseToTransaction,
   required bool Function(Transaction) filter,
 }) async {
   final Stream<FileSystemEntity> downloads =
       Directory('/Users/Ethan/Downloads').list();
-  final FileSystemEntity dumpCsv =
-      await downloads.firstWhere((f) => f.path.contains(fileSubstring));
-  print('Parsing $title dump');
-  final String dumpContents = await (dumpCsv as File).readAsString();
-  final Iterable<Transaction> txns =
-      dumpContents.split('\n').skip(numHeaderLines).map(f).where(filter);
+  final List<FileSystemEntity> matchingFiles = await downloads
+      .where((file) => file.path.contains(fileSubstring))
+      .toList();
+  assert(matchingFiles.length == 1,
+      'matching file count for $title: ${matchingFiles.length}');
+  final File dumpCsv = matchingFiles.first as File;
+  print('Parsing $title dump from ${dumpCsv.path}');
+  final String dumpContents = await dumpCsv.readAsString();
+  final Iterable<Transaction> txns = dumpContents
+      .split('\n')
+      .skip(numHeaderLines)
+      .where((line) => line.isNotEmpty)
+      .map(parseToTransaction)
+      .where(filter);
   return Dataset(txns);
 }
 

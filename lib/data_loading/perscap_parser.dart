@@ -1,5 +1,6 @@
 import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/csv.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 import 'loader.dart';
 
@@ -8,10 +9,10 @@ class PerscapExportReader {
         title: 'Perscap',
         fileSubstring: 'Transactions_For_All_Accounts',
         numHeaderLines: 2,
-        f: (text) => PerscapExportRow(text).toTransaction(),
+        parseToTransaction: (text) => PerscapExportRow(text).toTransaction(),
         filter: (txn) =>
             txn.category == IncomeCategory.TaxAdvContrib.name &&
-            txn.date.isAfter(DateTime(/*year*/ 2021, /*month*/ 3)),
+            txn.date.isAtLeast(DateTime(/*year*/ 2021, /*month*/ 3)),
       );
 }
 

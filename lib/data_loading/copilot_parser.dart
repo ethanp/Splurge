@@ -8,7 +8,7 @@ class CopilotExportReader {
         title: 'Copilot',
         fileSubstring: 'transactions.csv',
         numHeaderLines: 1,
-        f: (text) => CopilotExportRow(text).toTransaction(),
+        parseToTransaction: (text) => CopilotExportRow(text).toTransaction(),
         filter: (_) => true,
       );
 }

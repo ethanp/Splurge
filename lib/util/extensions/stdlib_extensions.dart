@@ -93,6 +93,8 @@ extension EDateTime on DateTime {
   int get toInt => millisecondsSinceEpoch;
 
   double get toDouble => toInt.toDouble();
+
+  bool isAtLeast(DateTime other) => isAtSameMomentAs(other) || isAfter(other);
 }
 
 extension EDouble on double {
