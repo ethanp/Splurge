@@ -135,6 +135,10 @@ extension EInt on int {
   int mustBeAtLeast(int n) => math.max(this, n);
 }
 
+extension SS<T> on bool Function(T) {
+  bool Function(T) get inverted => (t) => !this(t);
+}
+
 class Shape {
   static OutlinedBorder roundedRect({required double circular}) =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(circular));

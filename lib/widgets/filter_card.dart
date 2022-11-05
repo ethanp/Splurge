@@ -29,7 +29,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
     //  on both laptop and big monitor. Specifically, the card should get taller
     //  as it gets skinnier, to still fit all the chips.
     return SizedBox(
-      height: 290,
+      height: 330,
       width: 510,
       child: Card(
         shape: Shape.roundedRect(circular: 20),
@@ -51,59 +51,10 @@ class FilterCardState extends ConsumerState<FilterCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(4),
-            child: _timeRangeSelector(),
+            child: _TimeRangeSelector(),
           ),
         ]),
       ),
-    );
-  }
-
-  Widget _timeRangeSelector() {
-    final selectedDateRange = ref.read(SelectedDateRange.provider.notifier);
-    final buttonStyle = ElevatedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-    );
-    final thisYear = DateTime.now().year;
-    final lastYear = thisYear - 1;
-    return Wrap(
-      spacing: 4,
-      children: [
-        ElevatedButton(
-          style: buttonStyle,
-          onPressed: () => selectedDateRange.reset(),
-          child: Text('All time'),
-        ),
-        ElevatedButton(
-          style: buttonStyle,
-          onPressed: () => selectedDateRange.lastMonths(3),
-          child: Text('Last 3 months'),
-        ),
-        ElevatedButton(
-          style: buttonStyle,
-          onPressed: () => selectedDateRange.year(lastYear),
-          child: Text(lastYear.toString()),
-        ),
-        ElevatedButton(
-          style: buttonStyle,
-          onPressed: () => selectedDateRange.year(thisYear),
-          child: Text(thisYear.toString()),
-        ),
-        ElevatedButton(
-          style: buttonStyle,
-          onPressed: () async {
-            final DateTime? picked = await showDatePicker(
-              context: context,
-              initialDate: selectedDateRange.range.start,
-              firstDate: DateTime(2020, 12),
-              lastDate: DateTime.now(),
-            );
-            if (picked == null || picked == selectedDateRange.range.start)
-              return; // no change.
-            selectedDateRange.setStart(picked);
-          },
-          child: Text('Set start date'),
-        ),
-      ],
     );
   }
 
@@ -151,18 +102,85 @@ class FilterCardState extends ConsumerState<FilterCard> {
   Widget _categoryChips() {
     final fullDataset = ref.read(DatasetNotifier.unfilteredProvider);
     final allCategories = fullDataset.txns.map((txn) => txn.category).toSet();
-    final allChips = allCategories.map(_CategoryChip.new);
-    final incomeChips = allChips.where((chip) => chip.category.isIncome);
-    final spendingChips = allChips.where((chip) => !chip.category.isIncome);
+    bool isIncome(String category) => category.isIncome;
 
     return Wrap(
-      spacing: 3,
-      runSpacing: 4,
+      runSpacing: 8,
       children: [
-        _AllChip(allCategories),
-        ...incomeChips,
-        ...spendingChips,
+        _categorySection(allCategories.where(isIncome)),
+        _categorySection(allCategories.where(isIncome.inverted)),
       ],
+    );
+  }
+
+  Widget _categorySection(Iterable<String> categories) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Wrap(
+        spacing: 3,
+        runSpacing: 4,
+        children: [
+          _AllChip(categories),
+          ...categories.map(_CategoryChip.new),
+        ],
+      ),
+    );
+  }
+}
+
+class _TimeRangeSelector extends ConsumerStatefulWidget {
+  @override
+  TimeRangeSelectorState createState() => TimeRangeSelectorState();
+}
+
+class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
+  var selectedButton = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedDateRange = ref.read(SelectedDateRange.provider.notifier);
+    final thisYear = DateTime.now().year;
+    final lastYear = thisYear - 1;
+    return Wrap(
+      spacing: 4,
+      children: [
+        _button(() => selectedDateRange.reset(), 0, 'All time'),
+        _button(() => selectedDateRange.lastMonths(3), 1, 'Last 3 months'),
+        _button(() => selectedDateRange.year(lastYear), 2, lastYear.toString()),
+        _button(() => selectedDateRange.year(thisYear), 3, thisYear.toString()),
+        _button(() async {
+          final DateTime? picked = await showDatePicker(
+            context: context,
+            initialDate: selectedDateRange.range.start,
+            firstDate: DateTime(2020, 12),
+            lastDate: DateTime.now(),
+          );
+          if (picked == null || picked == selectedDateRange.range.start)
+            return; // no change.
+          selectedDateRange.setStart(picked);
+        }, 4, 'Set start date'),
+      ],
+    );
+  }
+
+  Widget _button(VoidCallback callback, int idx, String text) {
+    final selectedStyle = ElevatedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+    );
+    final unselectedStyle = selectedStyle.copyWith(
+      backgroundColor: MaterialStatePropertyAll(Colors.blueGrey),
+    );
+    return ElevatedButton(
+      style: selectedButton == idx ? selectedStyle : unselectedStyle,
+      onPressed: () {
+        setState(() => selectedButton = idx);
+        callback();
+      },
+      child: Text(text),
     );
   }
 }
@@ -171,7 +189,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
 class _AllChip extends ConsumerWidget {
   const _AllChip(this.allCategories);
 
-  final Set<String> allCategories;
+  final Iterable<String> allCategories;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -205,6 +223,7 @@ class _CategoryChip extends ConsumerWidget {
     ref.watch(SelectedCategories.provider);
     final selectedCategories = ref.read(SelectedCategories.provider.notifier);
 
+    // TODO(UI): Reduce rounded-rect radius, like in Tagger.
     return FilterChip(
       // This way the chip doesn't ever change size.
       showCheckmark: false,
