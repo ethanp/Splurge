@@ -90,6 +90,9 @@ class FilterCardState extends ConsumerState<FilterCard> {
   }
 }
 
+/// Note: I've tried to make the larger chips' fontSize shrink when it exceeds
+/// 2 rows in the Wrap, but concluded that it is not possible without
+/// reimplementing the `AutoSizeText` in a different way.
 class _CategoryChips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -255,6 +258,7 @@ class _AllChip extends ConsumerWidget {
 
     return FilterChip(
       label: Text('All', style: FilterCard.chipTextStyle),
+      shape: Shape.roundedRect(circular: 10),
       backgroundColor: Colors.blue[800],
       selectedColor: Colors.blue[300],
       // This way the chip doesn't ever change size.
