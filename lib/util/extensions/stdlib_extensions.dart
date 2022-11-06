@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -157,6 +158,10 @@ extension EInt on int {
 
 extension SS<T> on bool Function(T) {
   bool Function(T) get inverted => (t) => !this(t);
+}
+
+extension FFile on File {
+  String get basepath => path.substring(parent.path.length + 1);
 }
 
 class DateRange {

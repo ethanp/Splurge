@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:splurge/global/data_model.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 Future<Dataset> loader({
   required String title,
@@ -17,7 +18,7 @@ Future<Dataset> loader({
   assert(matchingFiles.length == 1,
       'matching file count for $title: ${matchingFiles.length}');
   final File dumpCsv = matchingFiles.first as File;
-  print('Parsing $title dump from ${dumpCsv.path}');
+  print('Parsing $title dump from ${dumpCsv.basepath}');
   final String dumpContents = await dumpCsv.readAsString();
   final Iterable<Transaction> txns = dumpContents
       .split('\n')

@@ -41,14 +41,15 @@ class MyBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (barGroups.isEmpty) {
-      return Center(
-        child: Text(
-          'This bar-chart has no data to show (barGroups.isEmpty)',
-          style: titleStyle,
-        ),
-      );
-    }
+    final numNonZeroBars = barGroups.fold<int>(
+      0,
+      (acc, group) {
+        final nonZeroBars = group.bars.where((bar) => bar.value != 0).length;
+        return acc + nonZeroBars;
+      },
+    );
+
+    if (barGroups.isEmpty || numNonZeroBars <= 1) return SizedBox();
 
     return Column(
       children: [
