@@ -181,33 +181,28 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
       spacing: 4,
       children: [
         _button(
-          idx: 0,
           text: 'All time',
-          callback: () => selectedDateRange.reset(),
+          onPressed: () => selectedDateRange.reset(),
         ),
         _button(
-          idx: 1,
           text: 'Last 3 months',
-          callback: () => selectedDateRange.lastMonths(3),
+          onPressed: () => selectedDateRange.lastMonths(3),
         ),
         _button(
-          idx: 2,
           text: lastYear.toString(),
-          callback: () => selectedDateRange.setRange(
+          onPressed: () => selectedDateRange.setRange(
             DateRange.just(year: lastYear),
           ),
         ),
         _button(
-          idx: 3,
           text: thisYear.toString(),
-          callback: () => selectedDateRange.setRange(
+          onPressed: () => selectedDateRange.setRange(
             DateRange.just(year: thisYear),
           ),
         ),
         _button(
-          idx: 4,
           text: 'Set start date',
-          callback: () async {
+          onPressed: () async {
             final DateTime? picked = await showDatePicker(
               context: context,
               initialDate: selectedDateRange.range.start,
@@ -219,30 +214,30 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
             selectedDateRange.setStart(picked);
           },
         ),
-      ],
+      ].mapWithIdx((createButton, idx) => createButton(idx)).toList(),
     );
   }
 
-  Widget _button({
-    required int idx,
+  Widget Function(int) _button({
     required String text,
-    required VoidCallback callback,
-  }) {
-    final selectedStyle = ElevatedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-    );
-    final unselectedStyle = selectedStyle.copyWith(
-      backgroundColor: MaterialStatePropertyAll(Colors.blueGrey),
-    );
-    return ElevatedButton(
-      style: selectedButton == idx ? selectedStyle : unselectedStyle,
-      onPressed: () {
-        setState(() => selectedButton = idx);
-        callback();
-      },
-      child: Text(text),
-    );
-  }
+    required VoidCallback onPressed,
+  }) =>
+      (idx) {
+        final selectedStyle = ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+        );
+        final unselectedStyle = selectedStyle.copyWith(
+          backgroundColor: MaterialStatePropertyAll(Colors.blueGrey),
+        );
+        return ElevatedButton(
+          style: selectedButton == idx ? selectedStyle : unselectedStyle,
+          onPressed: () {
+            setState(() => selectedButton = idx);
+            onPressed();
+          },
+          child: Text(text),
+        );
+      };
 }
 
 /// Simple way to allow the user to analyze by EXCLUDING categories.
