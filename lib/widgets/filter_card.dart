@@ -9,6 +9,7 @@ class FilterCard extends ConsumerStatefulWidget {
   @override
   FilterCardState createState() => FilterCardState();
   static final cardColor = Colors.brown[900];
+  static final chipTextStyle = GoogleFonts.aBeeZee();
 }
 
 class FilterCardState extends ConsumerState<FilterCard> {
@@ -26,32 +27,24 @@ class FilterCardState extends ConsumerState<FilterCard> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(UI): Consider using ConstrainedBox or something to let this resize
-    //  itself to some extent; since I can't find a single size that looks good
-    //  on both laptop and big monitor. Specifically, the card should get taller
-    //  as it gets skinnier, to still fit all the chips.
-    return SizedBox(
-      height: 370,
-      width: 510,
-      child: Card(
-        shape: Shape.roundedRect(circular: 20),
-        color: FilterCard.cardColor,
-        elevation: 4,
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-            child: _searchBar(),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: _CategoryChips(),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: _TimeRangeSelector(),
-          ),
-        ]),
-      ),
+    return Card(
+      shape: Shape.roundedRect(circular: 20),
+      color: FilterCard.cardColor,
+      elevation: 4,
+      child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+          child: _searchBar(),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: _CategoryChips(),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: _TimeRangeSelector(),
+        ),
+      ]),
     );
   }
 
@@ -261,7 +254,7 @@ class _AllChip extends ConsumerWidget {
     final selectedCategories = ref.read(SelectedCategories.provider.notifier);
 
     return FilterChip(
-      label: Text('All'),
+      label: Text('All', style: FilterCard.chipTextStyle),
       backgroundColor: Colors.blue[800],
       selectedColor: Colors.blue[300],
       // This way the chip doesn't ever change size.
@@ -293,7 +286,7 @@ class _CategoryChip extends ConsumerWidget {
       // This way the chip doesn't ever change size.
       showCheckmark: false,
       selectedColor: category.isIncome ? Colors.green[700] : Colors.red[600],
-      label: Text(category),
+      label: Text(category, style: FilterCard.chipTextStyle),
       selected: selectedCategories.contains(category),
       onSelected: (bool? isSelected) {
         if (isSelected ?? false)

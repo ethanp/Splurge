@@ -1,4 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:splurge/util/extensions/stdlib_extensions.dart';
 import 'package:splurge/widgets/bar_charts.dart';
 import 'package:splurge/widgets/filter_card.dart';
 import 'package:splurge/widgets/income_v_spending_line_chart.dart';
@@ -24,7 +27,7 @@ class MainPage extends StatelessWidget {
                 ],
               ),
             ),
-            FilterCard(),
+            Expanded(child: FilterCard()),
           ]),
           Expanded(child: IncomeVsSpendingLineChart()),
         ]),
@@ -43,15 +46,37 @@ class MainPage extends StatelessWidget {
 class _TableComparisonButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(18),
-      child: ElevatedButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (ctx) => AnnualCategorySummaryPage(),
+    final iconAndText = Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Icon(Icons.table_view, size: 36),
+        Expanded(
+          child: AutoSizeText(
+            'Table: category comparison by year',
+            style: GoogleFonts.robotoSlab(fontSize: 29),
+            maxLines: 1,
           ),
         ),
-        child: Text('Table: category comparison by year'),
+      ],
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: SizedBox(
+        width: 400,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            shape: Shape.roundedRect(circular: 10),
+          ),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AnnualCategorySummaryPage(),
+            ),
+          ),
+          child: iconAndText,
+        ),
       ),
     );
   }
