@@ -16,7 +16,7 @@ class Legend extends StatelessWidget {
       shape: Shape.roundedRect(circular: 6),
       child: Container(
         padding: const EdgeInsets.all(10),
-        width: 340,
+        width: 350,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -95,7 +95,7 @@ class _LineLegend extends StatelessWidget {
 
   Widget _subtitle() {
     return Text(
-      '${line.rawSpots.length} txns ${line.smoothing}',
+      '${line.rawSpots.length} txns  |  ${line.smoothing}',
       style: GoogleFonts.heebo(
         fontStyle: FontStyle.italic,
         color: _fade(Colors.grey),

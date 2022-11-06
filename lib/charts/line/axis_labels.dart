@@ -19,6 +19,8 @@ class AxisLabels {
       sideTitles: SideTitles(
         showTitles: true,
         reservedSize: 40,
+        // TODO(UX): Interval should scale with actual values. Eg. the current
+        //  interval of $100 is way too big for most categories' line chart.
         interval: 100,
         getTitlesWidget: (value, meta) => SideTitleWidget(
           space: 0,

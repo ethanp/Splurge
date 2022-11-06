@@ -101,5 +101,5 @@ class SmoothingParams {
   final int nDaySmoothing;
 
   @override
-  String toString() => 'over a $nDaySmoothing day std moving avg';
+  String toString() => '$nDaySmoothing day std moving avg + more';
 }

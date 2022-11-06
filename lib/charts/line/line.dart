@@ -10,7 +10,7 @@ class Line {
     required this.title,
     required this.color,
     required this.rawSpots,
-    this.smoothing = const SmoothingParams(nDaySmoothing: 25),
+    this.smoothing = const SmoothingParams(nDaySmoothing: 35),
   })  : assert(rawSpots.isNotEmpty, 'fl_chart does not allow empty lines'),
         spots = Smoothing(params: smoothing).smooth(rawSpots);
 

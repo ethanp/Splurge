@@ -17,8 +17,8 @@ class Header extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.elliptical(40, 20),
-              bottomRight: Radius.elliptical(40, 20),
+              bottomLeft: Radius.circular(40),
+              bottomRight: Radius.circular(40),
             ),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
