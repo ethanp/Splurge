@@ -81,6 +81,10 @@ class _Chart extends ConsumerWidget {
       // https://github.com/imaNNeoFighT/fl_chart/blob/master/repo_files/documentations/line_chart.md
       LineChartData(
         lineBarsData: flLines,
+        // TODO(product bug): minX and maxX should reflect the
+        //  SelectedDateTimeRange provider's `state` in this case, not the
+        //  circumstantial date endpoints of the filtered dataset. The way it
+        //  is now leads to easily-misleading animations between categories.
         minX: flLines.minX - horizontalMargin,
         maxX: flLines.maxX + horizontalMargin,
         minY: 0, // flLines.minY - verticalMargin,
