@@ -99,6 +99,22 @@ extension EDateTime on DateTime {
 
 extension EDouble on double {
   DateTime get toDate => DateTime.fromMillisecondsSinceEpoch(toInt());
+}
+
+extension ENum on num {
+  double get degreesToRadians => this * math.pi / 180;
+
+  double get radianToDegree => this * 180 / math.pi;
+
+  /// Eg. 235768.2359 => '$235,768.59'
+  String asExactDollars() {
+    // Fixes bug in library, so that '$-2K' => '-$2K'.
+    return (this < 0 ? '-' : '') +
+        NumberFormat.currency(
+          locale: 'en_US',
+          symbol: '\$',
+        ).format(abs());
+  }
 
   /// Eg. 235768.2359 => '$235K'
   String asCompactDollars() {
@@ -109,12 +125,6 @@ extension EDouble on double {
           symbol: '\$',
         ).format(abs());
   }
-}
-
-extension ENum on num {
-  double get degreesToRadians => this * math.pi / 180;
-
-  double get radianToDegree => this * 180 / math.pi;
 }
 
 extension EInt on int {

@@ -26,6 +26,8 @@ class Dataset {
 
   Dataset get incomeTxns => Dataset(txns.whereL((t) => t.txnType == 'income'));
 
+  Set<String> get categories => txns.map((txn) => txn.category).toSet();
+
   List<MapEntry<String, Dataset>> get txnsByMonth =>
       txns.fold([], (accumulator, txn) {
         final month = txn.date.month;
