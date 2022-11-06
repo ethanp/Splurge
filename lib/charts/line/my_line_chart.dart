@@ -18,10 +18,14 @@ import 'tooltip.dart';
 class MyLineChart extends StatelessWidget {
   const MyLineChart({
     this.title,
+    this.minX,
+    this.maxX,
     required this.lines,
   });
 
   final String? title;
+  final double? minX;
+  final double? maxX;
   final List<Line> lines;
 
   @override
@@ -31,7 +35,7 @@ class MyLineChart extends StatelessWidget {
       Expanded(
         child: Stack(
           children: [
-            _Chart(lines: lines),
+            _Chart(lines: lines, minX: minX, maxX: maxX),
             Positioned(
               left: 50,
               top: 12,
@@ -56,9 +60,11 @@ class MyLineChart extends StatelessWidget {
 }
 
 class _Chart extends ConsumerWidget {
-  const _Chart({required this.lines});
+  const _Chart({required this.lines, this.minX, this.maxX});
 
   final List<Line> lines;
+  final double? minX;
+  final double? maxX;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,12 +87,8 @@ class _Chart extends ConsumerWidget {
       // https://github.com/imaNNeoFighT/fl_chart/blob/master/repo_files/documentations/line_chart.md
       LineChartData(
         lineBarsData: flLines,
-        // TODO(product bug): minX and maxX should reflect the
-        //  SelectedDateTimeRange provider's `state` in this case, not the
-        //  circumstantial date endpoints of the filtered dataset. The way it
-        //  is now leads to easily-misleading animations between categories.
-        minX: flLines.minX - horizontalMargin,
-        maxX: flLines.maxX + horizontalMargin,
+        minX: minX ?? flLines.minX - horizontalMargin,
+        maxX: maxX ?? flLines.maxX + horizontalMargin,
         minY: 0, // flLines.minY - verticalMargin,
         maxY: flLines.maxY + verticalMargin,
         titlesData: AxisLabels.create(),

@@ -12,6 +12,7 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dataset = ref.watch(DatasetNotifier.filteredProvider);
+    final dateRange = ref.watch(SelectedDateRange.provider);
 
     // Make earning easier to compare with spending by inverting.
     final incomeSpots = dataset.incomeTxns.txns
@@ -31,6 +32,8 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
             padding:
                 const EdgeInsets.only(left: 4, top: 12, right: 20, bottom: 20),
             child: MyLineChart(
+              minX: dateRange.start.toDouble,
+              maxX: dateRange.end.toDouble,
               lines: [
                 if (incomeSpots.isNotEmpty)
                   Line(
