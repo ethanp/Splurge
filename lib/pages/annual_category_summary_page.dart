@@ -6,8 +6,30 @@ class AnnualCategorySummaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Table of annualized spending per category per year'),
+      ),
       // TODO(feature): Table of annualized spending per category per year.
-      body: const Text('TODO(feature): Table'),
+      body: Table(
+        children: const [
+          TableRow(
+            children: [
+              Text('hello'),
+              Text('hello'),
+              Text('hello'),
+              Text('hello'),
+            ],
+          ),
+          TableRow(
+            children: [
+              Text('hello2'),
+              Text('hello2'),
+              Text('hello2'),
+              Text('hello2'),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
