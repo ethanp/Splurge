@@ -18,13 +18,16 @@ class Smoothing {
 
   /// The extent of smoothing is a function of the point's magnitude, since
   /// events like bonus payment, GSU cash-out, car purchase, need to be
-  /// "smeared" *more*. Here, we smear down to a cap of "$20 of influence" per
-  /// day.
+  /// "smeared" *more*. Here, we smear down to a cap of "$24 of influence" per
+  /// day, which was found to work "ok enough" for both the overall view and
+  /// isolated categories.
+  // TODO(feature): The cap should be different depending on the "scale" of the
+  //  data (ie. its max's magnitude).
   List<FlSpot> _smear(List<FlSpot> spots) {
     final List<double> ys = List.filled(spots.length, 0);
     for (final idx in spots.indices) {
       // ignore: prefer_const_declarations
-      final double maxInfluence = 20;
+      final double maxInfluence = 24;
       final int neighborhoodWidth = (spots[idx].y.abs() ~/ maxInfluence)
           .clamp(0, math.min(idx, spots.length - idx));
       final double scaled = spots[idx].y / (neighborhoodWidth * 2 + 1);
