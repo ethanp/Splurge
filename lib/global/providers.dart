@@ -15,12 +15,7 @@ class SelectedDateRange extends StateNotifier<DateTimeRange>
           (ref) => SelectedDateRange());
 
   @override
-  bool includes(Transaction txn) {
-    final afterStart =
-        txn.date.isAtSameMomentAs(state.start) || txn.date.isAfter(state.start);
-    final beforeEnd = txn.date.isBefore(state.end);
-    return afterStart && beforeEnd;
-  }
+  bool includes(Transaction txn) => txn.isWithinDateRange(range);
 
   void reset() => state = allTimeRange;
 
@@ -33,12 +28,7 @@ class SelectedDateRange extends StateNotifier<DateTimeRange>
     state = DateTimeRange(start: startOfLastMonth, end: startOfThisMonth);
   }
 
-  void year(int i) {
-    state = DateTimeRange(
-      start: DateTime(i),
-      end: [DateTime.now(), DateTime(i + 1)].min,
-    );
-  }
+  void year(int i) => state = DateRange.justYear(i);
 
   static DateTimeRange get allTimeRange => DateTimeRange(
         start: DateTime(2020, 12, 1),

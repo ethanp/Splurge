@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:flutter/material.dart';
 import 'package:splurge/global/providers.dart';
 import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
@@ -27,6 +28,10 @@ class Dataset {
   Dataset get incomeTxns => Dataset(txns.whereL((t) => t.txnType == 'income'));
 
   Set<String> get categories => txns.map((txn) => txn.category).toSet();
+
+  Map<String, Dataset> get txnsPerCategory => txns
+      .groupBy((txn) => txn.category)
+      .map((cat, txns) => MapEntry(cat, Dataset(txns)));
 
   List<MapEntry<String, Dataset>> get txnsByMonth =>
       txns.fold([], (accumulator, txn) {
@@ -84,6 +89,10 @@ class Transaction {
       '$amount, '
       '${category.isEmpty ? 'no category' : category}, '
       '$txnType';
+
+  /// Range has [this, shape).
+  bool isWithinDateRange(DateTimeRange range) =>
+      date.isAtLeast(range.start) && date.isBefore(range.end);
 }
 
 enum IncomeCategory {

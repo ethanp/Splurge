@@ -76,6 +76,16 @@ extension ListT<T> on List<T> {
 
   List<T> keepLast({required int atMost}) =>
       sublist(math.max(length - atMost, 0));
+
+  Map<U, List<T>> groupBy<U>(U Function(T) f) {
+    final ret = <U, List<T>>{};
+    for (final elem in this) {
+      final key = f(elem);
+      ret.putIfAbsent(key, () => []);
+      ret[key]!.add(elem);
+    }
+    return Map.unmodifiable(ret);
+  }
 }
 
 extension EDateTime on DateTime {
@@ -147,6 +157,17 @@ extension EInt on int {
 
 extension SS<T> on bool Function(T) {
   bool Function(T) get inverted => (t) => !this(t);
+}
+
+class DateRange {
+  static DateTimeRange justYear(int i, {bool atMostNow = true}) =>
+      DateTimeRange(
+        start: DateTime(i),
+        end: [
+          if (atMostNow) DateTime.now(),
+          DateTime(i + 1),
+        ].min,
+      );
 }
 
 class Shape {

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,8 +7,6 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 class AnnualCategorySummaryPage extends ConsumerWidget {
   const AnnualCategorySummaryPage();
-
-  static final _rng = Random(0);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,29 +54,36 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
       fontSize: 16,
     );
 
-    return dataset.categories.mapL(
-      (cat) {
-        // TODO get real values.
-        final twentyOne = 200 + _rng.nextDouble() * 200;
-        final twentyTwo = 200 + _rng.nextDouble() * 200;
-        final savings = twentyOne - twentyTwo;
+    final year21 = DateRange.justYear(2021);
+    final year22 = DateRange.justYear(2022);
 
-        return TableRow(
-          children: (([
-            Text(cat, style: categoryStyle),
-            Text(twentyOne.asExactDollars(), style: categoryStyle),
-            Text(twentyTwo.asExactDollars(), style: categoryStyle),
-            Text(
-              savings.asExactDollars(),
-              style: categoryStyle.copyWith(
-                color: savings.isNegative ? Colors.red : Colors.green,
-              ),
+    return dataset.txnsPerCategory.entries.mapL((entry) {
+      final twentyOne = _annualized(entry.value, year21);
+      final twentyTwo = _annualized(entry.value, year22);
+      final savings = twentyOne - twentyTwo;
+
+      return TableRow(
+        children: (([
+          Text(entry.key, style: categoryStyle),
+          Text(twentyOne.asExactDollars(), style: categoryStyle),
+          Text(twentyTwo.asExactDollars(), style: categoryStyle),
+          Text(
+            savings.asExactDollars(),
+            style: categoryStyle.copyWith(
+              color: savings.isNegative ? Colors.red : Colors.green,
             ),
-          ])).mapL(
-            (e) => Padding(padding: const EdgeInsets.all(12), child: e),
           ),
-        );
-      },
-    );
+        ])).mapL(
+          (text) => Padding(padding: const EdgeInsets.all(12), child: text),
+        ),
+      );
+    });
+  }
+
+  double _annualized(Dataset categoryTxns, DateTimeRange range) {
+    final dataset =
+        Dataset(categoryTxns.txns.where((txn) => txn.isWithinDateRange(range)));
+    final annualizationFactor = range.duration.inDays / 365.0;
+    return dataset.totalAmount * annualizationFactor;
   }
 }
