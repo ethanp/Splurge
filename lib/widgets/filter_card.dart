@@ -31,7 +31,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
     //  on both laptop and big monitor. Specifically, the card should get taller
     //  as it gets skinnier, to still fit all the chips.
     return SizedBox(
-      height: 340,
+      height: 370,
       width: 510,
       child: Card(
         shape: Shape.roundedRect(circular: 20),

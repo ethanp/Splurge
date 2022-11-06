@@ -6,7 +6,7 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 class Dataset {
   Dataset(Iterable<Transaction> txns) {
-    this.txns = txns.toList(growable: false).sortOn((_) => _.date);
+    this.txns = txns.toList().sortOn((_) => _.date);
   }
 
   factory Dataset.merge(List<Dataset> list) =>
@@ -23,10 +23,9 @@ class Dataset {
 
   Transaction get lastTxn => txns.last;
 
-  Dataset get spendingTxns => Dataset(txns.whereL(
-      (t) => t.txnType != 'income' && t.txnType != 'internal transfer'));
+  Dataset get spendingTxns => Dataset(txns.whereL((t) => t.isSpending));
 
-  Dataset get incomeTxns => Dataset(txns.whereL((t) => t.txnType == 'income'));
+  Dataset get incomeTxns => Dataset(txns.whereL((t) => t.isIncome));
 
   Set<String> get categories => txns.map((txn) => txn.category).toSet();
 
@@ -83,6 +82,10 @@ class Transaction {
   final String category;
   final String txnType;
 
+  bool get isSpending => !category.isIncome && txnType != 'internal transfer';
+
+  bool get isIncome => category.isIncome;
+
   @override
   String toString() => ''
       '${date.formatted}, '
@@ -106,7 +109,9 @@ enum IncomeCategory {
   // Contribution into a tax-advantaged account, eg. 401(k), IRA, or HSA.
   TaxAdvContrib,
   // Eg. cash-out of life insurance.
-  Random;
+  Random,
+  // Money I pay to govt, beyond what was taken on the way to me.
+  Taxes;
 }
 
 extension IncomeCat on String {
