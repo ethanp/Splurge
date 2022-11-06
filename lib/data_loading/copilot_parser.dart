@@ -9,7 +9,8 @@ class CopilotExportReader {
         fileSubstring: 'transactions.csv',
         numHeaderLines: 1,
         parseToTransaction: (text) => CopilotExportRow(text).toTransaction(),
-        filter: (_) => true,
+        // I don't like these at all.
+        filter: (_) => _.category != 'internal transfer',
       );
 }
 
