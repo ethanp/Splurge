@@ -6,12 +6,13 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 class Dataset {
   Dataset(Iterable<Transaction> txns) {
-    this.txns = [...txns].sortOn((_) => _.date);
+    this.txns = txns.toList(growable: false).sortOn((_) => _.date);
   }
 
   factory Dataset.merge(List<Dataset> list) =>
       Dataset(list.expand((e) => e.txns));
 
+  /// By default, always sorted by date.
   late final List<Transaction> txns;
 
   int get count => txns.length;

@@ -160,14 +160,18 @@ extension SS<T> on bool Function(T) {
 }
 
 class DateRange {
-  static DateTimeRange justYear(int i, {bool atMostNow = true}) =>
-      DateTimeRange(
-        start: DateTime(i),
-        end: [
-          if (atMostNow) DateTime.now(),
-          DateTime(i + 1),
-        ].min,
-      );
+  static DateTimeRange just({
+    required int year,
+    bool atMostNow = true,
+  }) {
+    return DateTimeRange(
+      start: DateTime(year),
+      end: [
+        if (atMostNow) DateTime.now(),
+        DateTime(year + 1),
+      ].min,
+    );
+  }
 }
 
 class Shape {

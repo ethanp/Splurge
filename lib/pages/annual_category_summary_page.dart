@@ -54,8 +54,8 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
       fontSize: 16,
     );
 
-    final year21 = DateRange.justYear(2021);
-    final year22 = DateRange.justYear(2022);
+    final year21 = DateRange.just(year: 2021);
+    final year22 = DateRange.just(year: 2022);
 
     return dataset.txnsPerCategory.entries.mapL((entry) {
       final twentyOne = _annualized(entry.value, year21);
