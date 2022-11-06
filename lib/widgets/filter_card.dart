@@ -100,7 +100,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
 class _CategoryChips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fullDataset = ref.read(DatasetNotifier.unfilteredProvider);
+    final fullDataset = ref.watch(DatasetNotifier.unfilteredProvider);
     bool isIncome(String category) => category.isIncome;
 
     return Wrap(
