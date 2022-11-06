@@ -34,7 +34,7 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
         'Difference',
       ].mapL(
         (text) => Container(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(12),
           color: Colors.grey[700],
           child: Text(
             text,
@@ -84,6 +84,6 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
     final dataset =
         Dataset(categoryTxns.txns.where((txn) => txn.isWithinDateRange(range)));
     final annualizationFactor = range.duration.inDays / 365.0;
-    return dataset.totalAmount * annualizationFactor;
+    return dataset.totalAmount / annualizationFactor;
   }
 }
