@@ -222,7 +222,7 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
     required String text,
     required VoidCallback onPressed,
   }) =>
-      (idx) {
+      (int idx) {
         final selectedStyle = ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 8),
         );

@@ -17,39 +17,25 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
         backgroundColor: Colors.blueGrey,
         title: Text('Table of annualized spending per category per year'),
       ),
-      body: Table(
-        border: TableBorder.all(),
-        children: [_headerRow(), ..._categoryRows(dataset)],
-      ),
-    );
-  }
-
-  TableRow _headerRow() {
-    return TableRow(
-      children: [
-        'Category',
-        // TODO(hack): Dynamically generate all years from 2021 on.
-        '2021',
-        '2022',
-        'Difference',
-      ].mapL(
-        (text) => Container(
-          padding: const EdgeInsets.all(12),
-          color: Colors.grey[700],
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.aBeeZee(
-              fontWeight: FontWeight.w800,
-              fontSize: 30,
-            ),
-          ),
+      // The [Row] exists so the table doesn't stretch to the full screen width.
+      body: Row(children: [
+        DataTable(
+          border: TableBorder.all(),
+          columns: const [
+            DataColumn(label: Text('Category')),
+            // TODO(hack): Dynamically generate all years from 2021 on.
+            // Note: `numeric` sets it to right-aligned.
+            DataColumn(label: Text('2021'), numeric: true),
+            DataColumn(label: Text('2022'), numeric: true),
+            DataColumn(label: Text('difference'), numeric: true),
+          ],
+          rows: _categoryRows(dataset),
         ),
-      ),
+      ]),
     );
   }
 
-  List<TableRow> _categoryRows(Dataset dataset) {
+  List<DataRow> _categoryRows(Dataset dataset) {
     final categoryStyle = GoogleFonts.aBeeZee(
       fontSize: 16,
     );
@@ -62,8 +48,8 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
       final twentyTwo = _annualized(entry.value, year22);
       final savings = twentyOne - twentyTwo;
 
-      return TableRow(
-        children: (([
+      return DataRow(
+        cells: [
           Text(entry.key, style: categoryStyle),
           Text(twentyOne.asExactDollars(), style: categoryStyle),
           Text(twentyTwo.asExactDollars(), style: categoryStyle),
@@ -73,9 +59,7 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
               color: savings.isNegative ? Colors.red : Colors.green,
             ),
           ),
-        ])).mapL(
-          (text) => Padding(padding: const EdgeInsets.all(12), child: text),
-        ),
+        ].mapL((cellChildWidget) => DataCell(cellChildWidget)),
       );
     });
   }
