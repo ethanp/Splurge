@@ -4,6 +4,9 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 import 'loader.dart';
 
+// TODO(integrity): They have a new export format with new filename.
+//  Implementing it should be a simple matter of copying this class and updating
+//  the indices and fileSubstring etc.
 class PerscapExportReader {
   static Future<Dataset> get loadData async => loader(
         title: 'Perscap',

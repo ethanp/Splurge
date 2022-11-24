@@ -161,7 +161,7 @@ extension SS<T> on bool Function(T) {
 }
 
 extension FFile on File {
-  String get basepath => path.substring(parent.path.length + 1);
+  String get basename => path.substring(parent.path.length + 1);
 }
 
 class DateRange {

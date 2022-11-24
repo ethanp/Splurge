@@ -6,7 +6,7 @@ import 'loader.dart';
 class CopilotExportReader {
   static Future<Dataset> get loadData async => loader(
         title: 'Copilot',
-        fileSubstring: 'transactions.csv',
+        filename: 'transactions.csv',
         numHeaderLines: 1,
         parseToTransaction: (text) => CopilotExportRow(text).toTransaction(),
         // I don't like these at all.
