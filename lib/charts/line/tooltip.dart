@@ -24,6 +24,8 @@ class MyTooltip {
         getTooltipItems: (touchedSpots) {
           final date = touchedSpots.first.x.toDate;
           // Have to keep this out of the inner-loop to keep latency down.
+          // TODO(cleanup): Wrt the above-comment...what "inner-loop"? Is this
+          //  still true?
           final lastSpot = [
             TextSpan(
               text: '\n\nDate: ${date.formatted}',

@@ -201,6 +201,8 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
           ),
         ),
         _button(
+          // TODO(feature): This should really be "set date range" like the
+          //  flights.google.com date range picker.
           text: 'Set start date',
           onPressed: () async {
             final DateTime? picked = await showDatePicker(
