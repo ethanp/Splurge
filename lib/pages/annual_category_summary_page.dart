@@ -67,7 +67,7 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
 
   Widget _formatText(num amt) {
     return Text(
-      amt.asCompactDollars(),
+      amt.abs().asCompactDollars(),
       style: GoogleFonts.abel(
         fontSize: 16,
         decoration: amt == 0 ? TextDecoration.lineThrough : null,

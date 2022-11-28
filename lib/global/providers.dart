@@ -62,6 +62,8 @@ class TextFilter extends StateNotifier<String> with GlobalDatasetFilter {
   static final provider =
       StateNotifierProvider<TextFilter, String>((ref) => TextFilter());
 
+  /// True iff every "word" in the query is a substring of the transaction's
+  /// title, ignoring case.
   @override
   bool includes(Transaction txn) =>
       state.toLowerCase().split(' ').all(txn.title.toLowerCase().contains);
