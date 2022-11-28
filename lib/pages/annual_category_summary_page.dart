@@ -30,7 +30,7 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
       body: Row(children: [
         Card(
           margin: const EdgeInsets.all(8),
-          color: Colors.grey[700],
+          color: Colors.grey[900],
           child: DataTable(
             border: TableBorder.all(),
             columns: columns,
@@ -47,19 +47,38 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
         .map((year) => DateRange.just(year: year, atMostNow: true));
     return dataset.txnsPerCategory.entries.mapL((entry) {
       final txns = entry.value.txns;
-      final Widget categoryName = Text(entry.key, style: categoryStyle);
-      // TODO(UX): Color the text or cell according to how good I did with $$.
-      final Iterable<Widget> yearlyCategoryValues = years
+      final DataCell categoryName =
+          DataCell(Text(entry.key, style: categoryStyle));
+      final Iterable<DataCell> yearlyCategoryValues = years
           .map((year) => Dataset(txns.where((t) => t.isWithinDateRange(year))))
           .map(_annualizeSpending)
-          .map((amt) => Text(amt.asCompactDollars(), style: categoryStyle));
-      return DataRow(
-          cells: [categoryName, ...yearlyCategoryValues].mapL(DataCell.new));
+          .map(_formatText)
+          .map((e) => DataCell(e));
+      return DataRow(cells: [categoryName, ...yearlyCategoryValues]);
     });
   }
 
+  Widget _formatText(num amt) {
+    Color? color() {
+      if (amt == 0)
+        return Colors.grey[700];
+      else if (amt.isNegative)
+        return Colors.green[400];
+      else
+        return Colors.red[300];
+    }
+
+    return Text(
+      amt.asCompactDollars(),
+      style: GoogleFonts.abel(
+        fontSize: 16,
+        color: color(),
+      ),
+    );
+  }
+
   double _annualizeSpending(Dataset txnsForCategoryForYear) {
-    // Avoid calculations on nothingness.
+    // Avoid calculations on nothingness for simplicity.
     if (txnsForCategoryForYear.isEmpty) return 0;
     final firstDate = txnsForCategoryForYear.txns.first.date;
     final lastDate = txnsForCategoryForYear.txns.last.date;
