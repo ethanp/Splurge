@@ -154,6 +154,10 @@ extension EInt on int {
   }
 
   int mustBeAtLeast(int n) => math.max(this, n);
+
+  Iterable<int> toInclusive(int end) sync* {
+    for (int i = this; i <= end; i++) yield i;
+  }
 }
 
 extension SS<T> on bool Function(T) {
@@ -167,7 +171,7 @@ extension FFile on File {
 class DateRange {
   static DateTimeRange just({
     required int year,
-    bool atMostNow = true,
+    required bool atMostNow,
   }) {
     return DateTimeRange(
       start: DateTime(year),

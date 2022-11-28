@@ -191,13 +191,13 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
         _button(
           text: lastYear.toString(),
           onPressed: () => selectedDateRange.setRange(
-            DateRange.just(year: lastYear),
+            DateRange.just(year: lastYear, atMostNow: true),
           ),
         ),
         _button(
           text: thisYear.toString(),
           onPressed: () => selectedDateRange.setRange(
-            DateRange.just(year: thisYear),
+            DateRange.just(year: thisYear, atMostNow: true),
           ),
         ),
         _button(

@@ -11,63 +11,62 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dataset = ref.watch(DatasetNotifier.unfilteredProvider);
-
+    final firstYear = dataset.txns.first.date.year;
+    final lastYear = dataset.txns.last.date.year;
+    final yearsWithData = firstYear.toInclusive(lastYear);
+    final yearColumns = yearsWithData.mapL(
+      (year) => DataColumn(
+        label: Text(year.toString()),
+        numeric: true,
+      ),
+    );
+    final columns = [DataColumn(label: Text('Category'))] + yearColumns;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        title: Text('Table of annualized spending per category per year'),
+        backgroundColor: Colors.blueGrey[700],
+        title: Text('Spending per category per year (annualized)'),
       ),
       // The [Row] exists so the table doesn't stretch to the full screen width.
       body: Row(children: [
-        DataTable(
-          border: TableBorder.all(),
-          columns: const [
-            DataColumn(label: Text('Category')),
-            // TODO(hack): Dynamically generate all years from 2021 on.
-            // Note: `numeric` sets it to right-aligned.
-            DataColumn(label: Text('2021'), numeric: true),
-            DataColumn(label: Text('2022'), numeric: true),
-            DataColumn(label: Text('difference'), numeric: true),
-          ],
-          rows: _categoryRows(dataset),
+        Card(
+          margin: const EdgeInsets.all(8),
+          color: Colors.grey[700],
+          child: DataTable(
+            border: TableBorder.all(),
+            columns: columns,
+            rows: _categoryRows(dataset, yearsWithData),
+          ),
         ),
       ]),
     );
   }
 
-  List<DataRow> _categoryRows(Dataset dataset) {
-    final categoryStyle = GoogleFonts.aBeeZee(
-      fontSize: 16,
-    );
-
-    final year21 = DateRange.just(year: 2021);
-    final year22 = DateRange.just(year: 2022);
-
+  List<DataRow> _categoryRows(Dataset dataset, Iterable<int> yearsWithData) {
+    final categoryStyle = GoogleFonts.aBeeZee(fontSize: 16);
+    final years = yearsWithData
+        .map((year) => DateRange.just(year: year, atMostNow: true));
     return dataset.txnsPerCategory.entries.mapL((entry) {
-      final twentyOne = _annualized(entry.value, year21);
-      final twentyTwo = _annualized(entry.value, year22);
-      final savings = twentyOne - twentyTwo;
-
+      final txns = entry.value.txns;
+      final Widget categoryName = Text(entry.key, style: categoryStyle);
+      // TODO(UX): Color the text or cell according to how good I did with $$.
+      final Iterable<Widget> yearlyCategoryValues = years
+          .map((year) => Dataset(txns.where((t) => t.isWithinDateRange(year))))
+          .map(_annualizeSpending)
+          .map((amt) => Text(amt.asCompactDollars(), style: categoryStyle));
       return DataRow(
-        cells: [
-          Text(entry.key, style: categoryStyle),
-          Text(twentyOne.asExactDollars(), style: categoryStyle),
-          Text(twentyTwo.asExactDollars(), style: categoryStyle),
-          Text(
-            savings.asExactDollars(),
-            style: categoryStyle.copyWith(
-              color: savings.isNegative ? Colors.red : Colors.green,
-            ),
-          ),
-        ].mapL((cellChildWidget) => DataCell(cellChildWidget)),
-      );
+          cells: [categoryName, ...yearlyCategoryValues].mapL(DataCell.new));
     });
   }
 
-  double _annualized(Dataset categoryTxns, DateTimeRange range) {
-    final dataset =
-        Dataset(categoryTxns.txns.where((txn) => txn.isWithinDateRange(range)));
-    final annualizationFactor = range.duration.inDays / 365.0;
-    return dataset.totalAmount / annualizationFactor;
+  double _annualizeSpending(Dataset txnsForCategoryForYear) {
+    // Avoid calculations on nothingness.
+    if (txnsForCategoryForYear.isEmpty) return 0;
+    final firstDate = txnsForCategoryForYear.txns.first.date;
+    final lastDate = txnsForCategoryForYear.txns.last.date;
+    final range = DateTimeRange(start: firstDate, end: lastDate);
+    var annualizationFactor = range.duration.inDays / 365.0;
+    // Avoid divide by zero for simplicity.
+    if (annualizationFactor == 0) annualizationFactor = 1;
+    return txnsForCategoryForYear.totalAmount / annualizationFactor;
   }
 }
