@@ -59,20 +59,18 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
   }
 
   Widget _formatText(num amt) {
-    Color? color() {
-      if (amt == 0)
-        return Colors.grey[700];
-      else if (amt.isNegative)
-        return Colors.green[400];
-      else
-        return Colors.red[300];
-    }
-
     return Text(
       amt.asCompactDollars(),
       style: GoogleFonts.abel(
         fontSize: 16,
-        color: color(),
+        color: () {
+          if (amt == 0)
+            return Colors.grey[700];
+          else if (amt.isNegative)
+            return Colors.green[400];
+          else
+            return Colors.red[300];
+        }(),
       ),
     );
   }
