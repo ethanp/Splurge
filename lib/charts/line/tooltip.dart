@@ -55,8 +55,8 @@ class MyTooltip {
         Dataset(dataset.txns.whereL((e) => e.date.formatted == date.formatted));
     final txnsStr = txns.txns
         // List txns in DESCENDING order of absolute value.
-        .sortOn((t) => -t.amount.abs())
-        .map((t) => '${t.amount.asCompactDollars()} ${t.title}')
+        .sortOn((txn) => -txn.amount.abs())
+        .map((txn) => '${txn.amount.asCompactDollars()} ${txn.title}')
         .join('\n');
     final ret = TextSpan(
       text: '\n\nThis day\'s txns:\n$txnsStr',

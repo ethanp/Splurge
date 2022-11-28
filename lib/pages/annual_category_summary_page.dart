@@ -14,13 +14,22 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
     final firstYear = dataset.txns.first.date.year;
     final lastYear = dataset.txns.last.date.year;
     final yearsWithData = firstYear.toInclusive(lastYear);
+    final headerStyle = GoogleFonts.aclonica(fontSize: 20);
+    final categoryColumn = DataColumn(
+      label: Text(
+        'Category',
+        style: headerStyle.copyWith(
+          color: Colors.blueGrey[200],
+        ),
+      ),
+    );
     final yearColumns = yearsWithData.mapL(
       (year) => DataColumn(
-        label: Text(year.toString()),
+        label: Text(year.toString(), style: headerStyle),
         numeric: true,
       ),
     );
-    final columns = [DataColumn(label: Text('Category'))] + yearColumns;
+    final columns = [categoryColumn, ...yearColumns];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey[700],
@@ -45,15 +54,13 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
     final categoryStyle = GoogleFonts.aBeeZee(fontSize: 16);
     final years = yearsWithData
         .map((year) => DateRange.just(year: year, atMostNow: true));
-    return dataset.txnsPerCategory.entries.mapL((entry) {
-      final txns = entry.value.txns;
-      final DataCell categoryName =
-          DataCell(Text(entry.key, style: categoryStyle));
+    return dataset.txnsPerCategory.entries.mapL((MapEntry<String, Dataset> e1) {
+      final categoryName = DataCell(Text(e1.key, style: categoryStyle));
       final Iterable<DataCell> yearlyCategoryValues = years
-          .map((year) => Dataset(txns.where((t) => t.isWithinDateRange(year))))
+          .map((year) => e1.value.where((txn) => txn.isWithinDateRange(year)))
           .map(_annualizeSpending)
           .map(_formatText)
-          .map((e) => DataCell(e));
+          .map(DataCell.new);
       return DataRow(cells: [categoryName, ...yearlyCategoryValues]);
     });
   }
@@ -63,6 +70,7 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
       amt.asCompactDollars(),
       style: GoogleFonts.abel(
         fontSize: 16,
+        decoration: amt == 0 ? TextDecoration.lineThrough : null,
         color: () {
           if (amt == 0)
             return Colors.grey[700];

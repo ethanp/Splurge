@@ -106,7 +106,8 @@ class DatasetNotifier extends StateNotifier<Dataset> {
         ].all((_) => _.includes(txn));
 
     final allTxns = ref.watch(unfilteredProvider);
-    return DatasetNotifier(Dataset(allTxns.txns.whereL(matchesAllFilters)));
+    final matchingTxns = allTxns.where(matchesAllFilters);
+    return DatasetNotifier(matchingTxns);
   });
 
   /// Import all datasets in parallel.

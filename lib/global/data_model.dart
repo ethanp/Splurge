@@ -23,9 +23,9 @@ class Dataset {
 
   Transaction get lastTxn => txns.last;
 
-  Dataset get spendingTxns => Dataset(txns.whereL((t) => t.isSpending));
+  Dataset get spendingTxns => where((txn) => txn.isSpending);
 
-  Dataset get incomeTxns => Dataset(txns.whereL((t) => t.isIncome));
+  Dataset get incomeTxns => where((txn) => txn.isIncome);
 
   Set<String> get categories => txns.map((txn) => txn.category).toSet();
 
@@ -64,7 +64,9 @@ class Dataset {
   double get totalAmount => txns.sumBy((txn) => txn.amount);
 
   Dataset forCategories(SelectedCategories selectedCategories) =>
-      Dataset(txns.whereL((txn) => selectedCategories.includes(txn)));
+      where((txn) => selectedCategories.includes(txn));
+
+  Dataset where(bool Function(Transaction) f) => Dataset(txns.where(f));
 }
 
 class Transaction {
