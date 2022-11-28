@@ -83,14 +83,34 @@ class DatasetNotifier extends StateNotifier<Dataset> {
   /// Empty until the database loads from disk.
   static final unfilteredProvider =
       StateNotifierProvider<DatasetNotifier, Dataset>(
-          (ref) => DatasetNotifier.empty()..loadData());
+          (ref) => DatasetNotifier.empty().._loadData());
 
   /// View of the entire transaction dataset that has been pre-filtered by the
   /// active filters.
   ///
   /// Empty until the database loads from disk.
   static final filteredProvider =
-      StateNotifierProvider<DatasetNotifier, Dataset>((ref) {
+      StateNotifierProvider<DatasetNotifier, Dataset>(
+          (ref) => DatasetNotifier(_txnsMatchingAllFilters(ref)));
+
+  /// Import all datasets in parallel.
+  Future<void> _loadData() async {
+    // The code is formatted with the loads explicitly *initiated* before any of
+    // the `await`s get evaluated.
+
+    // Loads.
+    final copilotF = CopilotExportReader.loadData;
+    final perscapF = PerscapExportReader.loadData;
+
+    // Awaits.
+    state = Dataset.merge([
+      await copilotF,
+      await perscapF,
+    ]);
+  }
+
+  static Dataset _txnsMatchingAllFilters(
+      StateNotifierProviderRef<DatasetNotifier, Dataset> ref) {
     ref.watch(TextFilter.provider);
     final textFieldFilter = ref.read(TextFilter.provider.notifier);
     ref.watch(SelectedCategories.provider);
@@ -105,15 +125,8 @@ class DatasetNotifier extends StateNotifier<Dataset> {
           dateRangeFilter,
         ].all((_) => _.includes(txn));
 
-    final allTxns = ref.watch(unfilteredProvider);
-    final matchingTxns = allTxns.where(matchesAllFilters);
-    return DatasetNotifier(matchingTxns);
-  });
-
-  /// Import all datasets in parallel.
-  Future<void> loadData() async {
-    final copilotF = CopilotExportReader.loadData;
-    final perscapF = PerscapExportReader.loadData;
-    state = Dataset.merge([await copilotF, await perscapF]);
+    final Dataset allTxns = ref.watch(unfilteredProvider);
+    final Dataset matchingTxns = allTxns.where(matchesAllFilters);
+    return matchingTxns;
   }
 }
