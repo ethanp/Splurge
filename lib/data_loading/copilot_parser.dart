@@ -4,7 +4,7 @@ import 'package:splurge/util/csv.dart';
 import 'loader.dart';
 
 class CopilotExportReader {
-  static Future<Dataset> get loadData async => loader(
+  static Future<Dataset?> get loadData async => loader(
         title: 'Copilot',
         filename: 'transactions.csv',
         numHeaderLines: 1,

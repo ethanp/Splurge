@@ -23,7 +23,7 @@ class _CommaSeparatedValueSplitter extends Iterator<String> {
     if (doneReading) return false;
     final startsWithQuote = curChar == '"';
     current = startsWithQuote ? _extractFromQuotes() : _extractNoQuotes();
-    return !doneReading;
+    return true;
   }
 
   @override
@@ -60,7 +60,7 @@ class _CommaSeparatedValueSplitter extends Iterator<String> {
     final int start = cursorPosition;
 
     // Find length of contents.
-    while (curChar != ',' && !doneReading) cursorPosition++;
+    while (!doneReading && curChar != ',') cursorPosition++;
 
     // Skip past the comma.
     cursorPosition++;

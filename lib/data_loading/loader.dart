@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
-Future<Dataset> loader({
+Future<Dataset?> loader({
   required String title,
   String fileSubstring = '',
   String filename = '',
@@ -22,6 +22,10 @@ Future<Dataset> loader({
           ? file.basename == filename
           : file.path.contains(fileSubstring))
       .toList();
+  if (files.isEmpty) {
+    print('WARNING: No parsable files matching $fileSubstring for $title');
+    return Future.value(null);
+  }
   assert(
     files.length == 1,
     'ERROR: Files matching $fileSubstring for $title: ${files.length}',

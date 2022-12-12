@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_loading/copilot_parser.dart';
-import 'package:splurge/data_loading/perscap_parser.dart';
+import 'package:splurge/data_loading/perscap_parser_new.dart';
+import 'package:splurge/data_loading/perscap_parser_old.dart';
 import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/extensions/riverpod_extensions.dart';
 import 'package:splurge/util/extensions/stdlib_extensions.dart';
@@ -100,9 +101,16 @@ class DatasetNotifier extends StateNotifier<Dataset> {
     // The code is formatted with the loads explicitly *initiated* before any of
     // the `await`s get evaluated.
 
-    // Loads.
-    final copilotF = CopilotExportReader.loadData;
-    final perscapF = PerscapExportReader.loadData;
+    // Initiate all loads before doing any awaiting.
+    final Future<Dataset?> copilotF = CopilotExportReader.loadData;
+    final Future<Dataset?> perscapF = () async {
+      // First try old format then new format.
+      final Dataset? oldFormat = await OldPerscapExportReader.loadData;
+      if (oldFormat != null)
+        return oldFormat;
+      else
+        return await NewPerscapExportReader.loadData;
+    }();
 
     // Awaits.
     state = Dataset.merge([
@@ -114,12 +122,14 @@ class DatasetNotifier extends StateNotifier<Dataset> {
   static Dataset _txnsMatchingAllFilters(
       StateNotifierProviderRef<DatasetNotifier, Dataset> ref) {
     ref.watch(TextFilter.provider);
-    final textFieldFilter = ref.read(TextFilter.provider.notifier);
+    final TextFilter textFieldFilter = ref.read(TextFilter.provider.notifier);
     ref.watch(SelectedCategories.provider);
-    final selectedCategoryFilter =
+    final SelectedCategories selectedCategoryFilter =
         ref.read(SelectedCategories.provider.notifier);
     ref.watch(SelectedDateRange.provider);
-    final dateRangeFilter = ref.read(SelectedDateRange.provider.notifier);
+    final SelectedDateRange dateRangeFilter =
+        ref.read(SelectedDateRange.provider.notifier);
+    final Dataset allTxns = ref.watch(unfilteredProvider);
 
     bool matchesAllFilters(Transaction txn) => [
           textFieldFilter,
@@ -127,8 +137,6 @@ class DatasetNotifier extends StateNotifier<Dataset> {
           dateRangeFilter,
         ].all((_) => _.includes(txn));
 
-    final Dataset allTxns = ref.watch(unfilteredProvider);
-    final Dataset matchingTxns = allTxns.where(matchesAllFilters);
-    return matchingTxns;
+    return allTxns.where(matchesAllFilters);
   }
 }

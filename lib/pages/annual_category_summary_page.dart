@@ -72,6 +72,13 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
         fontSize: 16,
         decoration: amt == 0 ? TextDecoration.lineThrough : null,
         color: () {
+          // TODO(UI): Somewhere there's a way to interpolate the color between
+          //  green and red via grey to make the more extreme values stand out
+          //  visually (aka conditional highlighting).
+          // int max = 200e3.toInt();
+          // TODO(Finish): It's something like this, but I have to go to bed right now.
+          // final color = Color.lerp(Colors.green, Colors.red, amt / max + 0.5);
+
           if (amt == 0)
             return Colors.grey[700];
           else if (amt.isNegative)

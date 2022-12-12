@@ -9,12 +9,16 @@ class Smoothing {
   final SmoothingParams params;
 
   List<FlSpot> smooth(List<FlSpot> spots) =>
-      _smear(_chopEndsOff(_nDayAvg(spots)));
+      _chopEndsOff(_smear(_nDayAvg(spots)), amt: 5);
 
   /// Since it's ultimately distracting and too noisy to provide value.
-  List<FlSpot> _chopEndsOff(List<FlSpot> spots) => spots.whereL((s) =>
-      s.x.toDate.monthString != DateTime.now().monthString &&
-      !s.x.toDate.isBefore(DateTime(2021)));
+  List<FlSpot> _chopEndsOff(List<FlSpot> spots, {required int amt}) {
+    final longEnough = spots.length > amt * 2;
+    if (longEnough)
+      return spots.sublist(amt, spots.length - amt);
+    else
+      return spots;
+  }
 
   /// The extent of smoothing is a function of the point's magnitude, since
   /// events like bonus payment, GSU cash-out, car purchase, need to be

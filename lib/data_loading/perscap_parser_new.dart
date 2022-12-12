@@ -4,23 +4,20 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 import 'loader.dart';
 
-// TODO(integrity): They have a new export format with new filename.
-//  Implementing it should be a simple matter of copying this class and updating
-//  the indices and fileSubstring etc.
-class PerscapExportReader {
-  static Future<Dataset> get loadData async => loader(
+class NewPerscapExportReader {
+  static Future<Dataset?> get loadData async => loader(
         title: 'Perscap',
-        fileSubstring: 'Transactions_For_All_Accounts',
+        fileSubstring: ' thru ',
         numHeaderLines: 2,
-        parseToTransaction: (text) => PerscapExportRow(text).toTransaction(),
+        parseToTransaction: (text) => NewPerscapExportRow(text).toTransaction(),
         filter: (txn) =>
             txn.category == IncomeCategory.TaxAdvContrib.name &&
             txn.date.isAtLeast(DateTime(/*year*/ 2021, /*month*/ 3)),
       );
 }
 
-class PerscapExportRow {
-  PerscapExportRow(String rawRow) {
+class NewPerscapExportRow {
+  NewPerscapExportRow(String rawRow) {
     rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
   }
 
@@ -28,17 +25,16 @@ class PerscapExportRow {
 
   DateTime get date => DateTime.parse(rowValues[0]);
 
-  String get title => rowValues[1];
+  // Example actual values: ["17.7", "-15.83", "8", "-200", "4636.53"].
+  double get amount => -double.parse(rowValues[5]);
 
-  // Original format looks like "$30.00", or "-$2,024.43".
-  //
-  // Also, negativity is reversed from Copilot, so we invert.
-  double get amount =>
-      -double.parse(rowValues[5].replaceAll('\$', '').replaceAll(',', ''));
+  String get title => rowValues[2];
+
+  String get accountName => rowValues[4];
 
   /// Right now 401(k) is the only useful data getting extracted from this dump.
   /// NB: HSA contribution data is not available here AFAICT.
-  String get category => rowValues[4].contains('401(k)')
+  String get category => accountName.contains('401(k)')
       ? IncomeCategory.TaxAdvContrib.name
       // These get filtered out, so the value doesn't matter.
       : '';

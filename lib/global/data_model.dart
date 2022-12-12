@@ -9,8 +9,8 @@ class Dataset {
     this.txns = txns.toList().sortOn((_) => _.date);
   }
 
-  factory Dataset.merge(Iterable<Dataset> datasets) =>
-      Dataset(datasets.expand((dataset) => dataset.txns));
+  factory Dataset.merge(Iterable<Dataset?> datasets) =>
+      Dataset(datasets.expand((dataset) => dataset?.txns ?? []));
 
   /// By default, always sorted by date.
   late final List<Transaction> txns;
