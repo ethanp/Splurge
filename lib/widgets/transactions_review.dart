@@ -16,8 +16,6 @@ class LargestTransactions extends ConsumerStatefulWidget {
 }
 
 class LargestTransactionsState extends ConsumerState<LargestTransactions> {
-  TextFilter get _textFilter => ref.read(TextFilter.provider.notifier);
-
   @override
   Widget build(BuildContext context) {
     ref.watch(SelectedCategories.provider);
@@ -39,12 +37,12 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   }
 
   Widget _transactionList() {
-    final Dataset dataset = ref.watch(DatasetNotifier.filteredProvider);
-    final SelectedCategories selectedCategories =
-        ref.read(SelectedCategories.provider.notifier);
+    final dataset = ref.watch(DatasetNotifier.filteredProvider);
+    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
+    final textFilter = ref.read(TextFilter.provider.notifier);
 
     final eligibleTxns = dataset
-        .where((txn) => _textFilter.includes(txn))
+        .where((txn) => textFilter.includes(txn))
         .where((txn) => selectedCategories.includes(txn));
 
     final listView = ListView.builder(
