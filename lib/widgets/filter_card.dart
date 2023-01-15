@@ -175,7 +175,6 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
   @override
   Widget build(BuildContext context) {
     final selectedDateRange = ref.read(SelectedDateRange.provider.notifier);
-    final thisYear = DateTime.now().year;
     return Wrap(
       spacing: 4,
       children: [
@@ -188,16 +187,13 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
           onPressed: () => selectedDateRange.priorMonths(3),
         ),
         ...Iterable.generate(
-          /* numYears = */ thisYear - 2020,
+          /* numYears = */ DateTime.now().year - 2020,
           (index) {
             final year = 2021 + index;
             return _button(
               text: year.toString(),
               onPressed: () => selectedDateRange.setRange(
-                DateRange.just(
-                  year: year,
-                  atMostNow: true,
-                ),
+                DateRange.just(year: year, atMostNow: true),
               ),
             );
           },
