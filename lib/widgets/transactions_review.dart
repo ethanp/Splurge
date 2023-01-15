@@ -73,34 +73,34 @@ class _ListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeTxn = txn.amount.abs() > 1000;
+    final isIncomeTxn = txn.amount < 0;
+
+    final textColor = isLargeTxn
+        ? isIncomeTxn
+            ? Colors.green[300]
+            : Colors.red[300]
+        : isIncomeTxn
+            ? Colors.green
+            : Colors.red;
+
     final amount = Text(
       txn.amount.abs().asCompactDollars(),
       textAlign: TextAlign.right,
-      style: appFont.copyWith(
-        color: txn.amount < 0 ? Colors.green : Colors.red,
-        fontSize: 18,
-      ),
+      style: appFont.copyWith(color: textColor, fontSize: 18),
     );
     final title = AutoSizeText(
       txn.title,
       maxLines: 2,
-      style: appFont.copyWith(
-        color: txn.amount < 0 ? Colors.green : Colors.red,
-        fontSize: 17,
-      ),
+      style: appFont.copyWith(color: textColor, fontSize: 17),
     );
     final category = Text(
       txn.category,
-      style: appFont.copyWith(
-        color: Colors.blueGrey[300],
-        fontSize: 14,
-      ),
+      style: appFont.copyWith(color: Colors.blueGrey[300]),
     );
     final date = Text(
       txn.date.formatted,
-      style: appFont.copyWith(
-        color: Colors.blueGrey[400],
-      ),
+      style: appFont.copyWith(color: Colors.blueGrey[400]),
     );
 
     return Card(

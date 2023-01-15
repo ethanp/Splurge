@@ -1,9 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/global/providers.dart';
-import 'package:splurge/global/style.dart';
 import 'package:splurge/util/extensions/fl_chart_extensions.dart';
 import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
@@ -17,43 +15,24 @@ import 'tooltip.dart';
 /// code-dependencies.
 class MyLineChart extends StatelessWidget {
   const MyLineChart({
-    this.title,
     this.minX,
     this.maxX,
     required this.lines,
   });
 
-  final String? title;
   final double? minX;
   final double? maxX;
   final List<Line> lines;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      _chartTitle(),
-      Expanded(
-        child: Stack(
-          children: [
-            _Chart(lines: lines, minX: minX, maxX: maxX),
-            Positioned(
-              left: 50,
-              top: 12,
-              child: Legend(lines: lines),
-            ),
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  Widget _chartTitle() {
     return Padding(
-      padding: const EdgeInsets.only(top: 6, bottom: 14),
-      child: AutoSizeText(
-        title ?? '',
-        style: titleStyle,
-        textAlign: TextAlign.center,
+      padding: const EdgeInsets.only(top: 48, bottom: 4, right: 4),
+      child: Stack(
+        children: [
+          _Chart(lines: lines, minX: minX, maxX: maxX),
+          Positioned(left: 50, top: 12, child: Legend(lines: lines)),
+        ],
       ),
     );
   }
