@@ -21,7 +21,6 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   @override
   Widget build(BuildContext context) {
     ref.watch(SelectedCategories.provider);
-    final eligibleTxns = _eligibleTxns();
     return Card(
       color: Colors.grey[900],
       shape: const RoundedRectangleBorder(
@@ -33,36 +32,53 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       margin: const EdgeInsets.all(12),
       elevation: 18,
       child: Stack(children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: ListView.builder(
-            itemCount: eligibleTxns.count + 1,
-            itemBuilder: (_, idx) => idx == 0
-                // Add one blank spot to allow it to go behind the Header.
-                ? const SizedBox(height: 50)
-                : _listTile(eligibleTxns.txns[idx - 1]),
-          ),
-        ),
+        _transactionList(),
         Header('Matching transactions'),
       ]),
     );
   }
 
-  Dataset _eligibleTxns() => Dataset(ref
-      .watch(DatasetNotifier.filteredProvider)
-      .forCategories(ref.read(SelectedCategories.provider.notifier))
-      .txns
-      .sortOn((txn) => -txn.amount.abs())
-      .whereL((txn) => _textFilter.includes(txn)));
+  Widget _transactionList() {
+    final eligibleTxns = Dataset(ref
+        .watch(DatasetNotifier.filteredProvider)
+        .forCategories(ref.read(SelectedCategories.provider.notifier))
+        .txns
+        .sortOn((txn) => -txn.amount.abs())
+        .whereL((txn) => _textFilter.includes(txn)));
 
-  // TODO(UX): Make this a TableView instead so that the user can choose which
-  //  column to filter by, and so that each column will have the same width.
-  Widget _listTile(Transaction txn) {
+    final listView = ListView.builder(
+      itemCount: eligibleTxns.count + 1,
+      itemBuilder: (_, idx) {
+        if (idx == 0) {
+          // Add one blank spot to the top to match spacing behind the Header.
+          return const SizedBox(height: 50);
+        } else {
+          return _ListTile(eligibleTxns.txns[idx - 1]);
+        }
+      },
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: listView,
+    );
+  }
+}
+
+// TODO(UX): Make this a TableView instead so that the user can choose which
+//  column to filter by, and so that each column will have the same width.
+class _ListTile extends StatelessWidget {
+  const _ListTile(this.txn);
+
+  final Transaction txn;
+
+  @override
+  Widget build(BuildContext context) {
     final amount = Text(
-      txn.amount.asCompactDollars(),
+      txn.amount.abs().asCompactDollars(),
       textAlign: TextAlign.right,
       style: appFont.copyWith(
-        color: Colors.grey,
+        color: txn.amount < 0 ? Colors.green : Colors.red,
         fontSize: 18,
       ),
     );

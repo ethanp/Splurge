@@ -176,7 +176,6 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
   Widget build(BuildContext context) {
     final selectedDateRange = ref.read(SelectedDateRange.provider.notifier);
     final thisYear = DateTime.now().year;
-    final lastYear = thisYear - 1;
     return Wrap(
       spacing: 4,
       children: [
@@ -188,17 +187,20 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
           text: 'Last 3 months',
           onPressed: () => selectedDateRange.lastMonths(3),
         ),
-        _button(
-          text: lastYear.toString(),
-          onPressed: () => selectedDateRange.setRange(
-            DateRange.just(year: lastYear, atMostNow: true),
-          ),
-        ),
-        _button(
-          text: thisYear.toString(),
-          onPressed: () => selectedDateRange.setRange(
-            DateRange.just(year: thisYear, atMostNow: true),
-          ),
+        ...Iterable.generate(
+          /* numYears = */ thisYear - 2020,
+          (index) {
+            final year = 2021 + index;
+            return _button(
+              text: year.toString(),
+              onPressed: () => selectedDateRange.setRange(
+                DateRange.just(
+                  year: year,
+                  atMostNow: true,
+                ),
+              ),
+            );
+          },
         ),
         _button(
           // TODO(feature): This should really be "set date range" like the
