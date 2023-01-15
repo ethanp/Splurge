@@ -13,7 +13,7 @@ import 'tooltip.dart';
 /// Creates a flexible-height "line chart" widget, including a title and legend.
 /// It should be kept free of application-specific concepts or
 /// code-dependencies.
-class MyLineChart extends StatelessWidget {
+class MyLineChart extends ConsumerWidget {
   const MyLineChart({
     this.minX,
     this.maxX,
@@ -25,28 +25,19 @@ class MyLineChart extends StatelessWidget {
   final List<Line> lines;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(top: 48, bottom: 4, right: 4),
       child: Stack(
         children: [
-          _Chart(lines: lines, minX: minX, maxX: maxX),
+          _chart(ref),
           Positioned(left: 50, top: 12, child: Legend(lines: lines)),
         ],
       ),
     );
   }
-}
 
-class _Chart extends ConsumerWidget {
-  const _Chart({required this.lines, this.minX, this.maxX});
-
-  final List<Line> lines;
-  final double? minX;
-  final double? maxX;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget _chart(WidgetRef ref) {
     final List<LineChartBarData> flLines = lines.mapL(
       (line) => LineChartBarData(
         spots: line.spots,
