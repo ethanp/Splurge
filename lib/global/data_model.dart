@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:splurge/global/providers.dart';
 import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 class Dataset {
@@ -62,9 +61,6 @@ class Dataset {
       ).mapL((value) => MapEntry(value.txns.first.date.qtrString, value));
 
   double get totalAmount => txns.sumBy((txn) => txn.amount);
-
-  Dataset forCategories(SelectedCategories selectedCategories) =>
-      where((txn) => selectedCategories.includes(txn));
 
   Dataset where(bool Function(Transaction) f) => Dataset(txns.where(f));
 }

@@ -39,12 +39,13 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   }
 
   Widget _transactionList() {
-    final eligibleTxns = Dataset(ref
-        .watch(DatasetNotifier.filteredProvider)
-        .forCategories(ref.read(SelectedCategories.provider.notifier))
-        .txns
-        .sortOn((txn) => -txn.amount.abs())
-        .whereL((txn) => _textFilter.includes(txn)));
+    final Dataset dataset = ref.watch(DatasetNotifier.filteredProvider);
+    final SelectedCategories selectedCategories =
+        ref.read(SelectedCategories.provider.notifier);
+
+    final eligibleTxns = dataset
+        .where((txn) => _textFilter.includes(txn))
+        .where((txn) => selectedCategories.includes(txn));
 
     final listView = ListView.builder(
       itemCount: eligibleTxns.count + 1,
