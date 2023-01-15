@@ -20,15 +20,15 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   Widget build(BuildContext context) {
     ref.watch(SelectedCategories.provider);
     return Card(
+      margin: const EdgeInsets.all(12),
       color: Colors.grey[900],
+      elevation: 18,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.horizontal(
           left: Radius.circular(100),
           right: Radius.elliptical(120, 90),
         ),
       ),
-      margin: const EdgeInsets.all(12),
-      elevation: 18,
       child: Stack(children: [
         _transactionList(),
         Header('Matching transactions'),
@@ -38,12 +38,12 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
 
   Widget _transactionList() {
     final dataset = ref.watch(DatasetNotifier.filteredProvider);
-    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
     final textFilter = ref.read(TextFilter.provider.notifier);
+    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
+    final filters = [textFilter, selectedCategories];
 
-    final eligibleTxns = dataset
-        .where((txn) => textFilter.includes(txn))
-        .where((txn) => selectedCategories.includes(txn));
+    final eligibleTxns =
+        dataset.where((txn) => filters.all((filter) => filter.includes(txn)));
 
     final listView = ListView.builder(
       itemCount: eligibleTxns.count + 1,
