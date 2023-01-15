@@ -14,7 +14,7 @@ class Dataset {
   /// By default, always sorted by date.
   late final List<Transaction> txns;
 
-  int get count => txns.length;
+  int get numTxns => txns.length;
 
   bool get isEmpty => txns.isEmpty;
 

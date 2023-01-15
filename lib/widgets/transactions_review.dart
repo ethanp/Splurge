@@ -39,10 +39,12 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
   Widget _transactionList() {
     final dataset = ref.watch(DatasetNotifier.filteredProvider);
     final listView = ListView.builder(
-      itemCount: dataset.count + 1,
+      itemCount: dataset.numTxns + 1,
       itemBuilder: (_, idx) {
         if (idx == 0) {
           // Add one blank spot to the top to match spacing behind the Header.
+          // If we just added padding instead, it wouldn't allow for that cool
+          // blurry-behind-the-header effect.
           return const SizedBox(height: 50);
         } else {
           return _ListTile(dataset.txns[idx - 1]);

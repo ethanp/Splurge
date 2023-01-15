@@ -55,7 +55,7 @@ class FilterCardState extends ConsumerState<FilterCard> {
       controller: textEditingController,
       decoration: InputDecoration(
         hintText: 'Enter search text',
-        helperText: '${txns.count} matches',
+        helperText: '${txns.numTxns} matches',
         labelText: 'Filter transactions by title',
         counterText: isActive
             ? 'Filter is active'
