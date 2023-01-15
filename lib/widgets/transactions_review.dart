@@ -38,21 +38,14 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
 
   Widget _transactionList() {
     final dataset = ref.watch(DatasetNotifier.filteredProvider);
-    final textFilter = ref.read(TextFilter.provider.notifier);
-    final selectedCategories = ref.read(SelectedCategories.provider.notifier);
-    final filters = [textFilter, selectedCategories];
-
-    final eligibleTxns =
-        dataset.where((txn) => filters.all((filter) => filter.includes(txn)));
-
     final listView = ListView.builder(
-      itemCount: eligibleTxns.count + 1,
+      itemCount: dataset.count + 1,
       itemBuilder: (_, idx) {
         if (idx == 0) {
           // Add one blank spot to the top to match spacing behind the Header.
           return const SizedBox(height: 50);
         } else {
-          return _ListTile(eligibleTxns.txns[idx - 1]);
+          return _ListTile(dataset.txns[idx - 1]);
         }
       },
     );

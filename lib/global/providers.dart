@@ -27,7 +27,7 @@ class SelectedDateRange extends StateNotifier<DateTimeRange>
 
   DateTimeRange get range => state;
 
-  void lastMonths(int count) {
+  void priorMonths(int count) {
     final now = DateTime.now();
     final startOfLastMonth = DateTime(now.year, now.month - count);
     final startOfThisMonth = DateTime(now.year, now.month);

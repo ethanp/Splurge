@@ -184,8 +184,8 @@ class TimeRangeSelectorState extends ConsumerState<_TimeRangeSelector> {
           onPressed: () => selectedDateRange.reset(),
         ),
         _button(
-          text: 'Last 3 months',
-          onPressed: () => selectedDateRange.lastMonths(3),
+          text: 'Prior 3 months',
+          onPressed: () => selectedDateRange.priorMonths(3),
         ),
         ...Iterable.generate(
           /* numYears = */ thisYear - 2020,
