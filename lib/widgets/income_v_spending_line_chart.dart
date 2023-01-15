@@ -50,7 +50,7 @@ class IncomeVsSpendingLineChart extends ConsumerWidget {
               ],
             ),
           ),
-          Header('Earning vs Spending'),
+          Header(title: 'Earning vs Spending'),
         ],
       ),
     );

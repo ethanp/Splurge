@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:splurge/global/style.dart';
 
 class Header extends StatelessWidget {
-  const Header(this.title);
+  const Header({required this.title});
 
   final String title;
 

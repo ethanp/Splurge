@@ -31,7 +31,7 @@ class LargestTransactionsState extends ConsumerState<LargestTransactions> {
       ),
       child: Stack(children: [
         _transactionList(),
-        Header('Matching transactions'),
+        Header(title: 'Matching transactions'),
       ]),
     );
   }
