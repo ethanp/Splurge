@@ -4,20 +4,20 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 import 'loader.dart';
 
-class NewPerscapExportReader {
+class PerscapExportReader {
   static Future<Dataset?> get loadData async => loader(
         title: 'Perscap',
         fileSubstring: ' thru ',
         numHeaderLines: 2,
-        parseToTransaction: (text) => NewPerscapExportRow(text).toTransaction(),
+        parseToTransaction: (text) => PerscapExportRow(text).toTransaction(),
         filter: (txn) =>
             txn.category == IncomeCategory.TaxAdvContrib.name &&
             txn.date.isAtLeast(DateTime(/*year*/ 2021, /*month*/ 3)),
       );
 }
 
-class NewPerscapExportRow {
-  NewPerscapExportRow(String rawRow) {
+class PerscapExportRow {
+  PerscapExportRow(String rawRow) {
     rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
   }
 
@@ -28,13 +28,16 @@ class NewPerscapExportRow {
   // Example actual values: ["17.7", "-15.83", "8", "-200", "4636.53"].
   double get amount => -double.parse(rowValues[5]);
 
-  String get title => rowValues[2];
+  String get title =>
+      rowValues[2] == 'Investment: Viiix' ? 'HSA contribution' : rowValues[2];
 
   String get accountName => rowValues[4];
 
-  /// Right now 401(k) is the only useful data getting extracted from this dump.
-  /// NB: HSA contribution data is not available here AFAICT.
-  String get category => accountName.contains('401(k)')
+  /// This includes 401(k) contributions (including ones mis-categorized by
+  /// Perscap), as well as HSA contributions.
+  String get category => rowValues[3].contains('Retirement Contribution') ||
+          // Perscap sometimes mis-categorizes these as "Other Income"
+          title.contains('Target Retire 2055 Tr-plan Contribution')
       ? IncomeCategory.TaxAdvContrib.name
       // These get filtered out, so the value doesn't matter.
       : '';

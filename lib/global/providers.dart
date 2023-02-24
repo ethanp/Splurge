@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splurge/data_loading/copilot_parser.dart';
-import 'package:splurge/data_loading/perscap_parser_new.dart';
+import 'package:splurge/data_loading/perscap_parser.dart';
 import 'package:splurge/data_loading/perscap_parser_old.dart';
 import 'package:splurge/global/data_model.dart';
 import 'package:splurge/util/extensions/riverpod_extensions.dart';
@@ -109,7 +109,7 @@ class DatasetNotifier extends StateNotifier<Dataset> {
       if (oldFormat != null)
         return oldFormat;
       else
-        return await NewPerscapExportReader.loadData;
+        return await PerscapExportReader.loadData;
     }();
 
     // Awaits.
