@@ -23,24 +23,24 @@ class OldPerscapExportReader {
 
 class OldPerscapExportRow {
   OldPerscapExportRow(String rawRow) {
-    rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
+    _rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
   }
 
-  late final List<String> rowValues;
+  late final List<String> _rowValues;
 
-  DateTime get date => DateTime.parse(rowValues[0]);
+  DateTime get date => DateTime.parse(_rowValues[0]);
 
-  String get title => rowValues[1];
+  String get title => _rowValues[1];
 
   // Original format looks like "$30.00", or "-$2,024.43".
   //
   // Also, negativity is reversed from Copilot, so we invert.
   double get amount =>
-      -double.parse(rowValues[5].replaceAll('\$', '').replaceAll(',', ''));
+      -double.parse(_rowValues[5].replaceAll('\$', '').replaceAll(',', ''));
 
   /// Right now 401(k) is the only useful data getting extracted from this dump.
   /// NB: HSA contribution data is not available here AFAICT.
-  String get category => rowValues[4].contains('401(k)')
+  String get category => _rowValues[4].contains('401(k)')
       ? IncomeCategory.TaxAdvContrib.name
       // These get filtered out, so the value doesn't matter.
       : '';

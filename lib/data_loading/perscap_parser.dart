@@ -18,24 +18,24 @@ class PerscapExportReader {
 
 class PerscapExportRow {
   PerscapExportRow(String rawRow) {
-    rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
+    _rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
   }
 
-  late final List<String> rowValues;
+  late final List<String> _rowValues;
 
-  DateTime get date => DateTime.parse(rowValues[0]);
+  DateTime get date => DateTime.parse(_rowValues[0]);
 
-  // Example actual values: ["17.7", "-15.83", "8", "-200", "4636.53"].
-  double get amount => -double.parse(rowValues[5]);
+  // Example actual rowValue[5]s: ["17.7", "-15.83", "8", "-200", "4636.53"].
+  double get amount => -double.parse(_rowValues[5]);
 
   String get title =>
-      rowValues[2] == 'Investment: Viiix' ? 'HSA contribution' : rowValues[2];
+      _rowValues[2] == 'Investment: Viiix' ? 'HSA contribution' : _rowValues[2];
 
-  String get accountName => rowValues[4];
+  String get accountName => _rowValues[4];
 
   /// This includes 401(k) contributions (including ones mis-categorized by
   /// Perscap), as well as HSA contributions.
-  String get category => rowValues[3].contains('Retirement Contribution') ||
+  String get category => _rowValues[3].contains('Retirement Contribution') ||
           // Perscap sometimes mis-categorizes these as "Other Income"
           title.contains('Target Retire 2055 Tr-plan Contribution')
       ? IncomeCategory.TaxAdvContrib.name

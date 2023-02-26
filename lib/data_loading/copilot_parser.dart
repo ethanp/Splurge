@@ -16,24 +16,24 @@ class CopilotExportReader {
 
 class CopilotExportRow {
   CopilotExportRow(String rawRow) {
-    rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
+    _rowValues = ValueGeneratorCommaSeparated(rawRow).toList(growable: false);
   }
 
-  late final List<String> rowValues;
+  late final List<String> _rowValues;
 
-  DateTime get date => DateTime.parse(rowValues[0]);
+  DateTime get date => DateTime.parse(_rowValues[0]);
 
-  String get title => rowValues[1];
+  String get title => _rowValues[1];
 
   double get amount {
-    final rawValue = rowValues[2];
+    final rawValue = _rowValues[2];
     return rawValue.isEmpty ? 0 : double.parse(rawValue);
   }
 
   String get category {
     switch (txnType) {
       case 'regular':
-        return rowValues[4];
+        return _rowValues[4];
       case 'income':
         if (title.toLowerCase().contains('payroll')) {
           if (amount.abs() < 5500) {
@@ -49,11 +49,11 @@ class CopilotExportRow {
       case 'internal transfer':
         return txnType;
       default:
-        throw Exception('Unknown txnType $txnType in $rowValues');
+        throw Exception('Unknown txnType $txnType in $_rowValues');
     }
   }
 
-  String get txnType => rowValues[7];
+  String get txnType => _rowValues[7];
 
   Transaction toTransaction() => Transaction(
         date: date,
