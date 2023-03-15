@@ -21,45 +21,52 @@ class CopilotExportRow {
 
   late final List<String> _rowValues;
 
-  DateTime get date => DateTime.parse(_rowValues[0]);
+  DateTime get _date => DateTime.parse(_rowValues[0]);
 
-  String get title => _rowValues[1];
+  String get _title => _rowValues[1];
 
-  double get amount {
-    final rawValue = _rowValues[2];
-    return rawValue.isEmpty ? 0 : double.parse(rawValue);
+  double get _amount {
+    final String amountStr = _rowValues[2];
+    return amountStr.isEmpty ? 0 : double.parse(amountStr);
   }
 
-  String get category {
-    switch (txnType) {
+  String get _category {
+    switch (_txnType) {
       case 'regular':
-        return _rowValues[4];
+        return _rawCategory;
       case 'income':
-        if (title.toLowerCase().contains('payroll')) {
-          if (amount.abs() < 5500) {
-            return IncomeCategory.Payroll.name;
-          } else {
-            return IncomeCategory.Bonus.name;
-          }
-        } else if (title.toLowerCase().contains('brokerage')) {
-          return IncomeCategory.GSUs.name;
-        } else {
-          return IncomeCategory.Random.name;
-        }
+        return _incomeCategory;
       case 'internal transfer':
-        return txnType;
+        return _txnType;
       default:
-        throw Exception('Unknown txnType $txnType in $_rowValues');
+        throw Exception('Unknown txnType $_txnType from Copilot: $_rowValues');
     }
   }
 
-  String get txnType => _rowValues[7];
+  String get _rawCategory => _rowValues[4];
+
+  String get _txnType => _rowValues[7];
 
   Transaction toTransaction() => Transaction(
-        date: date,
-        title: title,
-        amount: amount,
-        category: category,
-        txnType: txnType,
+        date: _date,
+        title: _title,
+        amount: _amount,
+        category: _category,
+        txnType: _txnType,
       );
+
+  String get _incomeCategory {
+    if (_title.toLowerCase().contains('payroll')) {
+      // This probably won't perfectly differentiate, but it's pretty good.
+      if (_amount.abs() < 6000) {
+        return IncomeCategory.Payroll.name;
+      } else {
+        return IncomeCategory.Bonus.name;
+      }
+    } else if (_title.toLowerCase().contains('brokerage')) {
+      return IncomeCategory.GSUs.name;
+    } else {
+      return IncomeCategory.Random.name;
+    }
+  }
 }

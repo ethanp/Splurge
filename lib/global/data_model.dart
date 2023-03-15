@@ -20,8 +20,6 @@ class Dataset {
 
   Transaction? get maybeLastTxn => txns.maybeLast;
 
-  Transaction get lastTxn => txns.last;
-
   Dataset get spendingTxns => where((txn) => txn.isSpending);
 
   Dataset get incomeTxns => where((txn) => txn.isIncome);
@@ -50,7 +48,7 @@ class Dataset {
       txnsByMonth.map((_) => _.value).fold<List<Dataset>>(
         [],
         (quartersSoFar, dataset) {
-          if (dataset.lastTxn.date.qtr ==
+          if (dataset.txns.last.date.qtr ==
               quartersSoFar.maybeLast?.maybeLastTxn?.date.qtr)
             quartersSoFar.last.txns.addAll(dataset.txns);
           else
@@ -98,17 +96,22 @@ class Transaction {
 }
 
 enum IncomeCategory {
-  // That ~biweekly paycheck.
+  /// That ~biweekly paycheck.
   Payroll,
-  // Includes spot & annual bonuses.
+
+  /// Includes spot & annual bonuses.
   Bonus,
-  // Amount of cash I got from a transfer from brokerage account.
+
+  /// Amount of cash I got from a transfer from brokerage account.
   GSUs,
-  // Contribution into a tax-advantaged account, eg. 401(k), IRA, or HSA.
+
+  /// Contribution into a tax-advantaged account, eg. 401(k), IRA, or HSA.
   TaxAdvContrib,
-  // Eg. cash-out of life insurance.
+
+  /// Eg. cash-out of life insurance.
   Random,
-  // Money I pay to govt, beyond what was taken on the way to me.
+
+  /// Money I pay-to & receive-from govt, not including paycheck withholdings.
   Taxes;
 }
 

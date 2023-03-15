@@ -4,6 +4,11 @@ import 'package:splurge/util/extensions/stdlib_extensions.dart';
 
 import 'loader.dart';
 
+/// The only data extracted from these exports is contributions to
+/// tax-advantaged accounts; since those don't make it to Copilot.
+///
+/// The filtering happens in [PerscapExportRow.category].
+///
 class PerscapExportReader {
   static Future<Dataset?> get loadData async => loader(
         title: 'Perscap',
@@ -33,14 +38,28 @@ class PerscapExportRow {
 
   String get accountName => _rowValues[4];
 
-  /// This includes 401(k) contributions (including ones mis-categorized by
-  /// Perscap), as well as HSA contributions.
-  String get category => _rowValues[3].contains('Retirement Contribution') ||
-          // Perscap sometimes mis-categorizes these as "Other Income"
-          title.contains('Target Retire 2055 Tr-plan Contribution')
-      ? IncomeCategory.TaxAdvContrib.name
-      // These get filtered out, so the value doesn't matter.
-      : '';
+  /// Meant to include only
+  ///
+  /// 1. 401(k) contributions (including ones mis-categorized by Perscap)
+  /// 2. HSA contributions.
+  ///
+  /// Everything else will get a blank category and will therefore be ignored.
+  String get category {
+    final bool isLabeledAsRetirement =
+        _rawCategory.contains('Retirement Contribution');
+
+    // Perscap sometimes mis-categorizes Vanguard deposits as "Other Income"
+    final bool isVanguardContribution =
+        title.contains('Target Retire 2055 Tr-plan Contribution');
+
+    final bool isRetirementContribution =
+        isLabeledAsRetirement || isVanguardContribution;
+
+    // Discard anything that's not a retirement contribution.
+    return isRetirementContribution ? IncomeCategory.TaxAdvContrib.name : '';
+  }
+
+  String get _rawCategory => _rowValues[3];
 
   String get txnType => category.isNotEmpty ? 'income' : '';
 

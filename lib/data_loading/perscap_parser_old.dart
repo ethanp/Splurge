@@ -8,7 +8,7 @@ import 'loader.dart';
 /// their export format. I'm keeping this code here for now in case their format
 /// happens to revert back (which already seems unlikely since it has now been
 /// two months on the new format).
-
+///
 class OldPerscapExportReader {
   static Future<Dataset?> get loadData async => loader(
         title: 'Perscap',
