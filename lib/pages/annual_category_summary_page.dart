@@ -9,7 +9,17 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
   const AnnualCategorySummaryPage();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) =>
+      Scaffold(appBar: _appBar(), body: _dataTable(ref));
+
+  AppBar _appBar() {
+    return AppBar(
+      backgroundColor: Colors.blueGrey[700],
+      title: Text('Spending per category per year (annualized)'),
+    );
+  }
+
+  Widget _dataTable(WidgetRef ref) {
     final dataset = ref.watch(DatasetNotifier.unfilteredProvider);
     final firstYear = dataset.txns.first.date.year;
     final lastYear = dataset.txns.last.date.year;
@@ -30,14 +40,10 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
       ),
     );
     final columns = [categoryColumn, ...yearColumns];
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey[700],
-        title: Text('Spending per category per year (annualized)'),
-      ),
-      // The [Row] exists so the table doesn't stretch to the full screen width.
-      body: Row(children: [
-        Card(
+    return SingleChildScrollView(
+      // Disable stretching to the full screen width.
+      child: IntrinsicWidth(
+        child: Card(
           margin: const EdgeInsets.all(8),
           color: Colors.grey[900],
           child: DataTable(
@@ -46,7 +52,7 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
             rows: _categoryRows(dataset, yearsWithData),
           ),
         ),
-      ]),
+      ),
     );
   }
 
@@ -65,31 +71,6 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
     });
   }
 
-  Widget _formatText(num amt) {
-    return Text(
-      amt.abs().asCompactDollars(),
-      style: GoogleFonts.abel(
-        fontSize: 16,
-        decoration: amt == 0 ? TextDecoration.lineThrough : null,
-        color: () {
-          // TODO(UI): Somewhere there's a way to interpolate the color between
-          //  green and red via grey to make the more extreme values stand out
-          //  visually (aka conditional highlighting).
-          // int max = 200e3.toInt();
-          // TODO(Finish): It's something like this, but I have to go to bed right now.
-          // final color = Color.lerp(Colors.green, Colors.red, amt / max + 0.5);
-
-          if (amt == 0)
-            return Colors.grey[700];
-          else if (amt.isNegative)
-            return Colors.green[400];
-          else
-            return Colors.red[300];
-        }(),
-      ),
-    );
-  }
-
   double _annualizeSpending(Dataset txnsForCategoryForYear) {
     // Avoid calculations on nothingness for simplicity.
     if (txnsForCategoryForYear.isEmpty) return 0;
@@ -100,5 +81,34 @@ class AnnualCategorySummaryPage extends ConsumerWidget {
     // Avoid divide by zero for simplicity.
     if (annualizationFactor == 0) annualizationFactor = 1;
     return txnsForCategoryForYear.totalAmount / annualizationFactor;
+  }
+
+  Widget _formatText(num amt) {
+    return Text(
+      amt.abs().asCompactDollars(),
+      style: GoogleFonts.abel(
+        fontSize: 16,
+        decoration: amt == 0 ? TextDecoration.lineThrough : null,
+        color: () {
+          // TODO(UI): Somewhere there's a way to interpolate the color between
+          //  green and red via grey to make the more extreme values stand out
+          //  visually (aka conditional highlighting).
+          //  It's something like this, but I have to go to bed right now.
+          //
+          //    int max = 200e3.toInt();
+          //    final color = Color.lerp(
+          //      Colors.green,
+          //      Colors.red,
+          //      amt / max + 0.5,
+          //    );
+          //
+          return amt == 0
+              ? Colors.grey[700]
+              : amt.isNegative
+                  ? Colors.green[400]
+                  : Colors.red[300];
+        }(),
+      ),
+    );
   }
 }

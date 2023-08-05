@@ -104,12 +104,12 @@ class DatasetNotifier extends StateNotifier<Dataset> {
     // Initiate all loads before doing any awaiting.
     final Future<Dataset?> copilotF = CopilotExportReader.loadData;
     final Future<Dataset?> perscapF = () async {
-      // First try old format then new format.
-      final Dataset? oldFormat = await OldPerscapExportReader.loadData;
-      if (oldFormat != null)
-        return oldFormat;
+      // First try new format then old format.
+      final Dataset? dataset = await PerscapExportReader.loadData;
+      if (dataset != null)
+        return dataset;
       else
-        return await PerscapExportReader.loadData;
+        return await OldPerscapExportReader.loadData;
     }();
 
     // Awaits.

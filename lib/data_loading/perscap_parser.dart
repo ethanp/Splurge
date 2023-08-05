@@ -52,8 +52,10 @@ class PerscapExportRow {
     final bool isVanguardContribution =
         title.contains('Target Retire 2055 Tr-plan Contribution');
 
+    final bool is529Contribution = title.contains('Schwab Lq Ach Contrib');
+
     final bool isRetirementContribution =
-        isLabeledAsRetirement || isVanguardContribution;
+        !is529Contribution && (isLabeledAsRetirement || isVanguardContribution);
 
     // Discard anything that's not a retirement contribution.
     return isRetirementContribution ? IncomeCategory.TaxAdvContrib.name : '';

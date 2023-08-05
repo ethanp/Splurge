@@ -56,14 +56,13 @@ class CopilotExportRow {
       );
 
   String get _incomeCategory {
-    if (_title.toLowerCase().contains('payroll')) {
+    String title = _title.toLowerCase();
+    if (title.contains('payroll') || title.contains('nimble rx')) {
       // This probably won't perfectly differentiate, but it's pretty good.
-      if (_amount.abs() < 6000) {
-        return IncomeCategory.Payroll.name;
-      } else {
-        return IncomeCategory.Bonus.name;
-      }
-    } else if (_title.toLowerCase().contains('brokerage')) {
+      return _amount.abs() < 6000
+          ? IncomeCategory.Payroll.name
+          : IncomeCategory.Bonus.name;
+    } else if (title.contains('brokerage')) {
       return IncomeCategory.GSUs.name;
     } else {
       return IncomeCategory.Random.name;
