@@ -97,7 +97,6 @@ class _CategoryChips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fullDataset = ref.watch(DatasetNotifier.unfilteredProvider);
-    bool isIncome(String category) => category.isIncome;
 
     return Wrap(
       runSpacing: 8,
@@ -105,12 +104,12 @@ class _CategoryChips extends ConsumerWidget {
         _categorySection(
           title: 'Income',
           color: Colors.blueGrey[300]!.withGreen(200),
-          categoryNames: fullDataset.categories.where(isIncome),
+          categoryNames: fullDataset.incomeCategories,
         ),
         _categorySection(
           title: 'Spending',
           color: Colors.blueGrey[300]!.withRed(200),
-          categoryNames: fullDataset.categories.where(isIncome.inverted),
+          categoryNames: fullDataset.spendingCategories,
         ),
       ],
     );

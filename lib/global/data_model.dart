@@ -26,6 +26,11 @@ class Dataset {
 
   Set<String> get categories => txns.map((txn) => txn.category).toSet();
 
+  Iterable<String> get incomeCategories => categories.where((c) => c.isIncome);
+
+  Iterable<String> get spendingCategories =>
+      categories.where((c) => c.isSpending);
+
   Map<String, Dataset> get txnsPerCategory => txns
       .groupBy((txn) => txn.category)
       .map((cat, txns) => MapEntry(cat, Dataset(txns)));
@@ -78,7 +83,7 @@ class Transaction {
   final String category;
   final String txnType;
 
-  bool get isSpending => !category.isIncome && txnType != 'internal transfer';
+  bool get isSpending => category.isSpending;
 
   bool get isIncome => category.isIncome;
 
@@ -115,6 +120,11 @@ enum IncomeCategory {
   Taxes;
 }
 
-extension IncomeCat on String {
+extension CategoryUtil on String {
   bool get isIncome => IncomeCategory.values.any((i) => i.name == this);
+
+  bool get isIgnored =>
+      ['investments', 'internal transfer'].contains(toLowerCase());
+
+  bool get isSpending => !isIncome && !isIgnored;
 }
